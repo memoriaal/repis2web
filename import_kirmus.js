@@ -25,36 +25,6 @@ const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684
 // console.log({ES_CREDENTIALS, esOptions})
 const esClient = new elasticsearch.Client(esOptions)
 
-const kirje2obj = function(kirje) {
-  let o_kirje = {}
-  let ksplit = kirje.split('#|')
-  if (ksplit.length != 6) {
-    console.log('---\n' + ksplit.length + ' --- ' + kirje)
-  }
-  o_kirje.persoon = ksplit.shift()
-  o_kirje.kirjekood = ksplit.shift()
-  o_kirje.RaamatuPere = o_kirje.kirjekood.slice(0, -2)
-  o_kirje.kirje = ksplit.shift()
-  o_kirje.words = o_kirje.kirje.split(' ').slice(0, 3).join(' ').replace(/[.,;]/g, '')
-  // o_kirje.allikakood = o_kirje.kirjekood.split('-')[0]
-  o_kirje.allikas = ksplit.shift()
-  ksplit.shift() // o_kirje.allikasTxt = ksplit.shift()
-  // console.log(o_kirje.persoon)
-  try {
-    _labels_str = ksplit.shift().split("'").join('"')
-  } catch (error) {
-    console.log({kirje});
-    throw error
-  }
-  // console.log(o_kirje.kirjekood, _labels_str);
-  _labels_o = JSON.parse(_labels_str)
-  // console.log(_labels_o);
-  if (_labels_o[0] === '') {
-    _labels_o = []
-  }
-  o_kirje.labels = _labels_o['labels'].join(' ')
-  return o_kirje
-}
 
 console.log('start 0')
 
@@ -81,40 +51,6 @@ async.series({
         if (isik.id === '') {
           return
         }
-        try {
-          // console.log({'iki': isik['kirjed']})
-          isik['kirjed'] = isik['kirjed'].split(';_\\\n')
-          .filter((kirje) => kirje !== '')
-          .map((kirje) => {
-            return kirje2obj(kirje)
-          })
-          // console.log({'iki2': isik['kirjed']})
-        } catch (e) {
-          console.log(e)
-          console.log(isik)
-        }
-        if (isik['pereseos'] !== undefined) {
-          let pereseosed = isik['pereseos'].split(';_\\\n')
-            .filter((kirje) => kirje !== '')
-            .map((kirje) => {
-              return kirje2obj(kirje)
-            })
-          let pered = {}
-          pereseosed.forEach((kirje) => {
-            let RaamatuPere = kirje.kirjekood.slice(0, -2)
-            if (pered[RaamatuPere] === undefined) {
-              let nimekiri = nimekiri_o[RaamatuPere.split('-')[0]] || '#N/A'
-              pered[RaamatuPere] = {
-                RaamatuPere: RaamatuPere,
-                nimekiri: nimekiri,
-                kirjed: []
-              }
-            }
-            pered[RaamatuPere]['kirjed'].push(kirje)
-          })
-          isik['pereseos'] = Object.values(pered)
-        }
-        // console.log('Saving ' + isik.id);
 
         save2list(isik, function(error) {
           if (error) {
@@ -160,40 +96,11 @@ async.series({
                     raw: { type: 'keyword' }
                   }
                 },
-                perenimed: {
-                  type: 'text'
-                },
-                eesnimed: {
-                  type: 'text'
-                },
                 'sünd': { type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
                   }
                 },
-                'surm': { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                'tiib': { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                pereseos: {
-                  type: 'nested',
-                  properties: {
-                    kirjed: {
-                      type: 'nested',
-                      properties: {
-                        persoon: {
-                          type: 'keyword'
-                        }
-                      }
-                    }
-                  }
-                }
               }
             }
           }
