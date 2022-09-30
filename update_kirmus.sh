@@ -18,7 +18,7 @@ EOFMYSQL
 echo exported
 echo importing
 
-INDEX=kirmus SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node ~/scripts/import_kirmus.js
+INDEX=kirmus SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node ./import_kirmus.js
 
 echo bye
 
