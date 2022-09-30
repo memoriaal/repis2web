@@ -126,7 +126,7 @@ async.series({
         body: batch.join('\n')
       }, function(error, response) {
         if (error) {
-          console.log('Error ' + error.status)
+          console.log('3 Error ' + error.status)
           if (error.status === 408) {
             console.log('Timed out')
           }
@@ -146,7 +146,11 @@ async.series({
   count: function(callback) {
     esClient.count({
       index: INDEX
-    }, function(err, resp, status) {
+    }, function(error, resp, status) {
+      if (error) {
+        console.log('1 Error ' + error.status)
+        return callback(error)
+      }
       let create = {}
       create.index = 'imports'
       create.type = 'import'
@@ -166,11 +170,13 @@ async.series({
       callback(null, resp)
     })
   }
-}, function(err, results) {
-  console.log(results)
+}, function(error, results) {
+  if (error) {
+    console.log('2 Error ' + error.status)
+  }
+console.log(results)
 })
 
-console.log('finito 1')
 
 
 var bulk = []
