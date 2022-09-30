@@ -18,7 +18,7 @@ EOFMYSQL
 echo exported
 echo importing
 
-INDEX=allpersons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node ./import_once.js
+INDEX=allpersons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node ~/scripts/import_once.js
 
 echo bye
 
