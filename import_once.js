@@ -55,8 +55,13 @@ const kirje2obj = function(kirje) {
     throw error
   }
   // console.log(o_kirje.kirjekood, _labels_str);
-  let _labels_o = JSON.parse(_labels_str)
-  // console.log(_labels_o);
+  let _labels_o
+  try {
+    _labels_o = JSON.parse(_labels_str)
+  } catch (error) {
+    console.log({ksplit: kirje.split('#|'), _labels_str})
+    throw error
+  }
   if (_labels_o[0] === '') {
     _labels_o = []
   }
