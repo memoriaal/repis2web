@@ -40,6 +40,7 @@ const kirje2obj = function(kirje) {
   o_kirje.allikas = ksplit.shift()
   ksplit.shift() // o_kirje.allikasTxt = ksplit.shift()
   // console.log(o_kirje.persoon)
+  let _labels_str = ''
   try {
     _labels_str = ksplit.shift().split("'").join('"')
   } catch (error) {
@@ -47,7 +48,7 @@ const kirje2obj = function(kirje) {
     throw error
   }
   // console.log(o_kirje.kirjekood, _labels_str);
-  _labels_o = JSON.parse(_labels_str)
+  let _labels_o = JSON.parse(_labels_str)
   // console.log(_labels_o);
   if (_labels_o[0] === '') {
     _labels_o = []
@@ -102,6 +103,7 @@ async.series({
         // console.log(data);
         for (var i = 0; i < labels.length; i++) {
           // console.log('--> ', data[i]);
+          isik[labels[i]] = ''
           if (data[i] !== undefined && data[i] !== '') {
             isik[labels[i]] = data[i].replace(/@/g, '"')
           }
