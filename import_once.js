@@ -47,7 +47,7 @@ const kirje2obj = function(kirje) {
   o_kirje.allikas = ksplit.shift()
   ksplit.shift() // o_kirje.allikasTxt = ksplit.shift()
   // console.log(o_kirje.persoon)
-  let _labels_str = ''
+  let _labels_str = '[]'
   try {
     _labels_str = ksplit.shift().split("'").join('"')
   } catch (error) {
