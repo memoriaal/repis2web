@@ -64,3 +64,5 @@ mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < statistika.sql
 
 
 echo $(date -u --iso-8601=seconds) Repis update finished
+
+. ./repis_backup.sh
