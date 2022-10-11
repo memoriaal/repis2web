@@ -3,7 +3,6 @@
 . ~/credentials.txt
 
 echo $(date -u --iso-8601=seconds) Started repis update
-git pull
 
 echo $(date -u --iso-8601=seconds) Repair repis.kirjed.kirje IS NULL
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded<<EOFMYSQL
