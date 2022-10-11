@@ -47,22 +47,23 @@ const kirje2obj = function(kirje) {
   o_kirje.allikas = ksplit.shift()
   ksplit.shift() // o_kirje.allikasTxt = ksplit.shift()
   // console.log(o_kirje.persoon)
-  let _labels_str = '[]'
+  let _labels_str = ''
   try {
     _labels_str = ksplit.shift().split("'").join('"')
   } catch (error) {
-    console.log({kirje});
-    throw error
+    console.log({W: 'failing with \'->\" replace', 'ksplit': kirje.split('#|')})
+    _labels_str = '{ labels: [] }'
+    // throw error
   }
   // console.log(o_kirje.kirjekood, _labels_str);
   let _labels_o
   try {
     _labels_o = JSON.parse(_labels_str)
   } catch (error) {
-    _labels_o = []
+    _labels_o = { labels: [] }
   }
   if (_labels_o[0] === '') {
-    _labels_o = []
+    _labels_o = { labels: [] }
   }
   o_kirje.labels = _labels_o['labels'].join(' ')
   return o_kirje
