@@ -14,7 +14,14 @@ const START_TIME = Date.now()
 
 
 var csv = require("fast-csv");
-var labels = ["id","perenimi","eesnimi","isanimi","emanimi","perenimed","eesnimed","emanimed","isanimed","sünd","surm","kivi","tahvlikirje","tiib","tahvel","tulp","rida","ohvitser","auaste","VR","evonimi","evokirje","evoaastad","kirjed","pereseos","pereseosID","relevantne"]
+var labels = [
+  "id", "perenimi", "eesnimi",
+  "isanimi", "emanimi", "perenimed", "eesnimed", "emanimed", "isanimed",
+  "sünd",
+  "surm",
+  "kivi", "tahvlikirje", "tiib", "tahvel", "tulp", "rida", 
+  // "ohvitser", "auaste", "VR", "evonimi", "evokirje", "evoaastad", 
+  "kirjed", "pereseos", "pereseosID", "relevantne"]
 
 
 const elasticsearch = require('elasticsearch')

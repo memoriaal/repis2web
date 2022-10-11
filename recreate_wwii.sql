@@ -1,5 +1,4 @@
-CREATE
-or replace table pub.wwiirefugees (
+CREATE OR REPLACE TABLE pub.wwiirefugees (
     id CHAR(10) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     perenimi VARCHAR(300) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     eesnimi VARCHAR(300) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
