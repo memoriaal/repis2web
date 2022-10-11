@@ -32,7 +32,7 @@ EOFMYSQL
 
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
-INDEX=allpersons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node ~/scripts/import_once.js
+INDEX=allpersons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node import_once.js
 
 
 ####
@@ -56,7 +56,7 @@ EOFMYSQL
 echo $(date -u --iso-8601=seconds) exported
 echo $(date -u --iso-8601=seconds) upload to wwii-refugees.ee
 
-INDEX=wwiirefugees SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node ~/scripts/import_once.js
+INDEX=wwiirefugees SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node import_once.js
 
 
 echo $(date -u --iso-8601=seconds) Refresh statistics

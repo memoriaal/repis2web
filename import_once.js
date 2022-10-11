@@ -20,7 +20,7 @@ var labels = [
   "sünd",
   "surm",
   "kivi", "tahvlikirje", "tiib", "tahvel", "tulp", "rida", 
-  // "ohvitser", "auaste", "VR", "evonimi", "evokirje", "evoaastad", 
+  "ohvitser", "auaste", "VR", "evonimi", "evokirje", "evoaastad", 
   "kirjed", "pereseos", "pereseosID", "relevantne"]
 
 
