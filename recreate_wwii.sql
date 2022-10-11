@@ -72,7 +72,7 @@ select
     '' AS tahvel,
     '' AS tulp,
     '' AS rida,
-    concat_ws('#|', '', ek.kirjekood, '', '', '', ek.Viit) AS kirjed,
+    concat_ws('#|', '', ek.kirjekood, '', ek.Viit, '', '') AS kirjed,
     '' AS pereseos,
     '' AS pereseosID,
     0 AS relevantne
