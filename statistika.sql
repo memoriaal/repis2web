@@ -22,7 +22,7 @@ WHERE
 
 -- Isikuid mälestusseinal
 SELECT
-    count(1) INTO @kivi
+    count(1) INTO @kivis
 FROM
     `aruanded`.`memoriaal_ee`
 WHERE
