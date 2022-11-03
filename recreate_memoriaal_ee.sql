@@ -117,7 +117,8 @@ SELECT
                                 IF(k.EkslikKanne = '!', 'wrong', NULL)
                             ),
                             '"] }'
-                        )
+                        ),
+                        k.Välisviide
                     )
                 )
                 ORDER BY
