@@ -21,7 +21,7 @@ CREATE OR REPLACE TABLE pub.wwiirefugees (
     VR VARCHAR(19) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     evonimi VARCHAR(55) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     evokirje VARCHAR(55) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
-    evoaastad VARCHAR(21) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
+    evoaastad VARCHAR(21) COLLATE utf8_estonian_ci NULL DEFAULT NULL,
     kirjed LONGTEXT COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     pereseos LONGTEXT COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     pereseosID TEXT COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
