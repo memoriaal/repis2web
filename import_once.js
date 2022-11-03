@@ -35,7 +35,7 @@ const esClient = new elasticsearch.Client(esOptions)
 const kirje2obj = function(kirje) {
   let o_kirje = {}
   let ksplit = kirje.split('#|')
-  if (ksplit.length != 6) {
+  if (ksplit.length != 7) {
     console.log('---\n' + ksplit.length + ' --- ' + kirje)
   }
   o_kirje.persoon = ksplit.shift()
