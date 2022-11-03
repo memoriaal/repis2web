@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE aruanded.memoriaal_ee (
+CREATE OR REPLACE TABLE pub.memoriaal_ee (
     id CHAR(10) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     perenimi VARCHAR(300) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',
     eesnimi VARCHAR(300) COLLATE utf8_estonian_ci NOT NULL DEFAULT '',

@@ -5,7 +5,7 @@
 echo $(date -u --iso-8601=seconds) Started repis update
 
 echo $(date -u --iso-8601=seconds) Repair repis.kirjed.kirje IS NULL
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded<<EOFMYSQL
+mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
 update repis.kirjed
 set kirje = repis.func_person_text(persoon)
 where kirje is null;
@@ -16,13 +16,13 @@ EOFMYSQL
 #### memoriaal.ee
 ####
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee.csv"
-echo $(date -u --iso-8601=seconds) Recreate table aruanded.memoriaal_ee
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < recreate_memoriaal_ee.sql
+echo $(date -u --iso-8601=seconds) Recreate table pub.memoriaal_ee
+mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_memoriaal_ee.sql
 
 
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded<<EOFMYSQL
-SELECT * from aruanded.memoriaal_ee
+mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
+SELECT * from pub.memoriaal_ee
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
 FIELDS TERMINATED BY ','
