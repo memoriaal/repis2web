@@ -66,6 +66,7 @@ const kirje2obj = function(kirje) {
     _labels_o = { labels: [] }
   }
   o_kirje.labels = _labels_o['labels'].join(' ')
+  o_kirje.viide = ksplit.shift()
   return o_kirje
 }
 
