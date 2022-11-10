@@ -57,7 +57,7 @@ LINES TERMINATED BY '\n';
 EOFMYSQL
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
-INDEX=emem_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
+INDEX=evo_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
 
 
 ####

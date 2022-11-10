@@ -31,7 +31,7 @@ async.series({
       .fromPath(SOURCE)
       .on("data", function(data) {
         let isik = {}
-        console.log(data);
+        // console.log(data);
         isik['id'] = data[0]
         isik['kirje'] = data[1]
         isik['kirjed'] = JSON.parse(data[2])
