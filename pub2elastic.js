@@ -22,44 +22,6 @@ const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684
 // console.log({ES_CREDENTIALS, esOptions})
 const esClient = new elasticsearch.Client(esOptions)
 
-const kirje2obj = function(kirje) {
-  let o_kirje = {}
-  let ksplit = kirje.split('#|')
-  if (ksplit.length != 7) {
-    console.log('---\n' + ksplit.length + ' --- ' + kirje)
-  }
-  o_kirje.persoon = ksplit.shift()
-  o_kirje.kirjekood = ksplit.shift()
-  o_kirje.RaamatuPere = o_kirje.kirjekood.slice(0, -2)
-  o_kirje.kirje = ksplit.shift()
-  o_kirje.words = o_kirje.kirje.split(' ').slice(0, 3).join(' ').replace(/[.,;]/g, '')
-  // o_kirje.allikakood = o_kirje.kirjekood.split('-')[0]
-  o_kirje.allikas = ksplit.shift()
-  ksplit.shift() // o_kirje.allikasTxt = ksplit.shift()
-  // console.log(o_kirje.persoon)
-  let _labels_str = ''
-  try {
-    _labels_str = ksplit.shift().split("'").join('"')
-  } catch (error) {
-    console.log({W: 'failing with \'->\" replace', 'ksplit': kirje.split('#|')})
-    _labels_str = '{ labels: [] }'
-    // throw error
-  }
-  // console.log(o_kirje.kirjekood, _labels_str);
-  let _labels_o
-  try {
-    _labels_o = JSON.parse(_labels_str)
-  } catch (error) {
-    _labels_o = { labels: [] }
-  }
-  if (_labels_o[0] === '') {
-    _labels_o = { labels: [] }
-  }
-  o_kirje.labels = _labels_o['labels'].join(' ')
-  o_kirje.viide = ksplit.shift()
-  return o_kirje
-}
-
 console.log('start 0')
 
 async.series({
@@ -69,7 +31,7 @@ async.series({
       .fromPath(SOURCE)
       .on("data", function(data) {
         let isik = {}
-        // console.log(data);
+        console.log(data);
         isik['id'] = data[0]
         isik['kirje'] = data[1]
         isik['kirjed'] = JSON.parse(data[2])
