@@ -1,5 +1,6 @@
 CREATE OR REPLACE TABLE pub.nimekirjad (
 	persoon CHAR(10) NOT NULL COLLATE 'utf8_estonian_ci',
+    kirje TEXT NULL DEFAULT NULL COLLATE 'utf8_estonian_ci',
 	isPerson BIT(1) NOT NULL DEFAULT b'0',
 	kivi BIT(1) NOT NULL DEFAULT b'0',
 	emem BIT(1) NOT NULL DEFAULT b'0',
@@ -19,8 +20,11 @@ COLLATE='utf8_estonian_ci'
 ENGINE=InnoDB
 ;
 
-INSERT ignore INTO pub.nimekirjad (persoon)
-SELECT DISTINCT persoon FROM repis.kirjed;
+INSERT ignore INTO pub.nimekirjad (persoon, kirje)
+SELECT persoon, kirje FROM repis.kirjed
+ WHERE persoon = kirjekood
+   AND persoon > 0
+;
 
 UPDATE pub.nimekirjad
 SET kirjed = repis.json_persoonikirjed(persoon)
@@ -36,7 +40,7 @@ UPDATE pub.nimekirjad SET isPerson = 1 WHERE persoon IN
 (
   SELECT DISTINCT persoon
   FROM repis.kirjed k
-  WHERE k.allikas not in ('person')
+  WHERE k.allikas not in ('persoon')
     and k.EkslikKanne = ''
     and k.Peatatud = ''
     and k.Puudulik = ''
