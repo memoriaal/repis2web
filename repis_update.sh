@@ -15,48 +15,48 @@ EOFMYSQL
 ####
 #### memoriaal.ee
 ####
-csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee.csv"
-echo $(date -u --iso-8601=seconds) Recreate table pub.memoriaal_ee
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_memoriaal_ee.sql
+# csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee.csv"
+# echo $(date -u --iso-8601=seconds) Recreate table pub.memoriaal_ee
+# mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_memoriaal_ee.sql
 
 
-echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-SELECT * from pub.memoriaal_ee
-INTO OUTFILE '${csv_filename}'
-CHARACTER SET utf8
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-EOFMYSQL
+# echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
+# mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
+# SELECT * from pub.memoriaal_ee
+# INTO OUTFILE '${csv_filename}'
+# CHARACTER SET utf8
+# FIELDS TERMINATED BY ','
+# ENCLOSED BY '"'
+# LINES TERMINATED BY '\n';
+# EOFMYSQL
 
 
-echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
-INDEX=allpersons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node import_once.js
+# echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
+# INDEX=allpersons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node import_once.js
 
 
 ####
 #### wwii-refugees.ee
 ####
-csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_wwii.csv"
-echo $(date -u --iso-8601=seconds) Recreate table pub.wwii_refugees
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < recreate_wwii.sql
+# csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_wwii.csv"
+# echo $(date -u --iso-8601=seconds) Recreate table pub.wwii_refugees
+# mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < recreate_wwii.sql
 
 
-echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded<<EOFMYSQL
-SELECT * from pub.wwiirefugees
-INTO OUTFILE '${csv_filename}'
-CHARACTER SET utf8
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
-EOFMYSQL
+# echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
+# mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded<<EOFMYSQL
+# SELECT * from pub.wwiirefugees
+# INTO OUTFILE '${csv_filename}'
+# CHARACTER SET utf8
+# FIELDS TERMINATED BY ','
+# ENCLOSED BY '"'
+# LINES TERMINATED BY '\n';
+# EOFMYSQL
 
-echo $(date -u --iso-8601=seconds) exported
-echo $(date -u --iso-8601=seconds) upload to wwii-refugees.ee
+# echo $(date -u --iso-8601=seconds) exported
+# echo $(date -u --iso-8601=seconds) upload to wwii-refugees.ee
 
-INDEX=wwiirefugees SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node import_once.js
+# INDEX=wwiirefugees SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node import_once.js
 
 
 echo $(date -u --iso-8601=seconds) Refresh statistics
