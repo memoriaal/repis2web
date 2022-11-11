@@ -34,8 +34,12 @@ INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
+ESCAPED BY '\\\'
 LINES TERMINATED BY '\n';
 EOFMYSQL
+
+sed -i 's/\\\"/\"\"/g' $csv_filename
+sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
 INDEX=emem_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
@@ -53,8 +57,12 @@ INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
+ESCAPED BY '\\\'
 LINES TERMINATED BY '\n';
 EOFMYSQL
+
+sed -i 's/\\\"/\"\"/g' $csv_filename
+sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
 INDEX=evo_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
@@ -63,16 +71,21 @@ INDEX=evo_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2
 ####
 #### wwii-refugees.ee
 ####
-csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_wwii.csv"
+csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_wwiiref.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded<<EOFMYSQL
-SELECT * from pub.wwiirefugees
+mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
+SELECT persoon, kirje, kirjed, pereseosed, tahvlikirje from pub.nimekirjad
+WHERE wwiiref
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
+ESCAPED BY '\\\'
 LINES TERMINATED BY '\n';
 EOFMYSQL
+
+sed -i 's/\\\"/\"\"/g' $csv_filename
+sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to wwii-refugees.ee
 INDEX=wwiiref_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
