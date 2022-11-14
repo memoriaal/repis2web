@@ -75,43 +75,23 @@ async.series({
                     raw: { type: 'keyword' }
                   }
                 },
+                perenimi: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
                 eesnimi: {
                   type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
                   }
                 },
-                perenimed: {
-                  type: 'text'
-                },
-                eesnimed: {
-                  type: 'text'
-                },
-                'sünd': { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                'surm': { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                'tiib': { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                pereseos: {
+                kirjed: {
                   type: 'nested',
                   properties: {
-                    kirjed: {
-                      type: 'nested',
-                      properties: {
-                        persoon: {
-                          type: 'keyword'
-                        }
-                      }
+                    kirje: {
+                      type: 'keyword'
                     }
                   }
                 }
