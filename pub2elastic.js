@@ -36,13 +36,13 @@ async.series({
         isik['kirje'] = data[1]
         isik['kirjed'] = JSON.parse(data[2])
 
-        // console.log(JSON.stringify(isik, 0, 2))
-        // save2list(isik, function(error) {
-        //   if (error) {
-        //     console.log(error)
-        //     process.exit(1)
-        //   } else {}
-        // })
+        console.log(JSON.stringify(isik, 0, 2))
+        save2list(isik, function(error) {
+          if (error) {
+            console.log(error)
+            process.exit(1)
+          } else {}
+        })
       })
       .on("end", function() {
         console.log('on end: done with reading ' + isikud_list.length + ' records')
@@ -69,7 +69,7 @@ async.series({
             isik: {
               // _all: { enabled: false },
               properties: {
-                perenimi: {
+                kirje: {
                   type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
