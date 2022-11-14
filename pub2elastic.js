@@ -75,18 +75,6 @@ async.series({
                     raw: { type: 'keyword' }
                   }
                 },
-                perenimi: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                eesnimi: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
                 kirjed: {
                   type: 'nested',
                   properties: {
