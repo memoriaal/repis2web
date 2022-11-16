@@ -41,6 +41,8 @@ async.series({
         isik['sünd'] = data[6]
         isik['surm'] = data[7]
         isik['kirjed'] = JSON.parse(data[8])
+        isik['pereseosed'] = JSON.parse(data[9])
+        isik['tahvlikirje'] = JSON.parse(data[10])
 
         // console.log(JSON.stringify(isik, 0, 2))
         save2list(isik, function(error) {
