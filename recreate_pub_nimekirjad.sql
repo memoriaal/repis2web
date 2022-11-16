@@ -1,6 +1,12 @@
 CREATE OR REPLACE TABLE pub.nimekirjad (
 	persoon CHAR(10) NOT NULL COLLATE 'utf8_estonian_ci',
-    kirje TEXT NULL DEFAULT NULL COLLATE 'utf8_estonian_ci',
+  kirje TEXT NULL DEFAULT NULL COLLATE 'utf8_estonian_ci',
+	perenimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+	eesnimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+	isanimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+	emanimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+	sünd VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+	surm VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
 	isPerson BIT(1) NOT NULL DEFAULT b'0',
 	kivi BIT(1) NOT NULL DEFAULT b'0',
 	emem BIT(1) NOT NULL DEFAULT b'0',
@@ -20,16 +26,14 @@ COLLATE='utf8_estonian_ci'
 ENGINE=InnoDB
 ;
 
-INSERT ignore INTO pub.nimekirjad (persoon, kirje)
-SELECT persoon, kirje FROM repis.kirjed
+INSERT ignore INTO pub.nimekirjad (persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm)
+SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm FROM repis.kirjed
  WHERE persoon = kirjekood
    AND persoon > 0
 ;
 
 UPDATE pub.nimekirjad
 SET kirjed = repis.json_persoonikirjed(persoon)
-;
-UPDATE pub.nimekirjad SET pereseosed = '[]'
 ;
 CALL pub.proc_pereseosed_nimekirja();
 
