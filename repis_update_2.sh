@@ -88,7 +88,7 @@ sed -i 's/\\\"/\"\"/g' $csv_filename
 sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to wwii-refugees.ee
-INDEX=wwiiref_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
+INDEX=wwii_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
 
 
 ####

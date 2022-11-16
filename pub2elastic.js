@@ -75,6 +75,18 @@ async.series({
             isik: {
               // _all: { enabled: false },
               properties: {
+                eesnimi: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                perenimi: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
                 kirje: {
                   type: 'text',
                   fields: {
