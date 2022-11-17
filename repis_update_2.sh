@@ -31,9 +31,11 @@ mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed
 , pereseosed, tahvlikirje
 , case when isperson IS TRUE then 1 ELSE 0 end isperson
+, case when kivi IS TRUE then 1 ELSE 0 end kivi
 , case when emem IS TRUE then 1 ELSE 0 end emem
 , case when evo IS TRUE then 1 ELSE 0 end evo
-, case when wwiiref IS TRUE then 1 ELSE 0 end wwiiref from pub.nimekirjad
+, case when wwiiref IS TRUE then 1 ELSE 0 end wwiiref
+from pub.nimekirjad
 -- WHERE emem
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
