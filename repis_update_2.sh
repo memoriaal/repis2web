@@ -28,8 +28,13 @@ mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_emem.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje, emem, evo, wwiiref from pub.nimekirjad
-WHERE emem
+SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed
+, pereseosed, tahvlikirje
+, case when isperson IS TRUE then 1 ELSE 0 end isperson
+, case when emem IS TRUE then 1 ELSE 0 end emem
+, case when evo IS TRUE then 1 ELSE 0 end evo
+, case when wwiiref IS TRUE then 1 ELSE 0 end wwiiref from pub.nimekirjad
+-- WHERE emem
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
 FIELDS TERMINATED BY ','
