@@ -28,7 +28,7 @@ mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_emem.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje from pub.nimekirjad
+SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje, emem, evo, wwiiref from pub.nimekirjad
 WHERE emem
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
@@ -51,7 +51,7 @@ INDEX=emem_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_evo.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje from pub.nimekirjad
+SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje, emem, evo, wwiiref from pub.nimekirjad
 WHERE evo
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
@@ -74,7 +74,7 @@ INDEX=evo_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_wwiiref.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje from pub.nimekirjad
+SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed, pereseosed, tahvlikirje, emem, evo, wwiiref from pub.nimekirjad
 WHERE wwiiref
 INTO OUTFILE '${csv_filename}'
 CHARACTER SET utf8
