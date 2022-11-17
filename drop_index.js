@@ -13,6 +13,5 @@ esClient.indices.delete(
   {index: INDEX},
   function(err, resp, status) {
     console.log("deleted", resp)
-    callback(null, resp)
   }
 )
