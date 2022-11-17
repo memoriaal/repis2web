@@ -12,6 +12,9 @@ const esClient = new elasticsearch.Client(esOptions)
 esClient.indices.delete(
   {index: INDEX},
   function(err, resp, status) {
+    if (err) {
+      console.log('err', err)
+    }
     console.log("deleted", resp)
   }
 )
