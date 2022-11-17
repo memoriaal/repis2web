@@ -1,6 +1,7 @@
 CREATE OR REPLACE TABLE pub.nimekirjad (
 	persoon CHAR(10) NOT NULL COLLATE 'utf8_estonian_ci',
   kirje TEXT NULL DEFAULT NULL COLLATE 'utf8_estonian_ci',
+  evokirje TEXT NULL DEFAULT NULL COLLATE 'utf8_estonian_ci',
 	perenimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
 	eesnimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
 	isanimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
@@ -92,8 +93,9 @@ UPDATE pub.nimekirjad SET emem = 0 WHERE emem = 1 and persoon IN
 
 --
 -- Avaldatud Eesti Vabariigi ohvitseride seinal
-UPDATE pub.nimekirjad SET evo = 1 WHERE persoon IN
-( SELECT DISTINCT persoon FROM import.memoriaal_evo );
+UPDATE pub.nimekirjad nk
+RIGHT JOIN import.memoriaal_evo evo ON evo.persoon = nk.persoon
+SET nk.evo = 1, nk.evokirje = evo.kirje;
 
 --
 -- Kuulub II Maailmasõja põgenike nimekirja
