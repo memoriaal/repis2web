@@ -7,7 +7,7 @@ const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const INDEX = process.env.INDEX
 const SOURCE = process.env.SOURCE
 // const BULK_SIZE = 507
-const BULK_SIZE = 2000
+const BULK_SIZE = 1000
 const START_TIME = Date.now()
 
 
