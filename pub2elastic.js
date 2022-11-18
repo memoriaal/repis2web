@@ -6,8 +6,8 @@ const fs = require('fs')
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const INDEX = process.env.INDEX
 const SOURCE = process.env.SOURCE
-// const BULK_SIZE = 507
-const BULK_SIZE = 3000
+const BULK_SIZE = 507
+// const BULK_SIZE = 2000
 const START_TIME = Date.now()
 
 
@@ -46,16 +46,16 @@ async.series({
         isik['kirjed'] = JSON.parse(data[9])
         isik['pereseosed'] = JSON.parse(data[10])
         isik['tahvlikirje'] = JSON.parse(data[11])
-        isik['isperson'] = data[12]
-        isik['kivi'] = data[13]
-        isik['emem'] = data[14]
-        isik['evo'] = data[15]
-        isik['wwii'] = data[16]
+        isik['isperson'] = parseInt(data[12])
+        isik['kivi'] = parseInt(data[13])
+        isik['emem'] = parseInt(data[14])
+        isik['evo'] = parseInt(data[15])
+        isik['wwii'] = parseInt(data[16])
 
         cnt['all'] ++
-        cnt['wwii'] += parseInt(isik['wwii'], 10)
-        cnt['emem'] += parseInt(isik['emem'], 10)
-        cnt['kivi'] += parseInt(isik['kivi'], 10)
+        cnt['wwii'] += isik['wwii']
+        cnt['emem'] += isik['emem']
+        cnt['kivi'] += isik['kivi']
 
         if (isik['wwii']) {
           console.log(isik['id'], cnt)
