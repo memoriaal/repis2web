@@ -7,7 +7,7 @@ const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const INDEX = process.env.INDEX
 const SOURCE = process.env.SOURCE
 // const BULK_SIZE = 507
-const BULK_SIZE = 1000
+const BULK_SIZE = 3000
 const START_TIME = Date.now()
 
 
@@ -23,6 +23,8 @@ const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684
 const esClient = new elasticsearch.Client(esOptions)
 
 console.log('start 0')
+
+var cnt = {all:0, wwii:0, emem:0, kivi:0}
 
 async.series({
   reading: function(callback) {
@@ -50,6 +52,14 @@ async.series({
         isik['evo'] = data[15]
         isik['wwii'] = data[16]
 
+        cnt['all'] ++
+        cnt['wwii'] += isik['wwii']
+        cnt['emem'] += isik['emem']
+        cnt['kivi'] += isik['kivi']
+
+        if (isik['wwii']) {
+          console.log(isik['id'], cnt)
+        }
         // console.log(JSON.stringify(isik, 0, 2))
         save2list(isik, function(error) {
           if (error) {
