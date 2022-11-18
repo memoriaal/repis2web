@@ -53,9 +53,9 @@ async.series({
         isik['wwii'] = data[16]
 
         cnt['all'] ++
-        cnt['wwii'] += int(isik['wwii'])
-        cnt['emem'] += int(isik['emem'])
-        cnt['kivi'] += int(isik['kivi'])
+        cnt['wwii'] += parseInt(isik['wwii'], 10)
+        cnt['emem'] += parseInt(isik['emem'], 10)
+        cnt['kivi'] += parseInt(isik['kivi'], 10)
 
         if (isik['wwii']) {
           console.log(isik['id'], cnt)
