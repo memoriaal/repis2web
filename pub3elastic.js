@@ -24,6 +24,8 @@ const stream = fs.createReadStream(SOURCE)
 
 var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
 
+process.on('warning', e => console.warn(e.stack))
+
 async function run () {
   let bulk = []
   // await client.indices.create({
