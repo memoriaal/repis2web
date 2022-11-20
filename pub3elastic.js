@@ -113,6 +113,15 @@ async function bulk_upload(bulk) {
     console.log(erroredDocuments)
   }
   bulk = []
+
+  console.log('lets wait a sec')
+  await setTimeout(function () {
+    console.log('waiting a sec')
+  }, 1e3)
+  await setTimeout(function () {
+    console.log('waiting another sec')
+  }, 1e3)
+
   return bulk
 }
 
