@@ -6,8 +6,8 @@ const fs = require('fs')
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const INDEX = process.env.INDEX
 const SOURCE = process.env.SOURCE
-const BULK_SIZE = 507
-// const BULK_SIZE = 2000
+// const BULK_SIZE = 507
+const BULK_SIZE = 2000
 const START_TIME = Date.now()
 
 
@@ -15,8 +15,8 @@ var csv = require("fast-csv");
 // data is expected as ["id", "kirje", "kirjed", "pereseosed", "tahvlikirje"]
 
 const elasticsearch = require('elasticsearch')
-const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243',
-// const esOptions = { host: 'https://' + ES_CREDENTIALS + '@repis8.es.eu-central-1.aws.cloud.es.io:9243',
+// const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243',
+const esOptions = { host: 'https://' + ES_CREDENTIALS + '@repis8.es.eu-central-1.aws.cloud.es.io:9243',
                     requestTimeout: 1 * 60e3,
                     // log: 'trace' 
                   }
