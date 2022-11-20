@@ -72,19 +72,13 @@ async function run () {
     bulk.push(isik)
     if (cnt['all']%BULK_SIZE === 0) {
       console.log('read', cnt)
-
-      console.log('lets wait 3 sec')
-      await setTimeout(function () {
-        console.log('waiting 3 sec')
-      }, 1e3)
-    
+      stream.pause()
       bulk = await bulk_upload(bulk)
-
-      console.log('= wrote', cnt)
     }
   })
   .on('end', async rowCount => {
     if(bulk.length > 0) {
+      stream.pause()
       await bulk_upload(bulk)
     }
     console.log(`Parsed ${rowCount} rows`)
@@ -128,6 +122,7 @@ async function bulk_upload(bulk) {
   await setTimeout(function () {
     console.log('waiting another sec')
   }, 1e3)
+  stream.resume()
 
   return bulk
 }
