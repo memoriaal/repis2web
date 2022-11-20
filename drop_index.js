@@ -2,7 +2,8 @@ const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const INDEX = process.env.INDEX
 
 const elasticsearch = require('elasticsearch')
-const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243',
+// const esOptions = { host: 'https://' + ES_CREDENTIALS + '@94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243',
+const esOptions = { host: 'https://' + ES_CREDENTIALS + '@repis8.es.eu-central-1.aws.cloud.es.io:9243',
                     requestTimeout: 1 * 60e3,
                     log: 'trace' 
                   }
