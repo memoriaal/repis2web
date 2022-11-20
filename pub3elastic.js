@@ -72,7 +72,14 @@ async function run () {
     bulk.push(isik)
     if (cnt['all']%BULK_SIZE === 0) {
       console.log('read', cnt)
+
+      console.log('lets wait 3 sec')
+      await setTimeout(function () {
+        console.log('waiting 3 sec')
+      }, 1e3)
+    
       bulk = await bulk_upload(bulk)
+
       console.log('= wrote', cnt)
     }
   })
