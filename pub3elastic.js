@@ -72,8 +72,8 @@ async function run () {
     bulk.push(isik)
     if (cnt['all']%BULK_SIZE === 0) {
       console.log('read', cnt)
-
       bulk = await bulk_upload(bulk)
+      console.log('= wrote', cnt)
     }
   })
   .on('end', async rowCount => {
