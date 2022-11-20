@@ -6,6 +6,13 @@ const INDEX = process.env.INDEX || 'test_index'
 const SOURCE = process.env.SOURCE || 'test.csv'
 const BULK_SIZE = 250
 
+console.log ({
+  'ES_CREDENTIALS': ES_CREDENTIALS,
+  'ES_HOST': ES_HOST,
+  'INDEX': INDEX,
+  'SOURCE': SOURCE,
+  'BULK_SIZE': BULK_SIZE
+})
 require('array.prototype.flatmap').shim()
 
 const { Client } = require('@elastic/elasticsearch')
