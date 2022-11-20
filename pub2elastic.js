@@ -74,17 +74,17 @@ async.series({
         callback(null, 'done with reading')
       })
   },
-  delete: function(callback) {
-    console.log('Deleting ' + INDEX);
-    esClient.indices.delete({
-        index: INDEX
-      },
-      function(err, resp, status) {
-        console.log("deleted", resp)
-        callback(null, resp)
-      }
-    )
-  },
+  // delete: function(callback) {
+  //   console.log('Deleting ' + INDEX);
+  //   esClient.indices.delete({
+  //       index: INDEX
+  //     },
+  //     function(err, resp, status) {
+  //       console.log("deleted", resp)
+  //       callback(null, resp)
+  //     }
+  //   )
+  // },
   create: function(callback) {
     console.log('Creating ' + INDEX);
     esClient.indices.create({
