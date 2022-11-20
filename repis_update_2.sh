@@ -22,14 +22,17 @@ echo $(date -u --iso-8601=seconds) Recreate table pub.nimekirjad
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
 
 
+ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
+
 ####
 #### memoriaal.ee emem
 ####
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_emem.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm, kirjed
-, pereseosed, tahvlikirje
+SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi
+, left(sünd,10), left(surm,10)
+, kirjed, pereseosed, tahvlikirje
 , case when isperson IS TRUE then 1 ELSE 0 end isperson
 , case when kivi IS TRUE then 1 ELSE 0 end kivi
 , case when emem IS TRUE then 1 ELSE 0 end emem
