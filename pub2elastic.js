@@ -89,37 +89,30 @@ async.series({
     console.log('Creating ' + INDEX);
     esClient.indices.create({
         index: INDEX,
-        body: {
+        operations: {
           mappings: {
-              // _all: { enabled: false },
-              properties: {
-                eesnimi: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                perenimi: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                kirje: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                kirjed: {
-                  type: 'nested',
-                  properties: {
-                    kirje: {
-                      type: 'keyword'
-                    }
-                  }
+            properties: {
+              eesnimi: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              perenimi: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              kirje: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              kirjed: { type: 'nested',
+                properties: {
+                  kirje: { type: 'keyword' }
                 }
               }
+            }
           }
         }
       },
