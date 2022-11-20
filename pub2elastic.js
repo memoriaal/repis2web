@@ -90,7 +90,6 @@ async.series({
         index: INDEX,
         body: {
           mappings: {
-            _doc: {
               // _all: { enabled: false },
               properties: {
                 eesnimi: {
@@ -120,7 +119,6 @@ async.series({
                   }
                 }
               }
-            }
           }
         }
       },
