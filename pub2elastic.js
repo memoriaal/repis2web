@@ -90,7 +90,7 @@ async.series({
         index: INDEX,
         body: {
           mappings: {
-            isik: {
+            _doc: {
               // _all: { enabled: false },
               properties: {
                 eesnimi: {
