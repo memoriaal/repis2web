@@ -73,12 +73,13 @@ async function run () {
     if (cnt['all']%BULK_SIZE === 0) {
       console.log('read', cnt)
       stream.pause()
-      bulk = await bulk_upload(bulk)
+      await bulk_upload(bulk)
+      bulk = []
+      stream.resume()
     }
   })
   .on('end', async rowCount => {
     if(bulk.length > 0) {
-      stream.pause()
       await bulk_upload(bulk)
     }
     console.log(`Parsed ${rowCount} rows`)
@@ -99,23 +100,19 @@ async function bulk_upload(bulk) {
     bulkResponse.items.forEach((action, i) => {
       const operation = Object.keys(action)[0]
       if (action[operation].error) {
-        erroredDocuments.push({
+        erroredDocuments.push(
           // If the status is 429 it means that you can retry the document,
           // otherwise it's very likely a mapping error, and you should
           // fix the document before to try it again.
-          status: action[operation].status,
-          error: action[operation].error,
-          foo: Object.keys(action),
+          action[operation].status + ': ' +
+          action[operation].error.reason,
           // operation: body[i * 2],
           // document: body[i * 2 + 1]
-        })
+        )
       }
     })
     console.log(erroredDocuments)
   }
-  stream.resume()
-  bulk = []
-  return bulk
 }
 
 function row2isik(row) {
