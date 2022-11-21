@@ -132,10 +132,11 @@ function row2isik(row) {
   isik['kirjed'] = JSON.parse(row[9])
   isik['pereseosed'] = JSON.parse(row[10])
   isik['tahvlikirje'] = JSON.parse(row[11])
-  isik['isperson'] = row[12] ? 1 : 0
-  isik['kivi'] = row[13] ? 1 : 0
-  isik['emem'] = row[14] ? 1 : 0
-  isik['evo'] = row[15] ? 1 : 0
-  isik['wwii'] = row[16] ? 1 : 0
+  isik['isperson'] = row[12] === 1 ? 1 : 0
+  isik['kivi'] = row[13] === 1 ? 1 : 0
+  isik['emem'] = row[14] === 1 ? 1 : 0
+  isik['evo'] = row[15] === 1 ? 1 : 0
+  isik['wwii'] = row[16] === 1 ? 1 : 0
+  console.log([row[13]], row[13] === 1, row[13] === '1', isik['kivi'])
   return isik
 }
