@@ -137,6 +137,6 @@ function row2isik(row) {
   isik['emem'] = row[14] === '1' ? 1 : 0
   isik['evo'] = row[15] === '1' ? 1 : 0
   isik['wwii'] = row[16] === '1' ? 1 : 0
-  console.log([row[13]], row[13] === 1, row[13] === '1', isik['kivi'])
+  // console.log([row[13]], row[13] === 1, row[13] === '1', isik['kivi'])
   return isik
 }
