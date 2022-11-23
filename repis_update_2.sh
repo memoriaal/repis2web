@@ -29,7 +29,7 @@ ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
 ####
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_emem.csv"
 echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
+mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi
 , left(sünd,10), left(surm,10)
 , kirjed, pereseosed, tahvlikirje
@@ -48,11 +48,12 @@ ESCAPED BY '\\\'
 LINES TERMINATED BY '\n';
 EOFMYSQL
 
+scp dev.memoriaal.ee:${csv_filename} ${csv_filename}
 sed -i 's/\\\"/\"\"/g' $csv_filename
 sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
-INDEX=emem_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ELASTIC_C}" node pub2elastic.js
+INDEX=emem_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ES_CREDENTIALS}" node pub3elastic.js
 
 
 # ####
