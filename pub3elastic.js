@@ -123,7 +123,7 @@ async function bulk_upload(bulk) {
   })
 
   bulkResponse.items.forEach((action, item) => {
-    console.log(item)
+    console.log(item, action)
   })
   if (bulkResponse && bulkResponse.errors) {
     // The items array has the same order of the dataset we just indexed.
