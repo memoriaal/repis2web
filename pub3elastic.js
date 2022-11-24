@@ -29,7 +29,7 @@ process.on('warning', e => console.warn(e.stack))
 async function run () {
 
   try {
-    await this.client.indices.delete({ index: INDEX })
+    await client.indices.delete({ index: INDEX })
    } catch (e) {
     console.log(e)
    }
