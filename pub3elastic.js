@@ -82,18 +82,19 @@ async function run () {
     if(bulk.length > 0) {
       await bulk_upload(bulk)
     }
+    console.log(erroredDocuments)
     console.log(`Parsed ${rowCount} rows`)
-    console.log(cnt)
+    console.log(`Uploaded ${cnt - erroredDocuments.length} of ${cnt} documents`)
   })
   
 }
 run().catch(console.log)
 
+const erroredDocuments = []
 async function bulk_upload(bulk) {
   const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
   const bulkResponse = await client.bulk({ refresh: true, operations })
   if (bulkResponse.errors) {
-    const erroredDocuments = []
     // The items array has the same order of the dataset we just indexed.
     // The presence of the `error` key indicates that the operation
     // that we did for the document has failed.
@@ -111,7 +112,6 @@ async function bulk_upload(bulk) {
         )
       }
     })
-    console.log(erroredDocuments)
   }
 }
 
