@@ -121,6 +121,10 @@ async function bulk_upload(bulk) {
   .catch(e => {
     console.log(e.meta.body, e.meta.meta)
   })
+
+  bulkResponse.items.forEach((action, item) => {
+    console.log(item)
+  }
   if (bulkResponse && bulkResponse.errors) {
     // The items array has the same order of the dataset we just indexed.
     // The presence of the `error` key indicates that the operation
