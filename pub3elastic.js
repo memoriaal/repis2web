@@ -83,7 +83,7 @@ async function run () {
       await bulk_upload(bulk)
     }
     console.log(erroredDocuments)
-    console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${crowCountnt} documents`)
+    console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
   })
   
 }
