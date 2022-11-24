@@ -55,6 +55,18 @@ async function run () {
                   raw: { type: 'keyword' }
                 }
               },
+
+              sünd: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              surm: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+
               kirjed: { type: 'nested',
                 properties: {
                   kirje: { type: 'keyword' }
