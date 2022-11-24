@@ -93,7 +93,9 @@ const erroredDocuments = []
 async function bulk_upload(bulk) {
   const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
   const bulkResponse = await client.bulk({ refresh: true, operations })
-  .catch(e => { console.log(e) })
+  .catch(e => {
+    console.log(e.meta.statusCode, e.meta.body.error, e.meta)
+  })
   if (bulkResponse.errors) {
     // The items array has the same order of the dataset we just indexed.
     // The presence of the `error` key indicates that the operation
