@@ -30,40 +30,47 @@ async function run () {
 
   try {
     await client.indices.delete({ index: INDEX })
-   } catch (e) {
+  } catch (e) {
     console.log(e)
-   }
-  let bulk = []
-  // await client.indices.create({
-  //   index: INDEX,
-  //   body: {
-  //     mappings: {
-  //       properties: {
-  //         eesnimi: { type: 'text',
-  //           fields: {
-  //             raw: { type: 'keyword' }
-  //           }
-  //         },
-  //         perenimi: { type: 'text',
-  //           fields: {
-  //             raw: { type: 'keyword' }
-  //           }
-  //         },
-  //         kirje: { type: 'text',
-  //           fields: {
-  //             raw: { type: 'keyword' }
-  //           }
-  //         },
-  //         kirjed: { type: 'nested',
-  //           properties: {
-  //             kirje: { type: 'keyword' }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }, { ignore: [400] })  
+  }
+  try {
+    await client.indices.create(
+      {
+        index: INDEX,
+        body: {
+          mappings: {
+            properties: {
+              eesnimi: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              perenimi: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              kirje: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              kirjed: { type: 'nested',
+                properties: {
+                  kirje: { type: 'keyword' }
+                }
+              }
+            }
+          }
+        }
+      }, 
+      { ignore: [400] }
+    )  
+  } catch (e) {
+    console.log(e)
+  }
 
+  let bulk = []
   csv.parseStream(stream)
   .on('error', error => console.error(error))
   .on('data', async row => {
