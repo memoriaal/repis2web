@@ -27,6 +27,12 @@ var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
 process.on('warning', e => console.warn(e.stack))
 
 async function run () {
+
+  try {
+    await this.client.indices.delete({ index: INDEX })
+   } catch (e) {
+    console.log(e)
+   }
   let bulk = []
   // await client.indices.create({
   //   index: INDEX,
