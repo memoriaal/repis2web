@@ -99,7 +99,8 @@ async function run () {
       console.log('read', JSON.stringify(cnt, null, 0))
       stream.pause()
       await bulk_upload(bulk)
-      bulk = []
+      console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      // bulk = []
       stream.resume()
     }
   })
@@ -122,8 +123,17 @@ async function bulk_upload(bulk) {
     console.log(e.meta.body, e.meta.meta)
   })
 
+  let bix = 0
   bulkResponse.items.forEach((action, item) => {
     console.log(item, action)
+    while (bulk[bix].id < action.index._id) {
+      bix ++
+    }
+    if (bulk[bix].id === action.index._id) {
+      bulk.splice(bix, 1)
+    } else {
+      console.log('problem with', {bix, isik:bulk[bix], action})
+    }
   })
   if (bulkResponse && bulkResponse.errors) {
     // The items array has the same order of the dataset we just indexed.
