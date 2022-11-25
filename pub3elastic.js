@@ -69,7 +69,11 @@ async function run () {
 
               kirjed: { type: 'nested',
                 properties: {
-                  kirje: { type: 'keyword' }
+                  kirje: { type: 'text',
+                    fields: {
+                      raw: { type: 'keyword' }
+                    }
+                  }
                 }
               }
             }
