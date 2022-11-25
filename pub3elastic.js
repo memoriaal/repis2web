@@ -108,8 +108,10 @@ async function run () {
     }
   })
   .on('end', async rowCount => {
-    if(bulk.length > 0) {
+    console.log('Enter last bulk with', bulk.length)
+    while(bulk.length > 0) {
       await bulk_upload(bulk)
+      console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
     }
     console.log(erroredDocuments)
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
