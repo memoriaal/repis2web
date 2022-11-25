@@ -90,8 +90,8 @@ async function run () {
   csv.parseStream(stream)
   .on('error', error => console.error(error))
   .on('data', async row => {
+    stream.pause()
     let isik = row2isik(row)
-
     cnt['all'] ++
     cnt['isperson'] += isik['isperson']
     cnt['wwii'] += isik['wwii']
@@ -101,14 +101,13 @@ async function run () {
     bulk.push(isik)
     if (bulk.length === BULK_SIZE) {
       console.log('read', JSON.stringify(cnt, null, 0))
-      stream.pause()
       await bulk_upload(bulk)
       console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
-      stream.resume()
     }
+    stream.resume()
   })
   .on('end', async rowCount => {
-    console.log('Enter last bulk with', bulk.length)
+    console.log('Enter last bulk with', bulk.length, 'left')
     while(bulk.length > 0) {
       await bulk_upload(bulk)
       console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
