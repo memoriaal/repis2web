@@ -87,10 +87,12 @@ async function run () {
   }
 
   let bulk = []
-  csv.parseStream(stream)
+  const csv_stream = csv.parseStream(stream)
+  
+  csv_stream
   .on('error', error => console.error(error))
   .on('data', async row => {
-    // stream.pause()
+    csv_stream.pause()
     let isik = row2isik(row)
     cnt['all'] ++
     cnt['isperson'] += isik['isperson']
@@ -110,7 +112,7 @@ async function run () {
       }
       stream.resume()
     }
-    // stream.resume()
+    csv_stream.resume()
   })
   .on('end', async rowCount => {
     console.log('Enter last bulk with', bulk.length, 'left')
