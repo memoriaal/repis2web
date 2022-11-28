@@ -90,7 +90,7 @@ async function run () {
   csv.parseStream(stream)
   .on('error', error => console.error(error))
   .on('data', async row => {
-    stream.pause()
+    // stream.pause()
     let isik = row2isik(row)
     cnt['all'] ++
     cnt['isperson'] += isik['isperson']
@@ -100,11 +100,13 @@ async function run () {
 
     bulk.push(isik)
     if (bulk.length === BULK_SIZE) {
+      stream.pause()
       console.log('read', JSON.stringify(cnt, null, 0))
       await bulk_upload(bulk)
       console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      stream.resume()
     }
-    stream.resume()
+    // stream.resume()
   })
   .on('end', async rowCount => {
     console.log('Enter last bulk with', bulk.length, 'left')
@@ -183,4 +185,8 @@ function row2isik(row) {
   isik['wwii'] = row[16] === '1' ? 1 : 0
   // console.log([row[13]], row[13] === 1, row[13] === '1', isik['kivi'])
   return isik
+}
+
+class TestEsClient {
+  constructor() {}
 }
