@@ -88,7 +88,6 @@ async function run () {
 
   let bulk = []
   const csv_stream = csv.parseStream(stream)
-  
   csv_stream
   .on('error', error => console.error(error))
   .on('data', async row => {
@@ -105,7 +104,9 @@ async function run () {
       console.log('read', JSON.stringify(cnt, null, 0))
       // while(bulk.length > 0) {
         await bulk_upload(bulk)
-        console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+        if (bulk.length) {
+          console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id))
+        }
       // }
     }
     csv_stream.resume()
