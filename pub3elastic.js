@@ -130,7 +130,7 @@ async function bulk_upload(bulk) {
   const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
   const bulkResponse = await client.bulk({ refresh: true, operations })
   .catch(e => {
-    console.log(e.meta.body, e.meta.meta, '===X===')
+    console.log(Object.keys(e.meta), e.meta.meta, '===X===')
   })
 
   let bix = 0
