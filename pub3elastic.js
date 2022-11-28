@@ -102,15 +102,11 @@ async function run () {
 
     bulk.push(isik)
     if (bulk.length === BULK_SIZE) {
-      stream.pause()
       console.log('read', JSON.stringify(cnt, null, 0))
-      // await bulk_upload(bulk)
-      // console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
-      while(bulk.length > 0) {
+      // while(bulk.length > 0) {
         await bulk_upload(bulk)
         console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
-      }
-      stream.resume()
+      // }
     }
     csv_stream.resume()
   })
