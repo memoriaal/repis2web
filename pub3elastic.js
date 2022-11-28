@@ -102,8 +102,12 @@ async function run () {
     if (bulk.length === BULK_SIZE) {
       stream.pause()
       console.log('read', JSON.stringify(cnt, null, 0))
-      await bulk_upload(bulk)
-      console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      // await bulk_upload(bulk)
+      // console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      while(bulk.length > 0) {
+        await bulk_upload(bulk)
+        console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      }
       stream.resume()
     }
     // stream.resume()
@@ -114,7 +118,7 @@ async function run () {
       await bulk_upload(bulk)
       console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
     }
-    console.log(erroredDocuments)
+    console.log('errored', erroredDocuments.map(i => i.id))
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
   })
   
