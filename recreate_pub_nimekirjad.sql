@@ -102,5 +102,5 @@ SET nk.evo = 1, nk.evokirje = evo.kirje;
 UPDATE pub.nimekirjad SET wwiiref = 1 WHERE persoon IN
 (
   SELECT DISTINCT persoon FROM repis.kirjed
-  WHERE allikas IN ('kirmus','elk')
+  WHERE allikas IN ('kirm','elk')
 );
