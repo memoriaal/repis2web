@@ -126,21 +126,23 @@ async function bulk_upload(bulk) {
   const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
   const bulkResponse = await client.bulk({ refresh: true, operations })
   .catch(e => {
-    console.log(e.meta.body, e.meta.meta)
+    console.log(e.meta.body, e.meta.meta, '===X===')
   })
 
   let bix = 0
-  bulkResponse.items.forEach((action, item) => {
-    // console.log(item, action)
-    while (bulk[bix].id < action.index._id) {
-      bix ++
-    }
-    if (bulk[bix].id === action.index._id) {
-      bulk.splice(bix, 1)
-    } else {
-      console.log('problem with', {bix, isik:bulk[bix], action})
-    }
-  })
+  if (bulkResponse && bulkResponse.items) {
+    bulkResponse.items.forEach((action, item) => {
+      // console.log(item, action)
+      while (bulk[bix].id < action.index._id) {
+        bix ++
+      }
+      if (bulk[bix].id === action.index._id) {
+        bulk.splice(bix, 1)
+      } else {
+        console.log('problem with', {bix, isik:bulk[bix], action})
+      }
+    })
+  }
   if (bulkResponse && bulkResponse.errors) {
     // The items array has the same order of the dataset we just indexed.
     // The presence of the `error` key indicates that the operation
