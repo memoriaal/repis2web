@@ -65,16 +65,6 @@ async function run () {
                 fields: {
                   raw: { type: 'keyword' }
                 }
-              },
-
-              kirjed: { type: 'nested',
-                properties: {
-                  kirje: { type: 'text',
-                    fields: {
-                      raw: { type: 'keyword' }
-                    }
-                  }
-                }
               }
             }
           }
