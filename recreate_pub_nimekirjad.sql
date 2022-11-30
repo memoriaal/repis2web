@@ -76,7 +76,9 @@ UPDATE pub.nimekirjad SET emem = 1 WHERE persoon IN
   SELECT DISTINCT persoon
   FROM repis.kirjed k
   WHERE k.allikas IN (
-    SELECT kood FROM repis.allikad WHERE ifnull(nonPerson,0) = 0
+    SELECT kood FROM repis.allikad 
+	  WHERE ifnull(nonPerson,0) = 0
+	    AND kood NOT IN ('kirm','elk','PR','RR')
   )
   and k.EkslikKanne = ''
   and k.Peatatud = ''
