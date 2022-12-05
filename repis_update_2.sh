@@ -1,8 +1,10 @@
 #!/bin/bash
 
-. ~/credentials.txt
+. ~/.env
 
 echo $(date -u --iso-8601=seconds) Started repis update
+
+ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
 
 ####
 #### maintenance
@@ -21,8 +23,6 @@ EOFMYSQL
 echo $(date -u --iso-8601=seconds) Recreate table pub.nimekirjad
 mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
 
-
-ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
 
 ####
 #### memoriaal.ee emem
