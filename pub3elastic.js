@@ -108,7 +108,7 @@ async function run () {
       await bulk_upload(bulk)
       console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
     }
-    console.log('errored', erroredDocuments.map(i => i.id))
+    console.log('errored', erroredDocuments)
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
   })
   
@@ -213,7 +213,7 @@ async function bulk_upload(bulk) {
     // The presence of the `error` key indicates that the operation
     // that we did for the document has failed.
     bulkResponse.items.forEach((action, item) => {
-      console.log(item)
+      console.log('e:', item)
       const operation = Object.keys(action)[0]
       if (action[operation].error) {
         erroredDocuments.push(
