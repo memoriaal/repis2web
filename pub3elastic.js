@@ -162,7 +162,7 @@ async function run () {
   }
 
   try {
-    await client.indices.reindex({ 
+    await client.reindex({ 
       body: {
           source: {
             index: INDEX + '_imported'
