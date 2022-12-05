@@ -30,6 +30,7 @@ async function run () {
   console.log('delete index ' + INDEX + '_imported')
   try {
     await client.indices.delete({ index: INDEX + '_imported' })
+    console.log('= deleted index ' + INDEX + '_imported')
   } catch (e) {
     console.log(e)
   }
@@ -73,7 +74,8 @@ async function run () {
         }
       }, 
       { ignore: [400] }
-    )  
+    )
+    console.log('= created index ' + INDEX + '_imported')
   } catch (e) {
     console.log(e)
   }
@@ -111,76 +113,78 @@ async function run () {
     }
     console.log('errored', erroredDocuments)
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
-  })
+
+    console.log('delete index ' + INDEX)
+    try {
+      await client.indices.delete({ index: INDEX })
+      console.log('= deleted index ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
   
-  console.log('delete index ' + INDEX)
-  try {
-    await client.indices.delete({ index: INDEX })
-  } catch (e) {
-    console.log(e)
-  }
-
-  console.log('create index ' + INDEX)
-  try {
-    await client.indices.create(
-      {
-        index: INDEX,
-        body: {
-          mappings: {
-            properties: {
-              eesnimi: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-              perenimi: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-              kirje: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-
-              sünd: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-              surm: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
+    console.log('create index ' + INDEX)
+    try {
+      await client.indices.create(
+        {
+          index: INDEX,
+          body: {
+            mappings: {
+              properties: {
+                eesnimi: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                perenimi: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                kirje: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+  
+                sünd: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                surm: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
                 }
               }
             }
           }
-        }
-      }, 
-      { ignore: [400] }
-    )  
-  } catch (e) {
-    console.log(e)
-  }
-
-  console.log('reindex ' + INDEX)
-  try {
-    await client.reindex({ 
-      body: {
-          source: {
-            index: INDEX + '_imported'
-          },
-          dest: {
-            index: INDEX
-          }
-      } 
-    })
-  } catch (e) {
-    console.log(e)
-  }
-
-
+        }, 
+        { ignore: [400] }
+      )
+      console.log('= created index ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
+  
+    console.log('reindex ' + INDEX)
+    try {
+      await client.reindex({ 
+        body: {
+            source: {
+              index: INDEX + '_imported'
+            },
+            dest: {
+              index: INDEX
+            }
+        } 
+      })
+      console.log('= reindexed ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
+  
+  })
 }
 run().catch(console.log)
 
