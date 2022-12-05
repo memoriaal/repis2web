@@ -4,7 +4,7 @@ const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const ES_HOST = process.env.ES_HOST || '94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
 const INDEX = process.env.ES_INDEX || 'test_index'
 const SOURCE = process.env.SOURCE || 'test.csv'
-const BULK_SIZE = 2500
+const BULK_SIZE = 250
 
 console.log ({
   'ES_CREDENTIALS': ES_CREDENTIALS,
