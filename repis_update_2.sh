@@ -53,8 +53,7 @@ sed -i 's/\\\"/\"\"/g' $csv_filename
 sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
-INDEX=emem_persons SOURCE=${csv_filename} ES_CREDENTIALS="${ES_CREDENTIALS}" node pub3elastic.js
-
+SOURCE=${csv_filename} ES_INDEX=emem_persons ES_CREDENTIALS="${ES_CREDENTIALS}" ES_HOST="${ES_HOST}" node pub3elastic.js > o.out
 
 # ####
 # #### memoriaal.ee EVO
