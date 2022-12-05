@@ -10,7 +10,7 @@ ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
 #### maintenance
 ####
 echo $(date -u --iso-8601=seconds) Repair repis.kirjed.kirje IS NULL
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
+mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
 update repis.kirjed
 set kirje = repis.func_person_text(persoon)
 where kirje is null;
@@ -21,7 +21,7 @@ EOFMYSQL
 #### pub.nimekirjad
 ####
 echo $(date -u --iso-8601=seconds) Recreate table pub.nimekirjad
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
+mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
 
 
 ####
