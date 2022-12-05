@@ -119,6 +119,49 @@ async function run () {
   }
 
   try {
+    await client.indices.create(
+      {
+        index: INDEX,
+        body: {
+          mappings: {
+            properties: {
+              eesnimi: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              perenimi: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              kirje: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+
+              sünd: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              },
+              surm: { type: 'text',
+                fields: {
+                  raw: { type: 'keyword' }
+                }
+              }
+            }
+          }
+        }
+      }, 
+      { ignore: [400] }
+    )  
+  } catch (e) {
+    console.log(e)
+  }
+
+  try {
     await client.indices.reindex({ 
       body: {
           source: {
