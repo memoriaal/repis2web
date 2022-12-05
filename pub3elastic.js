@@ -29,14 +29,15 @@ process.on('warning', e => console.warn(e.stack))
 async function run () {
 
   try {
-    await client.indices.delete({ index: INDEX })
+    await client.indices.delete({ index: INDEX + '_imported' })
   } catch (e) {
     console.log(e)
   }
+
   try {
     await client.indices.create(
       {
-        index: INDEX,
+        index: INDEX + '_imported',
         body: {
           mappings: {
             properties: {
@@ -111,12 +112,40 @@ async function run () {
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
   })
   
+  try {
+    await client.indices.delete({ index: INDEX })
+  } catch (e) {
+    console.log(e)
+  }
+
+  try {
+    await client.indices.reindex({ 
+      body: {
+          source: {
+            index: INDEX + '_imported'
+          },
+          dest: {
+            index: INDEX
+          }
+      } 
+    })
+  } catch (e) {
+    console.log(e)
+  }
+
+  try {
+    await client.indices.delete({ index: INDEX + '_imported' })
+  } catch (e) {
+    console.log(e)
+  }
+
+
 }
 run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
-  const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
+  const operations = bulk.flatMap(doc => [{ index: { _index: INDEX + '_imported', '_id': doc.id } }, doc])
   const bulkResponse = await client.bulk({ refresh: true, operations })
   .catch(e => {
     console.log(Object.keys(e.meta), e.meta.body, '===X===')
