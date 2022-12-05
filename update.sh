@@ -6,4 +6,4 @@ cd "$(dirname "$0")"
 
 git pull
 
-. ./repis_update.sh
+. ./repis_update_2.sh
