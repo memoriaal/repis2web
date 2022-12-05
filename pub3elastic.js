@@ -27,13 +27,14 @@ var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
 process.on('warning', e => console.warn(e.stack))
 
 async function run () {
-
+  console.log('delete index ' + INDEX + '_imported')
   try {
     await client.indices.delete({ index: INDEX + '_imported' })
   } catch (e) {
     console.log(e)
   }
 
+  console.log('create index ' + INDEX + '_imported')
   try {
     await client.indices.create(
       {
@@ -112,12 +113,14 @@ async function run () {
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
   })
   
+  console.log('delete index ' + INDEX)
   try {
     await client.indices.delete({ index: INDEX })
   } catch (e) {
     console.log(e)
   }
 
+  console.log('create index ' + INDEX)
   try {
     await client.indices.create(
       {
@@ -161,6 +164,7 @@ async function run () {
     console.log(e)
   }
 
+  console.log('reindex ' + INDEX)
   try {
     await client.reindex({ 
       body: {
@@ -172,12 +176,6 @@ async function run () {
           }
       } 
     })
-  } catch (e) {
-    console.log(e)
-  }
-
-  try {
-    await client.indices.delete({ index: INDEX + '_imported' })
   } catch (e) {
     console.log(e)
   }
