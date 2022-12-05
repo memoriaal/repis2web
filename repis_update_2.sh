@@ -14,6 +14,8 @@ mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
 update repis.kirjed
 set kirje = repis.func_person_text(persoon)
 where kirje is null;
+
+CALL REPIS.proc_clear_newline();
 EOFMYSQL
 
 
@@ -105,7 +107,7 @@ SOURCE=${csv_filename} ES_INDEX=emem_persons ES_CREDENTIALS="${ES_CREDENTIALS}" 
 #### Wrap up
 ####
 echo $(date -u --iso-8601=seconds) Refresh statistics
-mysql -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < statistika.sql
+mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < statistika.sql
 
 
 echo $(date -u --iso-8601=seconds) Repis update finished
