@@ -45,3 +45,7 @@ CALL pub.proc_pereseosed_nimekirja();
 UPDATE import.memoriaal_kivitahvlid mt
 LEFT JOIN repis.kirjed k0 ON k0.kirjekood = mt.kirjekood
 SET mt.persoon = k0.persoon;
+
+UPDATE pub.nimekirjad 
+   SET tahvlikirje = ifnull(repis.json_tahvlikirje(persoon), JSON_OBJECT())
+ WHERE kivi;
