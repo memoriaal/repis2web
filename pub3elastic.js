@@ -9,7 +9,7 @@ const nOd = Math.round(Math.abs(nowDate-refDate)/1000/3600/24)
 const dayParity = nOd % 2
 const INDEX = (process.env.ES_INDEX || 'test_index') + '_' + dayParity
 const SOURCE = process.env.SOURCE || 'test.csv'
-const BULK_SIZE = 250
+const BULK_SIZE = 2500
 
 console.log ({
   'ES_CREDENTIALS': ES_CREDENTIALS,
