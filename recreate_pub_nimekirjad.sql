@@ -8,6 +8,8 @@ CREATE OR REPLACE TABLE pub.nimekirjad (
   emanimi VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
   sünd VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
   surm VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+  sünnikoht VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
+  surmakoht VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8_estonian_ci',
   isPerson BIT(1) NOT NULL DEFAULT b'0',
   kivi BIT(1) NOT NULL DEFAULT b'0',
   emem BIT(1) NOT NULL DEFAULT b'0',
@@ -27,10 +29,12 @@ COLLATE='utf8_estonian_ci'
 ENGINE=InnoDB
 ;
 
-INSERT ignore INTO pub.nimekirjad (persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm
+INSERT ignore INTO pub.nimekirjad (persoon, kirje, perenimi, eesnimi, isanimi, emanimi
+     , sünd, surm, sünnikoht, surmakoht
      , kirjed
      , isPerson, emem, kivi, wwiiref, evo)
-SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi, sünd, surm
+SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi
+     , sünd, surm, sünnikoht, surmakoht
      , repis.json_persoonikirjed(persoon)
      , pub_isPerson, pub_emem, pub_kivi, pub_wwiiref, pub_evo
   FROM repis.kirjed
