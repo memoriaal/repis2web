@@ -2,7 +2,12 @@
 
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const ES_HOST = process.env.ES_HOST || '94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
-const INDEX = process.env.ES_INDEX || 'test_index'
+
+const refDate = (new Date(2072, 2, 27)).setHours(0,0,0,0)
+const nowDate = (new Date()).setHours(0,0,0,0)
+const nOd = Math.round(Math.abs(nowDate-refDate)/1000/3600/24)
+const dayParity = nOd % 2
+const INDEX = (process.env.ES_INDEX || 'test_index') + '_' + dayParity
 const SOURCE = process.env.SOURCE || 'test.csv'
 const BULK_SIZE = 250
 
@@ -22,24 +27,25 @@ const fs = require('fs')
 const csv = require('@fast-csv/parse')
 const stream = fs.createReadStream(SOURCE)
 
+
 var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
 
 process.on('warning', e => console.warn(e.stack))
 
 async function run () {
-  console.log('delete index ' + INDEX + '_imported')
+  console.log('delete index ' + INDEX)
   try {
-    await client.indices.delete({ index: INDEX + '_imported' })
-    console.log('= deleted index ' + INDEX + '_imported')
+    await client.indices.delete({ index: INDEX })
+    console.log('= deleted index ' + INDEX)
   } catch (e) {
     console.log(e)
   }
 
-  console.log('create index ' + INDEX + '_imported')
+  console.log('create index ' + INDEX)
   try {
     await client.indices.create(
       {
-        index: INDEX + '_imported',
+        index: INDEX,
         body: {
           mappings: {
             properties: {
@@ -75,7 +81,7 @@ async function run () {
       }, 
       { ignore: [400] }
     )
-    console.log('= created index ' + INDEX + '_imported')
+    console.log('= created index ' + INDEX)
   } catch (e) {
     console.log(e)
   }
@@ -113,84 +119,13 @@ async function run () {
     }
     console.log('errored', erroredDocuments)
     console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
-
-    console.log('delete index ' + INDEX)
-    try {
-      await client.indices.delete({ index: INDEX })
-      console.log('= deleted index ' + INDEX)
-    } catch (e) {
-      console.log(e)
-    }
-  
-    console.log('create index ' + INDEX)
-    try {
-      await client.indices.create(
-        {
-          index: INDEX,
-          body: {
-            mappings: {
-              properties: {
-                eesnimi: { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                perenimi: { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                kirje: { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-  
-                sünd: { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                surm: { type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                }
-              }
-            }
-          }
-        }, 
-        { ignore: [400] }
-      )
-      console.log('= created index ' + INDEX)
-    } catch (e) {
-      console.log(e)
-    }
-  
-    console.log('reindex ' + INDEX)
-    try {
-      await client.reindex({ 
-        body: {
-            source: {
-              index: INDEX + '_imported'
-            },
-            dest: {
-              index: INDEX
-            }
-        } 
-      })
-      console.log('= reindexed ' + INDEX)
-    } catch (e) {
-      console.log(e)
-    }
-  
   })
 }
 run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
-  const operations = bulk.flatMap(doc => [{ index: { _index: INDEX + '_imported', '_id': doc.id } }, doc])
+  const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
   const bulkResponse = await client.bulk({ refresh: true, operations })
   .catch(e => {
     console.log(Object.keys(e.meta), e.meta.body, '===X===')
