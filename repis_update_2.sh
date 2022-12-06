@@ -31,6 +31,7 @@ echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi
 , left(sünd,10), left(surm,10)
+, sünnikoht, surmakoht
 , kirjed, pereseosed, tahvlikirje
 , case when isperson IS TRUE then 1 ELSE 0 end isperson
 , case when kivi IS TRUE then 1 ELSE 0 end kivi

@@ -178,16 +178,16 @@ function row2isik(row) {
   isik['emanimi'] = row[6]
   if (row[7]) isik['sünd'] = row[7]
   if (row[8]) isik['surm'] = row[8]
-  try {isik['kirjed'] = JSON.parse(row[9])} catch(e) {console.log(e, row[9])}
-  try {isik['pereseosed'] = JSON.parse(row[10])} catch(e) {console.log(e, row[10])}
-  try {isik['tahvlikirje'] = JSON.parse(row[11])} catch(e) {console.log(e, row[11])}
-  try {isik['isperson'] = row[12] === '1' ? 1 : 0} catch (e) {console.log(e, row[12])}
-  isik['isperson'] = row[12] === '1' ? 1 : 0
-  isik['kivi'] = row[13] === '1' ? 1 : 0
-  isik['emem'] = row[14] === '1' ? 1 : 0
-  isik['evo'] = row[15] === '1' ? 1 : 0
-  isik['wwii'] = row[16] === '1' ? 1 : 0
-  // console.log([row[13]], row[13] === 1, row[13] === '1', isik['kivi'])
+  if (row[9]) isik['sünnikoht'] = row[9]
+  if (row[10]) isik['surmakoht'] = row[10]
+  try {isik['kirjed'] = JSON.parse(row[11])} catch(e) {console.log(e, row[11])}
+  try {isik['pereseosed'] = JSON.parse(row[12])} catch(e) {console.log(e, row[12])}
+  try {isik['tahvlikirje'] = JSON.parse(row[13])} catch(e) {console.log(e, row[13])}
+  isik['isperson'] = row[14] === '1' ? 1 : 0
+  isik['kivi'] = row[15] === '1' ? 1 : 0
+  isik['emem'] = row[16] === '1' ? 1 : 0
+  isik['evo'] = row[17] === '1' ? 1 : 0
+  isik['wwii'] = row[18] === '1' ? 1 : 0
   return isik
 }
 
