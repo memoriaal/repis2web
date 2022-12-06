@@ -1,10 +1,6 @@
 #!/bin/bash
 
-. ~/.env
-
 echo $(date -u --iso-8601=seconds) Started repis update
-
-ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
 
 ####
 #### maintenance
@@ -112,4 +108,3 @@ mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < statistika.sql
 
 echo $(date -u --iso-8601=seconds) Repis update finished
 
-. ./repis_backup.sh
