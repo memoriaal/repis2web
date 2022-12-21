@@ -191,6 +191,7 @@ function row2isik(row) {
   isik['emem'] = row[16] === '1' ? 1 : 0
   isik['evo'] = row[17] === '1' ? 1 : 0
   isik['wwii'] = row[18] === '1' ? 1 : 0
+  isik['updated_at'] = new Date().toLocaleString()
   return isik
 }
 
