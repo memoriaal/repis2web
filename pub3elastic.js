@@ -1,4 +1,5 @@
 'use strict'
+const MODE = process.env.MODE || 'recreate'
 
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS
 const ES_HOST = process.env.ES_HOST || '94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
@@ -33,57 +34,59 @@ var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
 process.on('warning', e => console.warn(e.stack))
 
 async function run () {
-  console.log('delete index ' + INDEX)
-  try {
-    await client.indices.delete({ index: INDEX })
-    console.log('= deleted index ' + INDEX)
-  } catch (e) {
-    console.log(e)
-  }
-
-  console.log('create index ' + INDEX)
-  try {
-    await client.indices.create(
-      {
-        index: INDEX,
-        body: {
-          mappings: {
-            properties: {
-              eesnimi: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-              perenimi: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-              kirje: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-
-              sünd: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
-                }
-              },
-              surm: { type: 'text',
-                fields: {
-                  raw: { type: 'keyword' }
+  if (MODE === 'recreate') {
+    console.log('delete index ' + INDEX)
+    try {
+      await client.indices.delete({ index: INDEX })
+      console.log('= deleted index ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
+  
+    console.log('= create index ' + INDEX)
+    try {
+      await client.indices.create(
+        {
+          index: INDEX,
+          body: {
+            mappings: {
+              properties: {
+                eesnimi: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                perenimi: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                kirje: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+  
+                sünd: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                surm: { type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
                 }
               }
             }
           }
-        }
-      }, 
-      { ignore: [400] }
-    )
-    console.log('= created index ' + INDEX)
-  } catch (e) {
-    console.log(e)
+        }, 
+        { ignore: [400] }
+      )
+      console.log('= created index ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   let bulk = []
