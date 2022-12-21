@@ -42,6 +42,10 @@ SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi
    AND persoon > 0
 ;
 
+UPDATE pub.nimekirjad pu 
+RIGHT JOIN import.memoriaal_evo me ON me.persoon = pu.persoon
+SET pu.evokirje = me.kirje;
+
 CALL pub.proc_pereseosed_nimekirja();
 
 --
