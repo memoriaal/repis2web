@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd /home/michelek/Documents/scripts/repis2web
 echo workin\' at `pwd`
 
 . /home/michelek/.env
