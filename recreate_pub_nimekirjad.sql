@@ -46,7 +46,7 @@ UPDATE pub.nimekirjad pu
 RIGHT JOIN import.memoriaal_evo me ON me.persoon = pu.persoon
 SET pu.evokirje = me.kirje;
 
-CALL pub.proc_pereseosed_nimekirja();
+CALL pub.proc_pereseosed_nimekirja(NULL);
 
 --
 -- Värskenda kivitahvlite persoonid
