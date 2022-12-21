@@ -28,7 +28,7 @@ EOFMYSQL
 new_ts=`echo $new_ts | cut -d " " -f2,3`
 echo $new_ts > last_ts.out
 
-echo "$last_ts <--> $new_ts"
+echo "Updating between $last_ts <--> $new_ts"
 
 # echo $(date -u --iso-8601=seconds) Recreate table pub.nimekirjad
 # mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub < recreate_pub_nimekirjad.sql
