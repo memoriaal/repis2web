@@ -12,7 +12,7 @@ update repis.kirjed
 set kirje = repis.func_person_text(persoon)
 where kirje is null;
 
-CALL REPIS.proc_clear_newline();
+CALL repis.proc_clear_newline();
 EOFMYSQL
 
 
