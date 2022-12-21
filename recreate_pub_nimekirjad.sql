@@ -18,6 +18,7 @@ CREATE OR REPLACE TABLE pub.nimekirjad (
   kirjed LONGTEXT NOT NULL DEFAULT '[]' COLLATE 'utf8_estonian_ci',
   pereseosed LONGTEXT NOT NULL DEFAULT '[]' COLLATE 'utf8_estonian_ci',
   tahvlikirje LONGTEXT NOT NULL DEFAULT '[]' COLLATE 'utf8_estonian_ci',
+  updated DATETIME NOT NULL DEFAULT current_timestamp ON UPDATE current_timestamp,
   PRIMARY KEY (persoon) USING BTREE,
   CONSTRAINT FK_nimekirjad_repis_kirjed FOREIGN KEY (persoon) REFERENCES repis.kirjed (kirjekood) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT `CC1` CHECK (json_valid(`kirjed`)),
