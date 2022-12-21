@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/.env
+. /home/michelek/.env
 echo $(date -u --iso-8601=seconds) Started repis incremental update
 
 ####
