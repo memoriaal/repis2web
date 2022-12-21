@@ -6,7 +6,7 @@ const ES_HOST = process.env.ES_HOST || '94abc9318c712977e8c684628aa5ea0f.us-east
 
 const refDate = (new Date(2072, 2, 27)).setHours(0,0,0,0)
 const nowDate = (new Date()).setHours(0,0,0,0)
-const nOd = Math.round(Math.abs(nowDate-refDate)/1000/3600/24)
+const nOd = Math.round(Math.abs(nowDate-refDate)/1000/3600/24) + (MODE === 'update' ? 1 : 0)
 const dayParity = nOd % 2
 const INDEX = (process.env.ES_INDEX || 'test_index') + '_' + dayParity
 const SOURCE = process.env.SOURCE || 'test.csv'
