@@ -44,10 +44,15 @@ SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi
 ;
 
 UPDATE pub.nimekirjad pu 
-RIGHT JOIN import.memoriaal_evo me ON me.persoon = pu.persoon
-SET pu.evokirje = me.kirje;
+ RIGHT JOIN import.memoriaal_evo me ON me.persoon = pu.persoon
+   SET pu.evokirje = me.kirje
+ WHERE evo;
 
 CALL pub.proc_pereseosed_nimekirja(NULL);
+
+UPDATE pub.nimekirjad 
+   SET tahvlikirje = ifnull(repis.json_tahvlikirje(persoon), JSON_OBJECT())
+ WHERE kivi;
 
 --
 -- Värskenda kivitahvlite persoonid
@@ -55,6 +60,3 @@ UPDATE import.memoriaal_kivitahvlid mt
 LEFT JOIN repis.kirjed k0 ON k0.kirjekood = mt.kirjekood
 SET mt.persoon = k0.persoon;
 
-UPDATE pub.nimekirjad 
-   SET tahvlikirje = ifnull(repis.json_tahvlikirje(persoon), JSON_OBJECT())
- WHERE kivi;
