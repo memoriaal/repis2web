@@ -22,12 +22,14 @@ EOFMYSQL
 #### pub.nimekirjad
 ####
 last_ts=`cat last_ts.out`
+echo "last timestamp: ${last_ts}"
 
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
 new_ts=`echo $new_ts | cut -d " " -f2,3`
+echo "new timestamp: ${new_ts}"
 echo $new_ts > last_ts.out
 
 if [ "${new_ts}" == "${last_ts}" ]
