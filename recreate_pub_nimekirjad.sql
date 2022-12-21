@@ -48,11 +48,11 @@ UPDATE pub.nimekirjad pu
    SET pu.evokirje = me.kirje
  WHERE evo;
 
-CALL pub.proc_pereseosed_nimekirja(NULL);
-
 UPDATE pub.nimekirjad 
    SET tahvlikirje = ifnull(repis.json_tahvlikirje(persoon), JSON_OBJECT())
  WHERE kivi;
+
+CALL pub.proc_pereseosed_nimekirja(NULL);
 
 --
 -- Värskenda kivitahvlite persoonid
