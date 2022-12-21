@@ -9,13 +9,13 @@ echo $(date -u --iso-8601=seconds) Started repis incremental update
 #### maintenance
 ####
 # echo $(date -u --iso-8601=seconds) Repair repis.kirjed.kirje IS NULL
-mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
-update repis.kirjed
-set kirje = repis.func_person_text(persoon)
-where kirje is null;
+# mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
+# update repis.kirjed
+# set kirje = repis.func_person_text(persoon)
+# where kirje is null;
 
-CALL repis.proc_clear_newline();
-EOFMYSQL
+# CALL repis.proc_clear_newline();
+# EOFMYSQL
 
 
 ####
