@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if pidof -x "repis_increment.sh" >/dev/null; then
+    echo -n ". "
+    exit 0
+fi
+
 cd /home/michelek/Documents/scripts/repis2web
 # echo workin\' at `pwd`
 
