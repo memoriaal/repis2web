@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [[ `pgrep -f $0` != "$$" ]]; then
+        echo "| "
+        exit
+fi
 
 if [ `pidof -x "repis_increment.sh" | wc --words` != 1 ]; then
     echo -n ". "
