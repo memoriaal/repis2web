@@ -148,15 +148,16 @@ async function bulk_upload(bulk) {
 
   let bix = 0
   if (bulkResponse && bulkResponse.items) {
-    bulkResponse.items.forEach((action, item) => {
-      // console.log(item, action)
-      while (bulk[bix].id < action.index._id) {
-        bix ++
-      }
-      if (bulk[bix].id === action.index._id) {
-        bulk.splice(bix, 1)
-      } else {
-        console.log('problem with', {bix, isik:bulk[bix], action})
+    bulkResponse.items.forEach((action) => {
+      if ('index' in action) {
+        while (bulk[bix].id < action.index._id) {
+          bix ++
+        }
+        if (bulk[bix].id === action.index._id) {
+          bulk.splice(bix, 1)
+        } else {
+          console.log('problem with', {bix, isik:bulk[bix], action})
+        }
       }
     })
   }
