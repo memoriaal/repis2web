@@ -1,8 +1,5 @@
 #!/bin/bash
 
-pidof -x "repis_increment.sh"
-pidof -x "repis_increment.sh" | wc --words
-
 if [ `pidof -x "repis_increment.sh" | wc --words` != "1" ]; then
     echo -n "[`pidof -x "repis_increment.sh" | wc --words`]"
     exit 0
