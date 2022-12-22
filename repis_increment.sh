@@ -3,12 +3,7 @@
 pidof -x "repis_increment.sh"
 pidof -x "repis_increment.sh" | wc --words
 
-if [[ `pgrep -f $0` != "$$" ]]; then
-        echo "| $0 $$"
-        exit
-fi
-
-if [ `pidof -x "repis_increment.sh" | wc --words` != 1 ]; then
+if [ `pidof -x "repis_increment.sh" | wc --words` != "1" ]; then
     echo -n ". "
     exit 0
 fi
