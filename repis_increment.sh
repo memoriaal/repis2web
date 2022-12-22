@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ `pgrep -f $0` != "$$" ]]; then
-        echo "| "
+        echo "| $0 $$"
         exit
 fi
 
