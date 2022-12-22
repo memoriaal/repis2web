@@ -1,9 +1,9 @@
 #!/bin/bash
 cd /home/michelek/Documents/scripts/repis2web
-echo workin\' at `pwd`
+# echo workin\' at `pwd`
 
 . /home/michelek/.env
-echo $(date -u --iso-8601=seconds) Started repis incremental update
+# echo $(date -u --iso-8601=seconds) Started repis incremental update
 
 ####
 #### maintenance
@@ -22,30 +22,30 @@ echo $(date -u --iso-8601=seconds) Started repis incremental update
 #### pub.nimekirjad
 ####
 last_ts=`cat last_ts.out`
-echo "last timestamp: ${last_ts}"
+# echo "last timestamp: ${last_ts}"
 
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
 new_ts=`echo $new_ts | cut -d " " -f2,3`
-echo "new timestamp: ${new_ts}"
+# echo "new timestamp: ${new_ts}"
 echo $new_ts > last_ts.out
 
 if [ "${new_ts}" == "${last_ts}" ]
 then
-    echo "no news after $new_ts"
+    echo $(date -u --iso-8601=seconds) no news after $new_ts
     exit 0
 fi
 
-echo "Updating between $last_ts <--> $new_ts"
+# echo "Updating between $last_ts <--> $new_ts"
 
 
 ####
 #### memoriaal.ee emem
 ####
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_emem.csv"
-echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
+# echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi
 , left(sünd,10), left(surm,10)
@@ -71,10 +71,10 @@ sed -i 's/\\\"/\"\"/g' $csv_filename
 sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
-MODE=update SOURCE=${csv_filename} ES_INDEX=emem_persons ES_CREDENTIALS="${ES_CREDENTIALS}" ES_HOST="${ES_HOST}" node pub3elastic.js
+MODE=update SOURCE=${csv_filename} ES_INDEX=emem_persons ES_CREDENTIALS="${ES_CREDENTIALS}" ES_HOST="${ES_HOST}" node pub3elastic.js | grep Uploaded
 
 ####
 #### Wrap up
 ####
 
-echo $(date -u --iso-8601=seconds) Repis update finished
+# echo $(date -u --iso-8601=seconds) Repis update finished
