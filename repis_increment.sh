@@ -1,6 +1,5 @@
 #!/bin/bash
 
-if [ `pidof -x "/usr/sbin/cupsd" | wc --words` != 1 ]; then echo foo; fi
 
 if [ `pidof -x "repis_increment.sh" | wc --words` != 1 ]; then
     echo -n ". "
