@@ -1,11 +1,22 @@
 #!/bin/bash
 
-if [ `pidof -x "repis_increment.sh" | wc --words` != "2" ]; then
+cd /home/michelek/Documents/scripts/repis2web
+mypidfile=/home/michelek/Documents/scripts/repis2web/repis_increment.sh.pid
+# Ensure PID file is removed on program exit.
+trap "rm -f -- '$mypidfile'" EXIT
+
+if [ -e $mypidfile ]; then
     echo -n ". "
     exit 0
 fi
 
-cd /home/michelek/Documents/scripts/repis2web
+echo $$ > "$mypidfile"
+
+# if [ `pidof -x "repis_increment.sh" | wc --words` != "2" ]; then
+#     echo -n ". "
+#     exit 0
+# fi
+
 # echo workin\' at `pwd`
 
 . /home/michelek/.env
