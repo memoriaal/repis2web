@@ -128,7 +128,18 @@ run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
-  const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
+  // const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
+  let operations = []
+  bulk.forEach(doc => {
+    if (doc.kirje === '') {
+      operations.push({ delete: { _index: INDEX, '_id': doc.id } })
+    } else {
+      operations.push({ index: { _index: INDEX, '_id': doc.id } }, doc)
+    }
+  })
+  
+  console.log(JSON.stringify({bulk, operations}, null, 2))
+
   const bulkResponse = await client.bulk({ refresh: true, operations })
   .catch(e => {
     console.log(Object.keys(e.meta), e.meta.body, '===X===')
