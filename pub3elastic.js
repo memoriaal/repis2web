@@ -144,7 +144,6 @@ async function bulk_upload(bulk) {
     console.log(Object.keys(e.meta), e.meta.body, '===X===')
   })
 
-  console.log(`${nowDate}.json.out`, JSON.stringify({bulk, operations, bulkResponse}, null, 2))
   fs.writeFileSync(`${nowDate}.json.out`, JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
   let bix = 0
