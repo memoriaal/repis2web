@@ -1,5 +1,4 @@
 'use strict'
-const fs = require('fs')
 const MODE = process.env.MODE || 'recreate'
 
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS
