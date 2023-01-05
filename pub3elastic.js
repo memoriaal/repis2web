@@ -1,4 +1,5 @@
 'use strict'
+const fs = require('fs')
 const MODE = process.env.MODE || 'recreate'
 
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS
@@ -144,7 +145,7 @@ async function bulk_upload(bulk) {
     console.log(Object.keys(e.meta), e.meta.body, '===X===')
   })
 
-  console.log(JSON.stringify({bulk, operations, bulkResponse}, null, 2))
+  fs.writeFileSync(`${nowDate}.json.out`, JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
   let bix = 0
   if (bulkResponse && bulkResponse.items) {
