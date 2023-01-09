@@ -1,33 +1,32 @@
 'use strict'
-const MODE = process.env.MODE || 'recreate'
 
-const ES_CREDENTIALS = process.env.ES_CREDENTIALS
-const ES_HOST = process.env.ES_HOST || '94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
+const MODE           = process.env.MODE           || 'recreate'
+const ES_CREDENTIALS = process.env.ES_CREDENTIALS || ''
+const ES_HOST        = process.env.ES_HOST        || '94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
+const INDEX          = process.env.ES_INDEX       || 'test_index'
+const SOURCE         = process.env.SOURCE         || 'test.csv'
+const BULK_SIZE      = 2500
 
-const refDate = (new Date(2072, 2, 27)).setHours(0,0,0,0)
-const nowDate = (new Date()).setHours(0,0,0,0)
-const nOd = Math.round(Math.abs(nowDate-refDate)/1000/3600/24) + (MODE === 'update' ? 1 : 0)
-const dayParity = nOd % 2
-const INDEX = (process.env.ES_INDEX || 'test_index') // + '_' + dayParity
-const SOURCE = process.env.SOURCE || 'test.csv'
-const BULK_SIZE = 2500
+import { cwd } from 'node:process'
+const path           = require('node:path')
+const LOG_PATH       = process.env.LOG_PATH       || path.join(cwd(),'..')
+
+const fs         = require('fs')
+const csv        = require('@fast-csv/parse')
+const { Client } = require('@elastic/elasticsearch')
+
+const stream = fs.createReadStream(SOURCE)
+const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
 console.log ({
   'ES_CREDENTIALS': ES_CREDENTIALS,
   'ES_HOST': ES_HOST,
   'INDEX': INDEX,
   'SOURCE': SOURCE,
-  'BULK_SIZE': BULK_SIZE
+  'BULK_SIZE': BULK_SIZE,
+  'LOG_PATH': LOG_PATH
 })
 require('array.prototype.flatmap').shim()
-
-const { Client } = require('@elastic/elasticsearch')
-const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
-
-const fs = require('fs')
-const csv = require('@fast-csv/parse')
-const stream = fs.createReadStream(SOURCE)
-
 
 var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
 
@@ -144,7 +143,9 @@ async function bulk_upload(bulk) {
     console.log(Object.keys(e.meta), e.meta.body, '===X===')
   })
 
-  fs.writeFileSync(`${nowDate}.json.out`, JSON.stringify({bulk, operations, bulkResponse}, null, 2))
+  const nowMinute = (new Date()).setSeconds(0,0)
+  fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
+                  , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
   let bix = 0
   if (bulkResponse && bulkResponse.items) {
