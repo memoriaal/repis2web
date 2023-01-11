@@ -149,13 +149,13 @@ async function bulk_upload(bulk) {
 
   if (bulkResponse && bulkResponse.items) {
     bulkResponse.items.forEach((item) => {
-      console.log({bulk, bix, item})
       const action = item.index || item.delete
 
       function findIxBy_id(item, _id) {
         return item.id === _id
       }
       let bix = bulk.findIndex(findIxBy_id, action._id)
+      console.log({bulk, bix, item})
       if (bix > -1) {
         bulk.splice(bix, 1) // keep first bix elements, remove one
       }
