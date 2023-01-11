@@ -146,21 +146,6 @@ async function bulk_upload(bulk) {
   fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
                   , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
-  let bix = 0
-  if (bulkResponse && bulkResponse.items) {
-    bulkResponse.items.forEach((item) => {
-      console.log({bulk, bix, item})
-      const action = item.index || item.delete
-      while (bulk[bix].id < action._id) {
-        bix ++
-      }
-      if (bulk[bix].id === action._id) {
-        bulk.splice(bix, 1)
-      } else {
-        console.log('problem with', {bix, isik:bulk[bix], action})
-      }
-    })
-  }
   if (bulkResponse && bulkResponse.errors) {
     // The items array has the same order of the dataset we just indexed.
     // The presence of the `error` key indicates that the operation
