@@ -147,18 +147,17 @@ async function bulk_upload(bulk) {
   fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
                   , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
-  let bix = 0
   if (bulkResponse && bulkResponse.items) {
     bulkResponse.items.forEach((item) => {
       console.log({bulk, bix, item})
       const action = item.index || item.delete
-      while (bix < bulk.length && bulk[bix].id !== action._id) {
-        bix ++
+
+      function findIxBy_id(item, _id) {
+        return item.id === _id
       }
-      if (bulk[bix].id === action._id) {
+      let bix = bulk.findIndex(findIxBy_id, action._id)
+      if (bix > -1) {
         bulk.splice(bix, 1) // keep first bix elements, remove one
-      } else {
-        console.log('problem with', {bix, isik:bulk[bix], action})
       }
     })
   }
