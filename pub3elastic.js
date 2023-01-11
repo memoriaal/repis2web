@@ -133,6 +133,7 @@ async function bulk_upload(bulk) {
     if (doc.kirje === '') {
       operations.push({ delete: { _index: INDEX, '_id': doc.id } })
     } else {
+      operations.push({ delete: { _index: INDEX, '_id': doc.id } })
       operations.push({ index: { _index: INDEX, '_id': doc.id } }, doc)
     }
   })
