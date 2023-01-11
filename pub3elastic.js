@@ -155,7 +155,7 @@ async function bulk_upload(bulk) {
         return item.id === this
       }
       let bix = bulk.findIndex(findIxBy_id, action._id)
-      console.log({bulk, bix, item, action})
+      // console.log({bulk, bix, item, action})
       if (bix > -1) {
         bulk.splice(bix, 1) // keep first bix elements, remove one
       }
