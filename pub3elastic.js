@@ -7,7 +7,6 @@ const INDEX          = process.env.ES_INDEX       || 'test_index'
 const SOURCE         = process.env.SOURCE         || 'test.csv'
 const BULK_SIZE      = 2500
 
-const path           = require('node:path')
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
 const fs         = require('fs')
