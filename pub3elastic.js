@@ -152,7 +152,7 @@ async function bulk_upload(bulk) {
     bulkResponse.items.forEach((item) => {
       console.log({bulk, bix, item})
       const action = item.index || item.delete
-      while (bulk[bix].id !== action._id && bix < bulk.length) {
+      while (bix < bulk.length && bulk[bix].id !== action._id) {
         bix ++
       }
       if (bulk[bix].id === action._id) {
