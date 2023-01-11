@@ -152,6 +152,7 @@ async function bulk_upload(bulk) {
       const action = item.index || item.delete
 
       function findIxBy_id(item, _id) {
+        console.log({item, _id})
         return item.id === _id
       }
       let bix = bulk.findIndex(findIxBy_id, action._id)
