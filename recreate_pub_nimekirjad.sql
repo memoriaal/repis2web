@@ -33,11 +33,11 @@ ENGINE=InnoDB
 INSERT ignore INTO pub.nimekirjad (persoon, kirje, perenimi, eesnimi, isanimi, emanimi
      , sünd, surm, sünnikoht, surmakoht
      , kirjed
-     , isPerson, emem, kivi, wwiiref, evo)
+     , isPerson, emem, kivi, wwiiref, evo, mv)
 SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi
      , sünd, surm, sünnikoht, surmakoht
      , repis.json_persoonikirjed(persoon)
-     , pub_isPerson, pub_emem, pub_kivi, pub_wwiiref, pub_evo
+     , pub_isPerson, pub_emem, pub_kivi, pub_wwiiref, pub_evo, pub_mv
   FROM repis.kirjed
  WHERE persoon = kirjekood
    AND persoon > 0

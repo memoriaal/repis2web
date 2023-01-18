@@ -26,7 +26,7 @@ console.log ({
 })
 require('array.prototype.flatmap').shim()
 
-var cnt = {all:0, wwii:0, emem:0, kivi:0, isperson:0}
+var cnt = {all:0, wwii:0, emem:0, kivi:0, mv:0, isperson:0}
 
 process.on('warning', e => console.warn(e.stack))
 
@@ -96,6 +96,7 @@ async function run () {
     cnt['all'] ++
     cnt['isperson'] += isik['isperson']
     cnt['wwii'] += isik['wwii']
+    cnt['mv'] += isik['mv']
     cnt['emem'] += isik['emem']
     cnt['kivi'] += isik['kivi']
 
@@ -204,6 +205,7 @@ function row2isik(row) {
   isik['emem'] = row[16] === '1' ? 1 : 0
   isik['evo'] = row[17] === '1' ? 1 : 0
   isik['wwii'] = row[18] === '1' ? 1 : 0
+  isik['mv'] = row[19] === '1' ? 1 : 0
   isik['updated_at'] = new Date().toLocaleString()
   return isik
 }
