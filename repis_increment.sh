@@ -12,28 +12,11 @@ echo $$ > "$mypidfile"
 # Ensure PID file is removed on program exit.
 trap "rm -f -- '$mypidfile'" EXIT
 
-# if [ `pidof -x "repis_increment.sh" | wc --words` != "2" ]; then
-#     echo -n ". "
-#     exit 0
-# fi
-
 # echo workin\' at `pwd`
 
 . /home/michelek/.env
-# echo $(date -u --iso-8601=seconds) Started repis incremental update
 
-####
-#### maintenance
-####
-# echo $(date -u --iso-8601=seconds) Repair repis.kirjed.kirje IS NULL
-# mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" repis<<EOFMYSQL
-# update repis.kirjed
-# set kirje = repis.func_person_text(persoon)
-# where kirje is null;
-
-# CALL repis.proc_clear_newline();
-# EOFMYSQL
-
+ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
 
 ####
 #### pub.nimekirjad
