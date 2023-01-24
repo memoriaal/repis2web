@@ -1,10 +1,7 @@
 -- Kokku isikuid baasis
-SELECT
-    count(1) INTO @isikuid_baasis
-FROM
-    `repis`.`kirjed`
-WHERE
-    persoon = kirjekood;
+SELECT count(1) INTO @isikuid_baasis
+FROM repis.kirjed
+WHERE persoon = kirjekood;
 
 -- Kokku isikuid kodulehel
 SELECT count(1) INTO @isikuid_veebis
@@ -26,13 +23,13 @@ INSERT INTO
     aruanded.statistika (
         isikuid_baasis,
         isikuid_veebis,
-        emem,
+        e_memoriaalil,
         kivis,
         põgenikke
     )
 SELECT
     @isikuid_baasis,
     @isikuid_veebis,
-    @relevantseid,
+    @emem,
     @kivis,
     @refugees;
