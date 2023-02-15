@@ -31,6 +31,13 @@ EOFMYSQL
 `
 new_ts=`echo $new_ts | cut -d " " -f2,3`
 # echo "new timestamp: ${new_ts}"
+
+if [ "${new_ts}" == "" ]
+then
+    echo Failed to fetch timestamp from database.
+    exit 1
+fi
+
 echo $new_ts > last_ts.out
 
 if [ "${new_ts}" == "${last_ts}" ]
