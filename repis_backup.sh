@@ -2,6 +2,8 @@
 
 . ~/.env
 
+cd "$(dirname "$0")"
+
 echo $(date -u --iso-8601=seconds) Refresh statistics
 mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" aruanded < statistika.sql
 
