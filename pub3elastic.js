@@ -145,8 +145,8 @@ async function bulk_upload(bulk) {
   })
 
   const nowMinute = (new Date()).setSeconds(0,0)
-  fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
-                  , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
+  // fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
+  //                 , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
   if (bulkResponse && bulkResponse.items) {
     bulkResponse.items.forEach((item) => {
