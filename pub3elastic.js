@@ -206,6 +206,7 @@ function row2isik(row) {
   isik['evo'] = row[17] === '1' ? 1 : 0
   isik['wwii'] = row[18] === '1' ? 1 : 0
   isik['mv'] = row[19] === '1' ? 1 : 0
+  isik['redirect'] = row[20]
   isik['updated_at'] = new Date().toLocaleString()
   return isik
 }
