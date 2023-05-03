@@ -16,7 +16,9 @@ trap "rm -f -- '$mypidfile'" EXIT
 
 . /home/michelek/.env
 
-ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
+# ssh -N -L 3306:127.0.0.1:3306 dev.memoriaal.ee -f
+ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
+
 
 ####
 #### pub.nimekirjad
@@ -92,6 +94,6 @@ rm ${csv_filename}
 ssh dev.memoriaal.ee "rm ${csv_filename}"
 
 # close the ssh tunnel
-ssh -O exit dev.memoriaal.ee
+ssh -T -O "exit" repis-proxy
 
 # echo $(date -u --iso-8601=seconds) Repis update finished
