@@ -91,4 +91,7 @@ MODE=update SOURCE=${csv_filename} ES_INDEX=emem_persons ES_CREDENTIALS="${ES_CR
 rm ${csv_filename}
 ssh dev.memoriaal.ee "rm ${csv_filename}"
 
+# close the ssh tunnel
+ssh -O exit dev.memoriaal.ee
+
 # echo $(date -u --iso-8601=seconds) Repis update finished
