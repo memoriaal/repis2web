@@ -1,9 +1,7 @@
 -- Kokku isikuid baasis
 SELECT count(1) INTO @isikuid_baasis
 FROM repis.kirjed
-WHERE persoon > 0
-  AND redirect = ''
-  AND persoon = kirjekood;
+WHERE persoon = kirjekood;
 
 -- Kokku isikuid kodulehel
 SELECT count(1) INTO @isikuid_veebis
