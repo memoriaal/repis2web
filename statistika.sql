@@ -19,17 +19,26 @@ FROM pub.nimekirjad WHERE kivi;
 SELECT count(1) INTO @refugees
 FROM pub.nimekirjad WHERE wwiiref;
 
+-- Isikuid kellel on sünniaeg teadmata
+SELECT COUNT(1) INTO @sünd_teadmata
+ FROM pub.nimekirjad nk
+WHERE persoon > 0
+  AND redirect = ''
+  AND nk.`sünd` = '';
+
 INSERT INTO
     aruanded.statistika (
         isikuid_baasis,
         isikuid_veebis,
         e_memoriaalil,
         kivis,
-        põgenikke
+        põgenikke,
+        sünd_teadmata
     )
 SELECT
     @isikuid_baasis,
     @isikuid_veebis,
     @emem,
     @kivis,
-    @refugees;
+    @refugees,
+    @sünd_teadmata;
