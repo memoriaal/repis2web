@@ -1,23 +1,36 @@
 -- Kokku isikuid baasis
 SELECT count(1) INTO @isikuid_baasis
 FROM repis.kirjed
-WHERE persoon = kirjekood;
+WHERE persoon > 0
+  AND redirect = ''
+  AND persoon = kirjekood;
 
 -- Kokku isikuid kodulehel
 SELECT count(1) INTO @isikuid_veebis
-FROM pub.nimekirjad;
+FROM pub.nimekirjad
+WHERE persoon > 0
+  AND redirect = '';
 
 -- Relevantseid isikuid kodulehel
 SELECT count(1) INTO @emem
-FROM pub.nimekirjad WHERE emem;
+FROM pub.nimekirjad 
+WHERE persoon > 0
+  AND redirect = ''
+  AND emem;
 
 -- Isikuid mälestusseinal
 SELECT count(1) INTO @kivis
-FROM pub.nimekirjad WHERE kivi;
+FROM pub.nimekirjad 
+WHERE persoon > 0
+  AND redirect = ''
+  AND kivi;
 
 -- põgenikke
 SELECT count(1) INTO @refugees
-FROM pub.nimekirjad WHERE wwiiref;
+FROM pub.nimekirjad 
+WHERE persoon > 0
+  AND redirect = ''
+  AND wwiiref;
 
 -- Isikuid kellel on sünniaeg teadmata
 SELECT COUNT(1) INTO @sünd_teadmata
