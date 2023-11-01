@@ -31,7 +31,7 @@ WHERE persoon > 0
   AND wwiiref;
 
 -- põgenikke, kellel on PR
-SELECT count(1) INTO @refugees
+SELECT count(1) INTO @refugeesWithPR
 FROM pub.nimekirjad 
 WHERE persoon > 0
   AND redirect = ''
