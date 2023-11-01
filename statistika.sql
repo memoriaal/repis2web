@@ -30,6 +30,15 @@ WHERE persoon > 0
   AND redirect = ''
   AND wwiiref;
 
+-- põgenikke, kellel on PR
+SELECT count(1) INTO @refugees
+FROM pub.nimekirjad 
+WHERE persoon > 0
+  AND redirect = ''
+  AND wwiiref
+  AND persoon IN
+  (SELECT DISTINCT persoon FROM import.pereregister);
+
 -- Isikuid kellel on sünniaeg teadmata
 SELECT COUNT(1) INTO @sünd_teadmata
  FROM pub.nimekirjad nk
@@ -44,6 +53,7 @@ INSERT INTO
         e_memoriaalil,
         kivis,
         põgenikke,
+        PRga_põgenikke,
         sünd_teadmata
     )
 SELECT
@@ -52,4 +62,5 @@ SELECT
     @emem,
     @kivis,
     @refugees,
+    @refugeesWithPR,
     @sünd_teadmata;
