@@ -200,13 +200,14 @@ function row2isik(row) {
   try {isik['kirjed'] = JSON.parse(row[11])} catch(e) {console.log(e, row[11])}
   try {isik['pereseosed'] = JSON.parse(row[12])} catch(e) {console.log(e, row[12])}
   try {isik['tahvlikirje'] = JSON.parse(row[13])} catch(e) {console.log(e, row[13])}
-  isik['isperson'] = row[14] === '1' ? 1 : 0
-  isik['kivi'] = row[15] === '1' ? 1 : 0
-  isik['emem'] = row[16] === '1' ? 1 : 0
-  isik['evo'] = row[17] === '1' ? 1 : 0
-  isik['wwii'] = row[18] === '1' ? 1 : 0
-  isik['mv'] = row[19] === '1' ? 1 : 0
-  isik['redirect'] = row[20]
+  try {isik['episoodid'] = JSON.parse(row[14])} catch(e) {console.log(e, row[14])}
+  isik['isperson'] = row[15] === '1' ? 1 : 0
+  isik['kivi'] = row[16] === '1' ? 1 : 0
+  isik['emem'] = row[17] === '1' ? 1 : 0
+  isik['evo'] = row[18] === '1' ? 1 : 0
+  isik['wwii'] = row[19] === '1' ? 1 : 0
+  isik['mv'] = row[20] === '1' ? 1 : 0
+  isik['redirect'] = row[21]
   isik['updated_at'] = new Date().toLocaleString()
   return isik
 }
