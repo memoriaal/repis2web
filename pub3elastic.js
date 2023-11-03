@@ -16,7 +16,7 @@ const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..
 const stream = fs.createReadStream(SOURCE)
 const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
-console.log ({
+console.log({
   'ES_CREDENTIALS': ES_CREDENTIALS,
   'ES_HOST': ES_HOST,
   'INDEX': INDEX,
@@ -26,11 +26,11 @@ console.log ({
 })
 require('array.prototype.flatmap').shim()
 
-var cnt = {all:0, wwii:0, emem:0, kivi:0, mv:0, isperson:0}
+var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
 
 process.on('warning', e => console.warn(e.stack))
 
-async function run () {
+async function run() {
   if (MODE === 'recreate') {
     console.log('delete index ' + INDEX)
     try {
@@ -39,7 +39,7 @@ async function run () {
     } catch (e) {
       console.log(e)
     }
-  
+
     console.log('= create index ' + INDEX)
     try {
       await client.indices.create(
@@ -48,36 +48,48 @@ async function run () {
           body: {
             mappings: {
               properties: {
-                eesnimi: { type: 'text',
+                eesnimi: {
+                  type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
                   }
                 },
-                perenimi: { type: 'text',
+                perenimi: {
+                  type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
                   }
                 },
-                kirje: { type: 'text',
+                kirje: {
+                  type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
                   }
                 },
-  
-                sünd: { type: 'text',
+                sünd: {
+                  type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
                   }
                 },
-                surm: { type: 'text',
+                surm: {
+                  type: 'text',
                   fields: {
                     raw: { type: 'keyword' }
+                  }
+                },
+                episoodid: {
+                  type: 'nested',  // Define "episoodid" as a nested field
+                  properties: {
+                    nimetus: { type: 'text' },
+                    asukoht: { type: 'text' },
+                    aeg: { type: 'date' },
                   }
                 }
               }
             }
           }
-        }, 
+        },
         { ignore: [400] }
       )
       console.log('= created index ' + INDEX)
@@ -89,38 +101,38 @@ async function run () {
   let bulk = []
   const csv_stream = csv.parseStream(stream)
   csv_stream
-  .on('error', error => console.error(error))
-  .on('data', async row => {
-    csv_stream.pause()
-    let isik = row2isik(row)
-    cnt['all'] ++
-    cnt['isperson'] += isik['isperson']
-    cnt['wwii'] += isik['wwii']
-    cnt['mv'] += isik['mv']
-    cnt['emem'] += isik['emem']
-    cnt['kivi'] += isik['kivi']
+    .on('error', error => console.error(error))
+    .on('data', async row => {
+      csv_stream.pause()
+      let isik = row2isik(row)
+      cnt['all']++
+      cnt['isperson'] += isik['isperson']
+      cnt['wwii'] += isik['wwii']
+      cnt['mv'] += isik['mv']
+      cnt['emem'] += isik['emem']
+      cnt['kivi'] += isik['kivi']
 
-    bulk.push(isik)
-    if (bulk.length === BULK_SIZE) {
-      console.log('read', JSON.stringify(cnt, null, 0))
-      // while(bulk.length > 0) {
+      bulk.push(isik)
+      if (bulk.length === BULK_SIZE) {
+        console.log('read', JSON.stringify(cnt, null, 0))
+        // while(bulk.length > 0) {
         await bulk_upload(bulk)
         if (bulk.length) {
           console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id))
         }
-      // }
-    }
-    csv_stream.resume()
-  })
-  .on('end', async rowCount => {
-    console.log('Enter last bulk with', bulk.length, 'left')
-    while(bulk.length > 0) {
-      await bulk_upload(bulk)
-      console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
-    }
-    console.log('errored', erroredDocuments)
-    console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
-  })
+        // }
+      }
+      csv_stream.resume()
+    })
+    .on('end', async rowCount => {
+      console.log('Enter last bulk with', bulk.length, 'left')
+      while (bulk.length > 0) {
+        await bulk_upload(bulk)
+        console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      }
+      console.log('errored', erroredDocuments)
+      console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
+    })
 }
 run().catch(console.log)
 
@@ -132,19 +144,19 @@ async function bulk_upload(bulk) {
     if (doc.kirje === '') {
       operations.push({ delete: { _index: INDEX, '_id': doc.id } })
     } else {
-      operations.push( { delete: { _index: INDEX, '_id': doc.id } }
-                     , { index: { _index: INDEX, '_id': doc.id } }
-                     , doc )
+      operations.push({ delete: { _index: INDEX, '_id': doc.id } }
+        , { index: { _index: INDEX, '_id': doc.id } }
+        , doc)
     }
   })
-  
+
 
   const bulkResponse = await client.bulk({ refresh: true, operations })
-  .catch(e => {
-    console.log(Object.keys(e.meta), e.meta.body, '===X===')
-  })
+    .catch(e => {
+      console.log(Object.keys(e.meta), e.meta.body, '===X===')
+    })
 
-  const nowMinute = (new Date()).setSeconds(0,0)
+  const nowMinute = (new Date()).setSeconds(0, 0)
   // fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
   //                 , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
@@ -197,10 +209,10 @@ function row2isik(row) {
   if (row[8]) isik['surm'] = row[8]
   if (row[9]) isik['sünnikoht'] = row[9]
   if (row[10]) isik['surmakoht'] = row[10]
-  try {isik['kirjed'] = JSON.parse(row[11])} catch(e) {console.log(e, row[11])}
-  try {isik['pereseosed'] = JSON.parse(row[12])} catch(e) {console.log(e, row[12])}
-  try {isik['tahvlikirje'] = JSON.parse(row[13])} catch(e) {console.log(e, row[13])}
-  try {isik['episoodid'] = JSON.parse(row[14])} catch(e) {console.log(e, row[14])}
+  try { isik['kirjed'] = JSON.parse(row[11]) } catch (e) { console.log(e, row[11]) }
+  try { isik['pereseosed'] = JSON.parse(row[12]) } catch (e) { console.log(e, row[12]) }
+  try { isik['tahvlikirje'] = JSON.parse(row[13]) } catch (e) { console.log(e, row[13]) }
+  try { isik['episoodid'] = JSON.parse(row[14]) } catch (e) { console.log(e, row[14]) }
   isik['isperson'] = row[15] === '1' ? 1 : 0
   isik['kivi'] = row[16] === '1' ? 1 : 0
   isik['emem'] = row[17] === '1' ? 1 : 0
