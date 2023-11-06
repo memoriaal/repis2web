@@ -83,7 +83,7 @@ async function run() {
                   properties: {
                     nimetus: { type: 'text' },
                     asukoht: { type: 'text' },
-                    aeg: { type: 'date' },
+                    aeg: { type: 'text' },
                   }
                 }
               }
