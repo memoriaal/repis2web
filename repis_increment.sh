@@ -27,7 +27,7 @@ last_ts=`cat last_ts.out`
 # echo "last timestamp: ${last_ts}"
 
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-CALL pub.repub(42);
+CALL pub.repub(420);
 select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
@@ -84,7 +84,7 @@ sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 # echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
 echo -n "$(date -u --iso-8601=seconds) Between ${last_ts} and ${new_ts}: "
-MODE=update SOURCE=${csv_filename} ES_INDEX=emem_persons ES_CREDENTIALS="${ES_CREDENTIALS}" ES_HOST="${ES_HOST}" node pub3elastic.js | grep Uploaded
+MODE=update SOURCE=${csv_filename} ES_INDEX=emi_persons ES_CREDENTIALS="${ES_CREDENTIALS}" ES_HOST="${ES_HOST}" node pub3elastic.js | grep Uploaded
 
 ####
 #### Wrap up
