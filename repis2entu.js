@@ -76,7 +76,7 @@ async function get_folderE() {
       return null
     }
   } else {
-    console.error('get_folderE: Invalid json data')
+    console.error('get_folderE: Invalid json data', {json})
     return null
   }
 }
@@ -104,7 +104,7 @@ async function get_victimE() {
       return null
     }
   } else {
-    console.error('get_victimE: Invalid json data')
+    console.error('get_victimE: Invalid json data', {json})
     return null
   }
 }
