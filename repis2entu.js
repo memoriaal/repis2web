@@ -39,9 +39,18 @@ async function get_token() {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  console.log(json)
-  return json
-}
+  if (Array.isArray(json) && json.length > 0) {
+    if (json[0].token) {
+      return json[0].token
+    } else {
+      console.error('no token in json data')
+      return null
+    }
+  } else {
+    // Handle the case where json is not an array or is an empty array
+    console.error('Invalid json data')
+    return null
+  }}
 
 // POST {{hostname}}/entity HTTP/1.1
 // Accept-Encoding: deflate
@@ -55,7 +64,7 @@ const entu_post = async (doc) => {
     method: 'POST',
     headers: {
       'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${token.token}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json; charset=utf-8'
     },
     body: JSON.stringify(doc)
