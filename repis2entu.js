@@ -10,7 +10,7 @@ const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
-const ENTU_TOKEN = get_token()
+const ENTU_TOKEN = await get_token()
 const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
