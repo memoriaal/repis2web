@@ -14,7 +14,6 @@ const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
 const stream = fs.createReadStream(SOURCE)
-const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
 console.log({
   'SOURCE': SOURCE,
