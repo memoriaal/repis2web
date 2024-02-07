@@ -211,7 +211,7 @@ async function bulk_upload(bulk) {
 // ]
 function row2entity(row) {
   let entity = []
-  entity.push({ "type": "_type", "string": entu.victimE })
+  entity.push({ "type": "_type", "reference": entu.victimE })
   entity.push({ "type": "persoon", "string": row[0] })
   entity.push({ "type": "kirje", "string": row[1] })
   entity.push({ "type": "evokirje", "string": row[2] })
