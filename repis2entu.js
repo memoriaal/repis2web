@@ -22,27 +22,49 @@ console.log({
   'ENTU_WRITE_KEY': ENTU_WRITE_KEY,
 })
 
+const fetch = require('node-fetch')
+
 // Get token
 // GET {{hostname}}/auth?account=emi HTTP/1.1
 // Accept-Encoding: deflate
 // Authorization: Bearer {{key}}
-
-const axios = require('axios')
-const entu_post = async (doc) => {
-  let url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
-  let headers = { 'Authorization': `Bearer ${ENTU_WRITE_KEY}` }
-  let res = await axios.get(url, { headers })
-  let token = res.data.token
-  let entu_url = `https://${ENTU_HOST}/v1/entities/${doc.id}`
-  let entu_headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
+async function get_token() {
+  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${ENTU_WRITE_KEY}`
+    }
   }
-  let entu_res = await axios.put(entu_url, doc, { headers: entu_headers })
-  console.log('entu_res', token, entu_res.status, entu_res.data)
-  return entu_res
+  const response = await fetch(url, options)
+  const json = await response.json()
+  console.log(json)
+  return json
 }
 
+// POST {{hostname}}/entity HTTP/1.1
+// Accept-Encoding: deflate
+// Authorization: Bearer {{token}}
+// Content-Type: application/json; charset=utf-8
+const entu_post = async (doc) => {
+  const url = `https://${ENTU_HOST}/entity`
+  const token = await get_token()
+  console.log('entu_post', {token})
+  const options = {
+    method: 'POST',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${token.token}`,
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    body: JSON.stringify(doc)
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  console.log(json)
+  return json
+}
 
 require('array.prototype.flatmap').shim()
 
@@ -100,8 +122,8 @@ async function bulk_upload(bulk) {
       // delete from entu
       console.log('delete', doc.id)
     } else {
-      // await entu_post(doc)
-      console.log('post', doc.id)
+      await entu_post(doc)
+      console.log('posted', doc.id)
     }
     bulk.splice(0, 1)
   } 
