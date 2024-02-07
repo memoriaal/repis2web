@@ -69,7 +69,7 @@ run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
-  console.log('bulk_upload', bulk.length, bukl[0].id)
+  console.log('bulk_upload', bulk.length, bulk[0].id)
   return
   let operations = []
   bulk.forEach(doc => {
