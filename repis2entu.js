@@ -10,14 +10,6 @@ const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
-console.log(SOURCE, ' is the source file')
-console.log(ENTU_HOST, ' is the host')
-console.log(ENTU_AUTH_PATH, ' is the auth path')
-console.log(ENTU_WRITE_KEY, ' is the write key')
-
-exit(0)
-
-
 const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
@@ -25,12 +17,10 @@ const stream = fs.createReadStream(SOURCE)
 const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
 console.log({
-  'ES_CREDENTIALS': ES_CREDENTIALS,
-  'ES_HOST': ES_HOST,
-  'INDEX': INDEX,
   'SOURCE': SOURCE,
-  'BULK_SIZE': BULK_SIZE,
-  'LOG_PATH': LOG_PATH
+  'ENTU_HOST': ENTU_HOST,
+  'ENTU_AUTH_PATH': ENTU_AUTH_PATH,
+  'ENTU_WRITE_KEY': ENTU_WRITE_KEY,
 })
 require('array.prototype.flatmap').shim()
 
@@ -39,72 +29,6 @@ var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
 process.on('warning', e => console.warn(e.stack))
 
 async function run() {
-  if (MODE === 'recreate') {
-    console.log('delete index ' + INDEX)
-    try {
-      await client.indices.delete({ index: INDEX })
-      console.log('= deleted index ' + INDEX)
-    } catch (e) {
-      console.log(e)
-    }
-
-    console.log('= create index ' + INDEX)
-    try {
-      await client.indices.create(
-        {
-          index: INDEX,
-          body: {
-            mappings: {
-              properties: {
-                eesnimi: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                perenimi: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                kirje: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                sünd: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                surm: {
-                  type: 'text',
-                  fields: {
-                    raw: { type: 'keyword' }
-                  }
-                },
-                episoodid: {
-                  type: 'nested',  // Define "episoodid" as a nested field
-                  properties: {
-                    nimetus: { type: 'text' },
-                    asukoht: { type: 'text' },
-                    aeg: { type: 'text' },
-                  }
-                }
-              }
-            }
-          }
-        },
-        { ignore: [400] }
-      )
-      console.log('= created index ' + INDEX)
-    } catch (e) {
-      console.log(e)
-    }
-  }
 
   let bulk = []
   const csv_stream = csv.parseStream(stream)
@@ -146,7 +70,8 @@ run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
-  // const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
+  console.log('bulk_upload', bulk.length, bukl[0].id)
+  return
   let operations = []
   bulk.forEach(doc => {
     if (doc.kirje === '') {
@@ -163,10 +88,6 @@ async function bulk_upload(bulk) {
     .catch(e => {
       console.log(Object.keys(e.meta), e.meta.body, '===X===')
     })
-
-  const nowMinute = (new Date()).setSeconds(0, 0)
-  // fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
-  //                 , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
 
   if (bulkResponse && bulkResponse.items) {
     bulkResponse.items.forEach((item) => {
