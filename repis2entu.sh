@@ -84,7 +84,7 @@ sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 # echo $(date -u --iso-8601=seconds) uploading $csv_filename to entu.ee
 echo -n "$(date -u --iso-8601=seconds) Between ${last_ts} and ${new_ts}: "
-MODE=update SOURCE=${csv_filename} node repis2entu.js | grep Uploaded
+MODE=update SOURCE=${csv_filename} node repis2entu.js # | grep Uploaded
 
 ####
 #### Wrap up
