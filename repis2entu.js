@@ -5,19 +5,19 @@ const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
 const { exit }   = require('process')
 
-console.log(process.env.ENTU_HOST)
-console.log(process.env.ENTU_AUTH_PATH)
-console.log(process.env.ENTU_WRITE_KEY)
+const SOURCE         = process.env.SOURCE         || 'test.csv'
+const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
+const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
+const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
+console.log(SOURCE, ' is the source file')
+console.log(ENTU_HOST, ' is the host')
+console.log(ENTU_AUTH_PATH, ' is the auth path')
+console.log(ENTU_WRITE_KEY, ' is the write key')
 
 exit(0)
 
 
-const MODE           = process.env.MODE           || 'recreate'
-const ES_CREDENTIALS = process.env.ES_CREDENTIALS || ''
-const ES_HOST        = process.env.ES_HOST        || '94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io:9243'
-const INDEX          = process.env.ES_INDEX       || 'test_index'
-const SOURCE         = process.env.SOURCE         || 'test.csv'
 const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
