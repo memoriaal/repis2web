@@ -116,7 +116,7 @@ async function get_victimE() {
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
   const persoon = doc.find(i => i.type === 'persoon').string
-  console.log('entu_post', {id: persoon})
+  // console.log('entu_post', {id: persoon})
   const options = {
     method: 'POST',
     headers: {
@@ -143,7 +143,7 @@ async function run() {
   entu.token = await get_token()
   entu.folderE = await get_folderE()
   entu.victimE = await get_victimE()
-  console.log('entu', entu)
+  // console.log('entu', entu)
 
   let bulk = []
   const csv_stream = csv.parseStream(stream)
