@@ -143,6 +143,7 @@ async function run() {
   entu.token = await get_token()
   entu.folderE = await get_folderE()
   entu.victimE = await get_victimE()
+  console.log('entu', entu)
 
   let bulk = []
   const csv_stream = csv.parseStream(stream)
