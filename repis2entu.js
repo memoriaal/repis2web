@@ -116,7 +116,7 @@ async function get_victimE() {
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
   
-  console.log('entu_post', {id: doc.id})
+  console.log('entu_post', {id: doc.persoon})
   const options = {
     method: 'POST',
     headers: {
@@ -215,10 +215,10 @@ function row2entity(row) {
   entity.push({ "type": "persoon", "string": row[0] })
   entity.push({ "type": "kirje", "string": row[1] })
   entity.push({ "type": "evokirje", "string": row[2] })
-  entity.push({ "type": "perenimi", "string": row[3] })
-  entity.push({ "type": "eesnimi", "string": row[4] })
-  entity.push({ "type": "isanimi", "string": row[5] })
-  entity.push({ "type": "emanimi", "string": row[6] })
+  entity.push({ "type": "surname", "string": row[3] })
+  entity.push({ "type": "forename", "string": row[4] })
+  entity.push({ "type": "father", "string": row[5] })
+  entity.push({ "type": "mother", "string": row[6] })
   if (row[7]) entity.push({ "type": "birth", "string": row[7] })
   if (row[8]) entity.push({ "type": "death", "string": row[8] })
   if (row[9]) entity.push({ "type": "birthplace", "string": row[9] })
