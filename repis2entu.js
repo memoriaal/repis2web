@@ -157,10 +157,10 @@ function row2entity(row) {
   entity.push({ "type": "eesnimi", "string": row[4] })
   entity.push({ "type": "isanimi", "string": row[5] })
   entity.push({ "type": "emanimi", "string": row[6] })
-  if (row[7]) entity.push({ "type": "sünd", "string": row[7] })
-  if (row[8]) entity.push({ "type": "surm", "string": row[8] })
-  if (row[9]) entity.push({ "type": "sünnikoht", "string": row[9] })
-  if (row[10]) entity.push({ "type": "surmakoht", "string": row[10] })
+  if (row[7]) entity.push({ "type": "birth", "string": row[7] })
+  if (row[8]) entity.push({ "type": "death", "string": row[8] })
+  if (row[9]) entity.push({ "type": "birthplace", "string": row[9] })
+  if (row[10]) entity.push({ "type": "deathplace", "string": row[10] })
   try { entity.push({ "type": "kirjed", "text": JSON.parse(row[11]) }) } catch (e) { console.log(e, row[11]) }
   try { entity.push({ "type": "pereseosed", "text": JSON.parse(row[12]) }) } catch (e) { console.log(e, row[12]) }
   try { entity.push({ "type": "tahvlikirje", "text": JSON.parse(row[13]) }) } catch (e) { console.log(e, row[13]) }
