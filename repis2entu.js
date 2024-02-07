@@ -21,6 +21,29 @@ console.log({
   'ENTU_AUTH_PATH': ENTU_AUTH_PATH,
   'ENTU_WRITE_KEY': ENTU_WRITE_KEY,
 })
+
+// Get token
+// GET {{hostname}}/auth?account=emi HTTP/1.1
+// Accept-Encoding: deflate
+// Authorization: Bearer {{key}}
+
+const axios = require('axios')
+const entu_post = async (doc) => {
+  let url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
+  let headers = { 'Authorization': `Bearer ${ENTU_WRITE_KEY}` }
+  let res = await axios.get(url, { headers })
+  let token = res.data.token
+  let entu_url = `https://${ENTU_HOST}/v1/entities/${doc.id}`
+  let entu_headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+  let entu_res = await axios.put(entu_url, doc, { headers: entu_headers })
+  console.log('entu_res', token, entu_res.status, entu_res.data)
+  return entu_res
+}
+
+
 require('array.prototype.flatmap').shim()
 
 var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
@@ -72,6 +95,14 @@ async function bulk_upload(bulk) {
   console.log('bulk_upload', bulk.length, bulk[0].id)
   // remove records one by one
   while (bulk.length > 0) {
+    let doc = bulk[0]
+    if (doc.kirje === '') {
+      // delete from entu
+      console.log('delete', doc.id)
+    } else {
+      // await entu_post(doc)
+      console.log('post', doc.id)
+    }
     bulk.splice(0, 1)
   } 
   return
