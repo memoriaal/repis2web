@@ -70,6 +70,10 @@ run().catch(console.log)
 const erroredDocuments = []
 async function bulk_upload(bulk) {
   console.log('bulk_upload', bulk.length, bulk[0].id)
+  // remove records one by one
+  while (bulk.length > 0) {
+    bulk.splice(0, 1)
+  } 
   return
   let operations = []
   bulk.forEach(doc => {
