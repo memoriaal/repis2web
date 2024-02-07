@@ -17,14 +17,6 @@ const stream = fs.createReadStream(SOURCE)
 
 const entu = {}
 
-console.log({
-  'SOURCE': SOURCE,
-  'ENTU_HOST': ENTU_HOST,
-  'ENTU_AUTH_PATH': ENTU_AUTH_PATH,
-  'ENTU_WRITE_KEY': ENTU_WRITE_KEY,
-})
-
-
 // Get token
 // GET {{hostname}}/auth?account=emi HTTP/1.1
 // Accept-Encoding: deflate
