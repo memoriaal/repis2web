@@ -182,14 +182,10 @@ async function bulk_upload(bulk) {
   console.log('bulk_upload', bulk.length, bulk[0].id)
   // remove records one by one
   while (bulk.length > 0) {
-    let doc = bulk[0]
-    if (doc.kirje === '') {
-      // delete from entu
-      console.log('delete', doc.id)
-    } else {
-      const posted = await entu_post(doc)
-      console.log('posted', posted)
-    }
+    const doc = bulk[0]
+    const posted = await entu_post(doc)
+    const persoon = doc.find(i => i.type === 'persoon').string
+    console.log('Entu', posted._id, persoon)
     bulk.splice(0, 1)
   } 
   return
