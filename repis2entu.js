@@ -115,8 +115,8 @@ async function get_victimE() {
 // Content-Type: application/json; charset=utf-8
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
-  
-  console.log('entu_post', {id: doc.persoon})
+  const persoon = doc.find(i => i.type === 'persoon').string
+  console.log('entu_post', {id: persoon})
   const options = {
     method: 'POST',
     headers: {
@@ -179,7 +179,7 @@ run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
-  console.log('bulk_upload', bulk.length, bulk[0].id)
+  console.log('bulk_upload', bulk.length)
   // remove records one by one
   while (bulk.length > 0) {
     const doc = bulk[0]
