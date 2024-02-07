@@ -89,13 +89,7 @@ async function run() {
     .on('error', error => console.error(error))
     .on('data', async row => {
       csv_stream.pause()
-      let isik = row2isik(row)
-      cnt['all']++
-      cnt['isperson'] += isik['isperson']
-      cnt['wwii'] += isik['wwii']
-      cnt['mv'] += isik['mv']
-      cnt['emem'] += isik['emem']
-      cnt['kivi'] += isik['kivi']
+      let isik = row2entity(row)
 
       bulk.push(isik)
       if (bulk.length === BULK_SIZE) {
@@ -137,57 +131,49 @@ async function bulk_upload(bulk) {
     bulk.splice(0, 1)
   } 
   return
-  let operations = []
-  bulk.forEach(doc => {
-    if (doc.kirje === '') {
-      operations.push({ delete: { _index: INDEX, '_id': doc.id } })
-    } else {
-      operations.push({ delete: { _index: INDEX, '_id': doc.id } }
-        , { index: { _index: INDEX, '_id': doc.id } }
-        , doc)
-    }
-  })
+}
 
 
-  const bulkResponse = await client.bulk({ refresh: true, operations })
-    .catch(e => {
-      console.log(Object.keys(e.meta), e.meta.body, '===X===')
-    })
-
-  if (bulkResponse && bulkResponse.items) {
-    bulkResponse.items.forEach((item) => {
-      const action = item.index || item.delete
-
-      function findIxBy_id(item) {
-        return item.id === this
-      }
-      let bix = bulk.findIndex(findIxBy_id, action._id)
-      // console.log({bulk, bix, item, action})
-      if (bix > -1) {
-        bulk.splice(bix, 1) // keep first bix elements, remove one
-      }
-    })
-  }
-  if (bulkResponse && bulkResponse.errors) {
-    // The items array has the same order of the dataset we just indexed.
-    // The presence of the `error` key indicates that the operation
-    // that we did for the document has failed.
-    bulkResponse.items.forEach((action, item) => {
-      console.log('e:', item)
-      const operation = Object.keys(action)[0]
-      if (action[operation].error) {
-        erroredDocuments.push(
-          // If the status is 429 it means that you can retry the document,
-          // otherwise it's very likely a mapping error, and you should
-          // fix the document before to try it again.
-          action[operation].status + ': ' +
-          action[operation].error.reason,
-          // operation: body[i * 2],
-          // document: body[i * 2 + 1]
-        )
-      }
-    })
-  }
+// Create a structure for Entu
+// [
+//   {"type": "_type", "string": "victim"},
+//   {"type": "forename", "string": "John"},
+//   {"type": "surname", "string": "Doe"},
+//   {"type": "mother", "string": "Jane"},
+//   {"type": "father", "string": "Jack"},
+//   {"type": "birth", "string": "2000-01-01"},
+//   {"type": "death", "string": "2020-01-01"},
+//   {"type": "birthplace", "string": "Tallinn"},
+//   {"type": "_parent", "reference": "65c34b4fa732c040f16a8e44" },
+//   ... etc
+// ]
+function row2entity(row) {
+  let entity = []
+  entity.push({ "type": "_type", "string": "victim" })
+  entity.push({ "type": "persoon", "string": row[0] })
+  entity.push({ "type": "kirje", "string": row[1] })
+  entity.push({ "type": "evokirje", "string": row[2] })
+  entity.push({ "type": "perenimi", "string": row[3] })
+  entity.push({ "type": "eesnimi", "string": row[4] })
+  entity.push({ "type": "isanimi", "string": row[5] })
+  entity.push({ "type": "emanimi", "string": row[6] })
+  if (row[7]) entity.push({ "type": "sünd", "string": row[7] })
+  if (row[8]) entity.push({ "type": "surm", "string": row[8] })
+  if (row[9]) entity.push({ "type": "sünnikoht", "string": row[9] })
+  if (row[10]) entity.push({ "type": "surmakoht", "string": row[10] })
+  try { entity.push({ "type": "kirjed", "text": JSON.parse(row[11]) }) } catch (e) { console.log(e, row[11]) }
+  try { entity.push({ "type": "pereseosed", "text": JSON.parse(row[12]) }) } catch (e) { console.log(e, row[12]) }
+  try { entity.push({ "type": "tahvlikirje", "text": JSON.parse(row[13]) }) } catch (e) { console.log(e, row[13]) }
+  try { entity.push({ "type": "episoodid", "text": JSON.parse(row[14]) }) } catch (e) { console.log(e, row[14]) }
+  entity.push({ "type": "isperson", "boolean": row[15] === '1' })
+  entity.push({ "type": "kivi", "boolean": row[16] === '1' })
+  entity.push({ "type": "emem", "boolean": row[17] === '1' })
+  entity.push({ "type": "evo", "boolean": row[18] === '1' })
+  entity.push({ "type": "wwii", "boolean": row[19] === '1' })
+  entity.push({ "type": "mv", "boolean": row[20] === '1' })
+  entity.push({ "type": "redirect", "string": row[21] })
+  entity.push({ "type": "_parent", "reference": "65c34b4fa732c040f16a8e44" })
+  return entity
 }
 
 function row2isik(row) {
