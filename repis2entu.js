@@ -64,7 +64,7 @@ async function get_folderE() {
     method: 'GET',
     headers: {
       'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${entu.token}`
     }
   }
   const response = await fetch(url, options)
@@ -93,7 +93,7 @@ async function get_victimE() {
     method: 'GET',
     headers: {
       'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${entu.token}`
     }
   }
   const response = await fetch(url, options)
