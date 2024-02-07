@@ -185,7 +185,7 @@ async function bulk_upload(bulk) {
     const doc = bulk[0]
     const posted = await entu_post(doc)
     const persoon = doc.find(i => i.type === 'persoon').string
-    console.log('Entu', posted._id, persoon)
+    console.log(`Entu ${bulk.length}: ${posted._id} ${persoon}`)
     bulk.splice(0, 1)
   } 
   return
