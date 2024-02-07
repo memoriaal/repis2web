@@ -27,7 +27,7 @@ last_ts=`cat last_ts.out`
 echo "last timestamp: ${last_ts}"
 
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-CALL pub.repub(150);
+CALL pub.repub(2500);
 select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
