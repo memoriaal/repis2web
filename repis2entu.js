@@ -48,7 +48,7 @@ async function get_token() {
       return null
     }
   } else {
-    console.error('Invalid json data')
+    console.error('get_token: Invalid json data')
     return null
   }
 }
@@ -77,7 +77,7 @@ async function get_folderE() {
       return null
     }
   } else {
-    console.error('Invalid json data')
+    console.error('get_folderE: Invalid json data')
     return null
   }
 }
@@ -106,7 +106,7 @@ async function get_victimE() {
       return null
     }
   } else {
-    console.error('Invalid json data')
+    console.error('get_victimE: Invalid json data')
     return null
   }
 }
