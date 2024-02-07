@@ -68,15 +68,15 @@ async function get_folderE() {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  if (Array.isArray(json) && json.length > 0) {
-    if (json[0]._id) {
-      return json[0]._id
+  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
+    if (json.entities[0]._id) {
+      return json.entities[0]._id
     } else {
       console.error('no _id in json data')
       return null
     }
   } else {
-    console.error('get_folderE: Invalid json data', {json})
+    console.error('get_folderE: Invalid json data', {json, entities: json.entities, length: json.entities.length})
     return null
   }
 }
@@ -96,15 +96,15 @@ async function get_victimE() {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  if (Array.isArray(json) && json.length > 0) {
-    if (json[0]._id) {
-      return json[0]._id
+  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
+    if (json.entities[0]._id) {
+      return json.entities[0]._id
     } else {
       console.error('no _id in json data')
       return null
     }
   } else {
-    console.error('get_victimE: Invalid json data', {json})
+    console.error('get_victimE: Invalid json data', {json, entities: json.entities, length: json.entities.length})
     return null
   }
 }
