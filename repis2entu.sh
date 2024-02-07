@@ -24,7 +24,7 @@ ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
 #### pub.nimekirjad
 ####
 last_ts=`cat last_ts.out`
-# echo "last timestamp: ${last_ts}"
+echo "last timestamp: ${last_ts}"
 
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 CALL pub.repub(42);
@@ -32,7 +32,7 @@ select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
 new_ts=`echo $new_ts | cut -d " " -f2,3`
-# echo "new timestamp: ${new_ts}"
+echo "new timestamp: ${new_ts}"
 
 if [ "${new_ts}" == "" ]
 then
@@ -40,7 +40,7 @@ then
     exit 1
 fi
 
-echo $new_ts > last_ts.out
+echo $new_ts > last_entu_ts.out
 
 if [ "${new_ts}" == "${last_ts}" ]
 then
@@ -48,14 +48,14 @@ then
     exit 0
 fi
 
-# echo "Updating between $last_ts <--> $new_ts"
+echo "Updating between $last_ts <--> $new_ts"
 
 
 ####
 #### memoriaal.ee emem
 ####
 csv_filename="/paringud/$(date +%Y%m%d_%H%M%S)_memoriaal_ee_emem.csv"
-# echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
+echo $(date -u --iso-8601=seconds) Exporting to $csv_filename
 mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
 SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi
 , left(sünd,10), left(surm,10)
