@@ -59,7 +59,6 @@ async function get_token() {
 // Authorization: Bearer {{token}}
 async function get_folderE() {
   const url = `https://${ENTU_HOST}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id`
-  const token = await get_token()
   const options = {
     method: 'GET',
     headers: {
@@ -88,7 +87,6 @@ async function get_folderE() {
 // Authorization: Bearer {{token}}
 async function get_victimE() {
   const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=victim&props=_id`
-  const token = await get_token()
   const options = {
     method: 'GET',
     headers: {
@@ -110,6 +108,7 @@ async function get_victimE() {
     return null
   }
 }
+
 // POST {{hostname}}/entity HTTP/1.1
 // Accept-Encoding: deflate
 // Authorization: Bearer {{token}}
@@ -117,7 +116,7 @@ async function get_victimE() {
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
   
-  console.log('entu_post', {token: entu.token})
+  console.log('entu_post', {id: doc.id})
   const options = {
     method: 'POST',
     headers: {
@@ -129,7 +128,7 @@ const entu_post = async (doc) => {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  console.log(json)
+  // console.log(json)
   return json
 }
 
@@ -187,8 +186,8 @@ async function bulk_upload(bulk) {
       // delete from entu
       console.log('delete', doc.id)
     } else {
-      await entu_post(doc)
-      console.log('posted', doc.id)
+      const posted = await entu_post(doc)
+      console.log('posted', posted)
     }
     bulk.splice(0, 1)
   } 
