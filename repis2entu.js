@@ -3,18 +3,19 @@
 var path         = require('path')
 const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
-const { exit }   = require('process')
+const fetch      = require('node-fetch')
 
 const SOURCE         = process.env.SOURCE         || 'test.csv'
 const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
-const ENTU_TOKEN = await get_token()
 const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
 const stream = fs.createReadStream(SOURCE)
+
+const entu = {}
 
 console.log({
   'SOURCE': SOURCE,
@@ -23,8 +24,6 @@ console.log({
   'ENTU_WRITE_KEY': ENTU_WRITE_KEY,
 })
 
-const fetch = require('node-fetch')
-const { get } = require('http')
 
 // Get token
 // GET {{hostname}}/auth?account=emi HTTP/1.1
@@ -49,24 +48,81 @@ async function get_token() {
       return null
     }
   } else {
-    // Handle the case where json is not an array or is an empty array
     console.error('Invalid json data')
     return null
   }
 }
 
+// Get folderE
+// GET {{hostname}}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id HTTP/1.1
+// Accept-Encoding: deflate
+// Authorization: Bearer {{token}}
+async function get_folderE() {
+  const url = `https://${ENTU_HOST}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id`
+  const token = await get_token()
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${token}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  if (Array.isArray(json) && json.length > 0) {
+    if (json[0]._id) {
+      return json[0]._id
+    } else {
+      console.error('no _id in json data')
+      return null
+    }
+  } else {
+    console.error('Invalid json data')
+    return null
+  }
+}
+
+// Get victimE
+// GET {{hostname}}/entity?_type.string=entity&name.string=victim&props=_id HTTP/1.1
+// Accept-Encoding: deflate
+// Authorization: Bearer {{token}}
+async function get_victimE() {
+  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=victim&props=_id`
+  const token = await get_token()
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${token}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  if (Array.isArray(json) && json.length > 0) {
+    if (json[0]._id) {
+      return json[0]._id
+    } else {
+      console.error('no _id in json data')
+      return null
+    }
+  } else {
+    console.error('Invalid json data')
+    return null
+  }
+}
 // POST {{hostname}}/entity HTTP/1.1
 // Accept-Encoding: deflate
 // Authorization: Bearer {{token}}
 // Content-Type: application/json; charset=utf-8
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
-  console.log('entu_post', {ENTU_TOKEN})
+  
+  console.log('entu_post', {token: entu.token})
   const options = {
     method: 'POST',
     headers: {
       'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${ENTU_TOKEN}`,
+      'Authorization': `Bearer ${entu.token}`,
       'Content-Type': 'application/json; charset=utf-8'
     },
     body: JSON.stringify(doc)
@@ -83,7 +139,12 @@ var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
 
 process.on('warning', e => console.warn(e.stack))
 
+
 async function run() {
+  entu.token = await get_token()
+  entu.folderE = await get_folderE()
+  entu.victimE = await get_victimE()
+
   let bulk = []
   const csv_stream = csv.parseStream(stream)
   csv_stream
@@ -150,7 +211,7 @@ async function bulk_upload(bulk) {
 // ]
 function row2entity(row) {
   let entity = []
-  entity.push({ "type": "_type", "string": "victim" })
+  entity.push({ "type": "_type", "string": entu.victimE })
   entity.push({ "type": "persoon", "string": row[0] })
   entity.push({ "type": "kirje", "string": row[1] })
   entity.push({ "type": "evokirje", "string": row[2] })
@@ -173,34 +234,6 @@ function row2entity(row) {
   entity.push({ "type": "wwii", "boolean": row[19] === '1' })
   entity.push({ "type": "mv", "boolean": row[20] === '1' })
   entity.push({ "type": "redirect", "string": row[21] })
-  entity.push({ "type": "_parent", "reference": "65c34b4fa732c040f16a8e44" })
+  entity.push({ "type": "_parent", "reference": entu.folderE })
   return entity
-}
-
-function row2isik(row) {
-  let isik = {}
-  isik['id'] = row[0]
-  isik['kirje'] = row[1]
-  isik['evokirje'] = row[2]
-  isik['perenimi'] = row[3]
-  isik['eesnimi'] = row[4]
-  isik['isanimi'] = row[5]
-  isik['emanimi'] = row[6]
-  if (row[7]) isik['sünd'] = row[7]
-  if (row[8]) isik['surm'] = row[8]
-  if (row[9]) isik['sünnikoht'] = row[9]
-  if (row[10]) isik['surmakoht'] = row[10]
-  try { isik['kirjed'] = JSON.parse(row[11]) } catch (e) { console.log(e, row[11]) }
-  try { isik['pereseosed'] = JSON.parse(row[12]) } catch (e) { console.log(e, row[12]) }
-  try { isik['tahvlikirje'] = JSON.parse(row[13]) } catch (e) { console.log(e, row[13]) }
-  try { isik['episoodid'] = JSON.parse(row[14]) } catch (e) { console.log(e, row[14]) }
-  isik['isperson'] = row[15] === '1' ? 1 : 0
-  isik['kivi'] = row[16] === '1' ? 1 : 0
-  isik['emem'] = row[17] === '1' ? 1 : 0
-  isik['evo'] = row[18] === '1' ? 1 : 0
-  isik['wwii'] = row[19] === '1' ? 1 : 0
-  isik['mv'] = row[20] === '1' ? 1 : 0
-  isik['redirect'] = row[21]
-  isik['updated_at'] = new Date().toLocaleString()
-  return isik
 }
