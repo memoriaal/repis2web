@@ -10,6 +10,7 @@ const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
+const ENTU_TOKEN = get_token()
 const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
@@ -23,6 +24,7 @@ console.log({
 })
 
 const fetch = require('node-fetch')
+const { get } = require('http')
 
 // Get token
 // GET {{hostname}}/auth?account=emi HTTP/1.1
@@ -50,7 +52,8 @@ async function get_token() {
     // Handle the case where json is not an array or is an empty array
     console.error('Invalid json data')
     return null
-  }}
+  }
+}
 
 // POST {{hostname}}/entity HTTP/1.1
 // Accept-Encoding: deflate
@@ -58,13 +61,12 @@ async function get_token() {
 // Content-Type: application/json; charset=utf-8
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
-  const token = await get_token()
-  console.log('entu_post', {token})
+  console.log('entu_post', {ENTU_TOKEN})
   const options = {
     method: 'POST',
     headers: {
       'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${ENTU_TOKEN}`,
       'Content-Type': 'application/json; charset=utf-8'
     },
     body: JSON.stringify(doc)
@@ -82,7 +84,6 @@ var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
 process.on('warning', e => console.warn(e.stack))
 
 async function run() {
-
   let bulk = []
   const csv_stream = csv.parseStream(stream)
   csv_stream
