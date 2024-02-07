@@ -1,0 +1,42 @@
+
+@hostname=api.entu.app
+@key=
+
+###
+# auth
+GET {{hostname}}/auth?account=emi HTTP/1.1
+Accept-Encoding: deflate
+Authorization: Bearer {{key}}
+
+@token=
+
+###
+# account
+GET {{hostname}}/account HTTP/1.1
+Accept-Encoding: deflate
+Authorization: Bearer {{token}}
+
+###
+# entity GET
+GET {{hostname}}/entity?_type.string=victim&limit=200&skip=2 HTTP/1.1
+Accept-Encoding: deflate
+Authorization: Bearer {{token}}
+
+###
+# entity POST
+POST {{hostname}}/entity HTTP/1.1
+Accept-Encoding: deflate
+Authorization: Bearer {{token}}
+Content-Type: application/json; charset=utf-8
+
+[
+    {"type": "_type", "string": "victim"},
+    {"type": "forename", "string": "John"},
+    {"type": "surname", "string": "Doe"},
+    {"type": "mother", "string": "Jane"},
+    {"type": "father", "string": "Jack"},
+    {"type": "birth", "string": "2000-01-01"},
+    {"type": "death", "string": "2020-01-01"},
+    {"type": "birthplace", "string": "Tallinn"},
+    {"type": "_parent", "reference": "65c34b4fa732c040f16a8e44" }
+]
