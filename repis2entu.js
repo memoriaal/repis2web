@@ -138,7 +138,7 @@ const entu_post = async (doc) => {
   const victimId = victimIds[0] || null
   const url = `https://${ENTU_HOST}/entity${victimId ? `/${victimId}` : ''}`
   if (victimIds) {
-    console.log('entu_post update', {id: persoon, victimIds, url})
+    console.log('entu_post update', {id: persoon, victimIds})
     victimIds.splice(0, 1)
     await delete_entities(victimIds)
     // doc.push({ "type": "_id", "string": victimId} )
@@ -157,7 +157,7 @@ const entu_post = async (doc) => {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  console.log(json)
+  // console.log(json)
   return json
 }
 
