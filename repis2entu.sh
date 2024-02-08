@@ -19,7 +19,7 @@ trap "rm -f -- '$mypidfile'" EXIT
 # ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
 
-
+bulk_size=250000
 ####
 #### pub.nimekirjad
 ####
@@ -27,7 +27,7 @@ last_ts=`cat last_ts.out`
 echo "last timestamp: ${last_ts}"
 
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-CALL pub.repub(2500);
+CALL pub.repub(${bulk_size});
 select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
