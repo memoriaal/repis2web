@@ -101,6 +101,35 @@ async function get_victimE() {
   }
 }
 
+// Get victim id by person
+// GET {{hostname}}/entity?_type.string=victim&persoon.string=12345678901&props=_id HTTP/1.1
+// Accept-Encoding: deflate
+// Authorization: Bearer {{token}}
+async function get_victimIdByPerson(person) {
+  const url = `https://${ENTU_HOST}/entity?_type.string=victim&persoon.string=${person}&props=_id`
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${entu.token}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
+    if (json.entities[0]._id) {
+      return json.entities[0]._id
+    } else {
+      console.error('no _id in json data')
+      return null
+    }
+  } else {
+    console.error('get_victimIdByPerson: Invalid json data', {json, entities: json.entities, length: json.entities.length})
+    return null
+  }
+}
+
+
 // POST {{hostname}}/entity HTTP/1.1
 // Accept-Encoding: deflate
 // Authorization: Bearer {{token}}
@@ -108,6 +137,13 @@ async function get_victimE() {
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
   const persoon = doc.find(i => i.type === 'persoon').string
+  const victimId = await get_victimIdByPerson(persoon)
+  if (victimId) {
+    console.log('entu_post update', {id: persoon, victimId})
+    doc.push({ "type": "_id", "string": victimId })
+  } else {
+    console.log('entu_post', {id: persoon})
+  }
   // console.log('entu_post', {id: persoon})
   const options = {
     method: 'POST',
