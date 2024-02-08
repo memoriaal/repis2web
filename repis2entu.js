@@ -105,7 +105,7 @@ async function get_victimE() {
 // GET {{hostname}}/entity?_type.string=victim&persoon.string=12345678901&props=_id HTTP/1.1
 // Accept-Encoding: deflate
 // Authorization: Bearer {{token}}
-async function get_victimIdByPerson(person) {
+async function get_victimIdsByPerson(person) {
   const url = `https://${ENTU_HOST}/entity?_type.string=victim&persoon.string=${person}&props=_id`
   const options = {
     method: 'GET',
@@ -117,12 +117,7 @@ async function get_victimIdByPerson(person) {
   const response = await fetch(url, options)
   const json = await response.json()
   if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
-    if (json.entities[0]._id) {
-      return json.entities[0]._id
-    } else {
-      console.error('no _id in json data')
-      return null
-    }
+    return json.entities.filter(i => i._id).map(i => i._id)
   } else if (json.entities.length === 0) {
     console.error('get_victimIdByPerson: no person found')
     return null
@@ -140,10 +135,14 @@ async function get_victimIdByPerson(person) {
 const entu_post = async (doc) => {
   const url = `https://${ENTU_HOST}/entity`
   const persoon = doc.find(i => i.type === 'persoon').string
-  const victimId = await get_victimIdByPerson(persoon)
-  if (victimId) {
+  const victimIds = await get_victimIdsByPerson(persoon)
+  if (victimIds) {
+    const victimId = victimIds[0]
+    victimIds.splice(0, 1)
     console.log('entu_post update', {id: persoon, victimId})
-    doc.push({ "type": "_id", "string": victimId })
+    await delete_entities(victimIds)
+
+    doc.push({ "type": "_id", "string": victimId} )
   } else {
     console.log('entu_post', {id: persoon})
   }
@@ -174,7 +173,7 @@ async function run() {
   entu.token = await get_token()
   entu.folderE = await get_folderE()
   entu.victimE = await get_victimE()
-  await remove_empty_persons()
+  await remove_empty_victims()
   // console.log('entu', entu)
 
   let bulk = []
@@ -219,7 +218,7 @@ async function bulk_upload(bulk) {
     const posted = await entu_post(doc)
     const persoon = doc.find(i => i.type === 'persoon').string
     console.log(`Entu ${bulk.length}: ${posted._id} ${persoon}`)
-    bulk.splice(0, 1)
+    bulk.splice(0, 1) // remove first element
   } 
   return
 }
@@ -297,7 +296,7 @@ function row2entity(row) {
 // DELETE {{hostname}}/entity?_type.string=victim&redirect.string.gt=&forename.string= HTTP/1.1
 // Accept-Encoding: deflate
 // Authorization: Bearer {{token}}
-async function remove_empty_persons() {
+async function remove_empty_victims() {
   const url = `https://${ENTU_HOST}/entity?_type.string=victim&surname.string=&forename.string=`
   const options = {
     method: 'GET',
@@ -310,7 +309,10 @@ async function remove_empty_persons() {
   const json = await response.json()
   console.log(json.entities.length, 'empty persons found')
   const entityIds = json.entities.filter(i => i._id).map(i => i._id)
-  console.log(entityIds)
+  delete_entities(entityIds)
+}
+
+async function delete_entities(entityIds) {
   while (entityIds.length > 0) {
     const id = entityIds[0]
     const url = `https://${ENTU_HOST}/entity/${id}`
