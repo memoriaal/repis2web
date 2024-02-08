@@ -19,7 +19,7 @@ trap "rm -f -- '$mypidfile'" EXIT
 # ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
 
-bulk_size=50000
+bulk_size=500
 ####
 #### pub.nimekirjad
 ####
