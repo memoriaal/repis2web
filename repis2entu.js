@@ -308,20 +308,21 @@ async function remove_empty_persons() {
   const response = await fetch(url, options)
   const json = await response.json()
   console.log(json.entities.length, 'empty persons found')
-  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
-    for (let i = 0; i < json.entities.length; i++) {
-      const entity = json.entities[i]
-      const url = `https://${ENTU_HOST}/entity/${entity._id}`
-      const options = {
-        method: 'DELETE',
-        headers: {
-          'Accept-Encoding': 'deflate',
-          'Authorization': `Bearer ${entu.token}`
-        }
+  const entityIds = json.entities.filter(i => i._id).map(i => i._id)
+  console.log(entityIds)
+  while (entityIds.length > 0) {
+    const id = entityIds[0]
+    const url = `https://${ENTU_HOST}/entity/${id}`
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Accept-Encoding': 'deflate',
+        'Authorization': `Bearer ${entu.token}`
       }
-      const response = await fetch(url, options)
-      const json = await response.json()
-      console.log(json)
-    }
+    } 
+    const response = await fetch(url, options)
+    const json = await response.json()
+    console.log(json)
+    entityIds.splice(0, 1)
   }
 }
