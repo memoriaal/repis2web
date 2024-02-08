@@ -137,9 +137,9 @@ const entu_post = async (doc) => {
   const persoon = doc.find(i => i.type === 'persoon').string
   const victimIds = await get_victimIdsByPerson(persoon)
   if (victimIds) {
+    console.log('entu_post update', {id: persoon, victimIds})
     const victimId = victimIds[0]
     victimIds.splice(0, 1)
-    console.log('entu_post update', {id: persoon, victimId})
     await delete_entities(victimIds)
 
     doc.push({ "type": "_id", "string": victimId} )
