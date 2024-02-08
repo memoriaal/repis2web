@@ -180,7 +180,7 @@ async function run() {
     .on('data', async row => {
       csv_stream.pause()
       let isik = row2entity(row)
-      if (!isik) {
+      if (isik !== false) {
         bulk.push(isik)
         if (bulk.length === BULK_SIZE) {
           console.log('read', JSON.stringify(cnt, null, 0))
