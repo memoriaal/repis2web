@@ -158,7 +158,7 @@ const entu_post = async (doc) => {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  // console.log(json)
+  console.log(json)
   return json
 }
 
