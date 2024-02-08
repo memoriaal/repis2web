@@ -174,6 +174,7 @@ async function run() {
   entu.token = await get_token()
   entu.folderE = await get_folderE()
   entu.victimE = await get_victimE()
+  await remove_empty_persons()
   // console.log('entu', entu)
 
   let bulk = []
@@ -287,4 +288,40 @@ function row2entity(row) {
   row[20] === '1' && entity.push({ "type": "mv", "boolean": row[20] === '1' })
   entity.push({ "type": "_parent", "reference": entu.folderE })
   return entity
+}
+
+
+// remove empty persons
+// ?_type.string=victim&redirect.string.gt=&forename.string=
+// DELETE {{hostname}}/entity?_type.string=victim&redirect.string.gt=&forename.string= HTTP/1.1
+// Accept-Encoding: deflate
+// Authorization: Bearer {{token}}
+async function remove_empty_persons() {
+  const url = `https://${ENTU_HOST}/entity?_type.string=victim&redirect.string.gt=&forename.string=`
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${entu.token}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  console.log(json)
+  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
+    for (let i = 0; i < json.entities.length; i++) {
+      const entity = json.entities[i]
+      const url = `https://${ENTU_HOST}/entity/${entity._id}`
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Accept-Encoding': 'deflate',
+          'Authorization': `Bearer ${entu.token}`
+        }
+      }
+      const response = await fetch(url, options)
+      const json = await response.json()
+      console.log(json)
+    }
+  }
 }
