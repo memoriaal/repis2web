@@ -277,7 +277,9 @@ function row2entity(row) {
   row[9]  && entity.push({ "type": "birthplace", "string": row[9] })
   row[10] && entity.push({ "type": "deathplace", "string": row[10] })
   try { entity.push({ "type": "kirjed", "string": JSON.parse(row[11]) }) } catch (e) { console.log(e, row[11]) }
+  console.log(row[12])
   try { entity.push({ "type": "pereseosed", "string": JSON.parse(row[12]) }) } catch (e) { console.log(e, row[12]) }
+  console.log(row[13])
   try { entity.push({ "type": "tahvlikirje", "string": JSON.parse(row[13]) }) } catch (e) { console.log(e, row[13]) }
   try { entity.push({ "type": "episoodid", "string": JSON.parse(row[14]) }) } catch (e) { console.log(e, row[14]) }
   row[15] === '1' && entity.push({ "type": "isperson", "boolean": row[15] === '1' })
