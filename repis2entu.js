@@ -136,7 +136,7 @@ const entu_post = async (doc) => {
   const persoon = doc.find(i => i.type === 'persoon').string
   const victimIds = await get_victimIdsByPerson(persoon)
   const victimId = victimIds[0] || null
-  const url = `https://${ENTU_HOST}/entity/victim${victimId ? `/${victimId}` : ''}`
+  const url = `https://${ENTU_HOST}/entity${victimId ? `/${victimId}` : ''}`
   if (victimIds) {
     console.log('entu_post update', {id: persoon, victimIds, url})
     victimIds.splice(0, 1)
