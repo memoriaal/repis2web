@@ -307,7 +307,7 @@ async function remove_empty_persons() {
   }
   const response = await fetch(url, options)
   const json = await response.json()
-  console.log(json)
+  console.log(json.entities.length, 'empty persons found')
   if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
     for (let i = 0; i < json.entities.length; i++) {
       const entity = json.entities[i]
