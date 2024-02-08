@@ -133,16 +133,15 @@ async function get_victimIdsByPerson(person) {
 // Authorization: Bearer {{token}}
 // Content-Type: application/json; charset=utf-8
 const entu_post = async (doc) => {
-  const url = `https://${ENTU_HOST}/entity`
   const persoon = doc.find(i => i.type === 'persoon').string
   const victimIds = await get_victimIdsByPerson(persoon)
+  const victimId = victimIds[0] || null
+  const url = `https://${ENTU_HOST}/entity/victim${victimId ? `/${victimId}` : ''}`
   if (victimIds) {
     console.log('entu_post update', {id: persoon, victimIds})
-    const victimId = victimIds[0]
     victimIds.splice(0, 1)
     await delete_entities(victimIds)
-
-    doc.push({ "type": "id", "string": victimId} )
+    // doc.push({ "type": "_id", "string": victimId} )
   } else {
     console.log('entu_post', {id: persoon})
   }
