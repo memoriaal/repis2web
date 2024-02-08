@@ -1,6 +1,7 @@
 
 @hostname=api.entu.app
 @key=
+@key=6Im1paGtlbC5wdXRyaW5zaEBnbWFp
 
 ###
 # auth
@@ -15,6 +16,22 @@ Authorization: Bearer {{key}}
 GET {{hostname}}/account HTTP/1.1
 Accept-Encoding: deflate
 Authorization: Bearer {{token}}
+
+###
+# entity GET folder
+GET {{hostname}}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id HTTP/1.1
+Accept-Encoding: deflate
+Authorization: Bearer {{token}}
+
+@folder=65c34b4fa732c040f16a8e44
+
+###
+# entity GET victim definition
+GET {{hostname}}/entity?_type.string=entity&name.string=victim&props=_id HTTP/1.1
+Accept-Encoding: deflate
+Authorization: Bearer {{token}}
+
+@victim=65c36a87a732c040f16a8e97
 
 ###
 # entity GET
