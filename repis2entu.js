@@ -123,6 +123,9 @@ async function get_victimIdByPerson(person) {
       console.error('no _id in json data')
       return null
     }
+  } else if (json.entities.length === 0) {
+    console.error('get_victimIdByPerson: no person found')
+    return null
   } else {
     console.error('get_victimIdByPerson: Invalid json data', {json, entities: json.entities, length: json.entities.length})
     return null
