@@ -276,10 +276,10 @@ function row2entity(row) {
   row[8]  && entity.push({ "type": "death", "string": row[8] })
   row[9]  && entity.push({ "type": "birthplace", "string": row[9] })
   row[10] && entity.push({ "type": "deathplace", "string": row[10] })
-  try { entity.push({ "type": "kirjed", "text": JSON.parse(row[11]) }) } catch (e) { console.log(e, row[11]) }
-  try { entity.push({ "type": "pereseosed", "text": JSON.parse(row[12]) }) } catch (e) { console.log(e, row[12]) }
-  try { entity.push({ "type": "tahvlikirje", "text": JSON.parse(row[13]) }) } catch (e) { console.log(e, row[13]) }
-  try { entity.push({ "type": "episoodid", "text": JSON.parse(row[14]) }) } catch (e) { console.log(e, row[14]) }
+  try { entity.push({ "type": "kirjed", "string": JSON.parse(row[11]) }) } catch (e) { console.log(e, row[11]) }
+  try { entity.push({ "type": "pereseosed", "string": JSON.parse(row[12]) }) } catch (e) { console.log(e, row[12]) }
+  try { entity.push({ "type": "tahvlikirje", "string": JSON.parse(row[13]) }) } catch (e) { console.log(e, row[13]) }
+  try { entity.push({ "type": "episoodid", "string": JSON.parse(row[14]) }) } catch (e) { console.log(e, row[14]) }
   row[15] === '1' && entity.push({ "type": "isperson", "boolean": row[15] === '1' })
   row[16] === '1' && entity.push({ "type": "kivi", "boolean": row[16] === '1' })
   row[17] === '1' && entity.push({ "type": "emem", "boolean": row[17] === '1' })
