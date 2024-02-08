@@ -235,29 +235,46 @@ async function bulk_upload(bulk) {
 // ]
 function row2entity(row) {
   let entity = []
+  
   entity.push({ "type": "_type", "reference": entu.victimE })
+  
+  if (!row[0]) {
+    return false
+  }
   entity.push({ "type": "persoon", "string": row[0] })
-  entity.push({ "type": "kirje", "string": row[1] })
-  entity.push({ "type": "evokirje", "string": row[2] })
-  entity.push({ "type": "surname", "string": row[3] })
-  entity.push({ "type": "forename", "string": row[4] })
-  entity.push({ "type": "father", "string": row[5] })
-  entity.push({ "type": "mother", "string": row[6] })
-  if (row[7]) entity.push({ "type": "birth", "string": row[7] })
-  if (row[8]) entity.push({ "type": "death", "string": row[8] })
-  if (row[9]) entity.push({ "type": "birthplace", "string": row[9] })
-  if (row[10]) entity.push({ "type": "deathplace", "string": row[10] })
+  
+  if (row[21]) {
+    entity.push({ "type": "redirect", "string": row[21] })
+    return entity
+  }
+
+  if (!row[1]) {
+    return false
+  }
+  // also return false, if row[1] doesnot have any letters
+  if (!/[a-zõüöäA-ZÕÜÖÄ]/.test(row[1])) {
+    return false
+  }
+  row[1]  && entity.push({ "type": "kirje", "string": row[1] })
+  row[2]  && entity.push({ "type": "evokirje", "string": row[2] })
+  row[3]  && entity.push({ "type": "surname", "string": row[3] })
+  row[4]  && entity.push({ "type": "forename", "string": row[4] })
+  row[5]  && entity.push({ "type": "father", "string": row[5] })
+  row[6]  && entity.push({ "type": "mother", "string": row[6] })
+  row[7]  && entity.push({ "type": "birth", "string": row[7] })
+  row[8]  && entity.push({ "type": "death", "string": row[8] })
+  row[9]  && entity.push({ "type": "birthplace", "string": row[9] })
+  row[10] && entity.push({ "type": "deathplace", "string": row[10] })
   try { entity.push({ "type": "kirjed", "text": JSON.parse(row[11]) }) } catch (e) { console.log(e, row[11]) }
   try { entity.push({ "type": "pereseosed", "text": JSON.parse(row[12]) }) } catch (e) { console.log(e, row[12]) }
   try { entity.push({ "type": "tahvlikirje", "text": JSON.parse(row[13]) }) } catch (e) { console.log(e, row[13]) }
   try { entity.push({ "type": "episoodid", "text": JSON.parse(row[14]) }) } catch (e) { console.log(e, row[14]) }
-  entity.push({ "type": "isperson", "boolean": row[15] === '1' })
-  entity.push({ "type": "kivi", "boolean": row[16] === '1' })
-  entity.push({ "type": "emem", "boolean": row[17] === '1' })
-  entity.push({ "type": "evo", "boolean": row[18] === '1' })
-  entity.push({ "type": "wwii", "boolean": row[19] === '1' })
-  entity.push({ "type": "mv", "boolean": row[20] === '1' })
-  entity.push({ "type": "redirect", "string": row[21] })
+  row[15] && entity.push({ "type": "isperson", "boolean": row[15] === '1' })
+  row[16] && entity.push({ "type": "kivi", "boolean": row[16] === '1' })
+  row[17] && entity.push({ "type": "emem", "boolean": row[17] === '1' })
+  row[18] && entity.push({ "type": "evo", "boolean": row[18] === '1' })
+  row[19] && entity.push({ "type": "wwii", "boolean": row[19] === '1' })
+  row[20] && entity.push({ "type": "mv", "boolean": row[20] === '1' })
   entity.push({ "type": "_parent", "reference": entu.folderE })
   return entity
 }
