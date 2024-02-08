@@ -142,7 +142,7 @@ const entu_post = async (doc) => {
     victimIds.splice(0, 1)
     await delete_entities(victimIds)
 
-    doc.push({ "type": "_id", "string": victimId} )
+    doc.push({ "type": "id", "string": victimId} )
   } else {
     console.log('entu_post', {id: persoon})
   }
