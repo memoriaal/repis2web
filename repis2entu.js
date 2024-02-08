@@ -180,16 +180,17 @@ async function run() {
     .on('data', async row => {
       csv_stream.pause()
       let isik = row2entity(row)
-
-      bulk.push(isik)
-      if (bulk.length === BULK_SIZE) {
-        console.log('read', JSON.stringify(cnt, null, 0))
-        // while(bulk.length > 0) {
-        await bulk_upload(bulk)
-        if (bulk.length) {
-          console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id))
+      if (!isik) {
+        bulk.push(isik)
+        if (bulk.length === BULK_SIZE) {
+          console.log('read', JSON.stringify(cnt, null, 0))
+          // while(bulk.length > 0) {
+          await bulk_upload(bulk)
+          if (bulk.length) {
+            console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id))
+          }
+          // }
         }
-        // }
       }
       csv_stream.resume()
     })
@@ -256,9 +257,15 @@ function row2entity(row) {
     return false
   }
   row[1]  && entity.push({ "type": "kirje", "string": row[1] })
-  row[2]  && entity.push({ "type": "evokirje", "string": row[2] })
+
+  // return false if forename && surname are empty
+  if (!row[3] && !row[4]) {
+    return false
+  }
   row[3]  && entity.push({ "type": "surname", "string": row[3] })
   row[4]  && entity.push({ "type": "forename", "string": row[4] })
+
+  row[2]  && entity.push({ "type": "evokirje", "string": row[2] })
   row[5]  && entity.push({ "type": "father", "string": row[5] })
   row[6]  && entity.push({ "type": "mother", "string": row[6] })
   row[7]  && entity.push({ "type": "birth", "string": row[7] })
