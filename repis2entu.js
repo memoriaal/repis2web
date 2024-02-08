@@ -119,7 +119,6 @@ async function get_victimIdsByPerson(person) {
   if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
     return json.entities.filter(i => i._id).map(i => i._id)
   } else if (json.entities.length === 0) {
-    console.error('get_victimIdByPerson: no person found')
     return null
   } else {
     console.error('get_victimIdByPerson: Invalid json data', {json, entities: json.entities, length: json.entities.length})
