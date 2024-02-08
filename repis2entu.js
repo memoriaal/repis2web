@@ -297,7 +297,7 @@ function row2entity(row) {
 // Accept-Encoding: deflate
 // Authorization: Bearer {{token}}
 async function remove_empty_persons() {
-  const url = `https://${ENTU_HOST}/entity?_type.string=victim&redirect.string.gt=&forename.string=`
+  const url = `https://${ENTU_HOST}/entity?_type.string=victim&surname.string=&forename.string=`
   const options = {
     method: 'GET',
     headers: {
