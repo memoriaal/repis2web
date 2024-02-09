@@ -36,6 +36,11 @@ async function run() {
   console.log({rows, fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
+    let q = `
+      insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
+      on duplicate key update entu_id = ?, sync_ts = current_timestamp();
+    `
+    const [rows, fields] = await connection.execute(q, [row.persoon, '123', '123'])
     console.log(row.persoon, row.eesnimi, row.perenimi, row.updated)
   }
   connection.end()
