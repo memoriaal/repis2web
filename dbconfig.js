@@ -7,7 +7,8 @@ const tunnelConfig = {
     host: process.env.DB_SSH_HOST,
     port: 22,
     username: process.env.DB_SSH_USER,
-    privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_rsa')
+    privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_ecdsa')
+    // privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_rsa')
 }
 const mysqlConfig = {
     multipleStatements: true,
