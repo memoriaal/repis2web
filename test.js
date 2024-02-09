@@ -54,19 +54,7 @@ execSync('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy')
 
 console.log('Fetch date from mysql')
 // fetch new timestamp from database
-execSync(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`, (err, stdout, stderr) => {
-
-    if (err) {
-        console.log(err)
-        return
-    }
-    console.log(`stdout: ${stdout}`)
-    console.log(`stderr: ${stderr}`)
-    const timestamp = stdout.trim()
-    console.log('timestamp', timestamp)
-    // write timestamp to file
-    fs.writeFileSync(tsFile, timestamp, 'utf8')
-})
+execSync(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`)
 
 
 
