@@ -36,45 +36,6 @@ const update_q = `
 `
 
 
-const run = async () => {
-  const entu = {
-    token: await get_token(),
-    folderE: await get_folderE(),
-    victimE: await get_victimE()
-  }
-  console.log({entu})
-
-  const connection = await mysql.createConnection(mysqlConfig)
-  const [rows, fields] = await connection.execute(select_q)
-  console.log({rows, fields: fields.map(f => f.name)})
-  const persons = rows.map(r => r.persoon)
-  for (let row of rows) {
-    const entu_id = await entu_post(row)
-    const [rows, fields] = await connection.execute(update_q, [row.persoon, `entu_${row.persoon}`, `entu_${row.persoon}`])
-    console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
-  }
-  connection.end()
-  return persons
-}
-
-run()
-.catch(console.log)
-.then((msg) => {
-  console.log('done', msg)
-  // process.exit(0)
-})
-
-const entu_post = async (row) => {
-  // const entu_id = `entu_${row.persoon}`
-  const entity = row2entity(row)
-  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
-
-
-
-}
-
-
-
 const get_token = async () => {
   const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
   const options = {
@@ -146,3 +107,42 @@ const get_victimE = async () => {
     return null
   }
 }
+
+const run = async () => {
+  const entu = {
+    token: await get_token(),
+    folderE: await get_folderE(),
+    victimE: await get_victimE()
+  }
+  console.log({entu})
+
+  const connection = await mysql.createConnection(mysqlConfig)
+  const [rows, fields] = await connection.execute(select_q)
+  console.log({rows, fields: fields.map(f => f.name)})
+  const persons = rows.map(r => r.persoon)
+  for (let row of rows) {
+    const entu_id = await entu_post(row)
+    const [rows, fields] = await connection.execute(update_q, [row.persoon, `entu_${row.persoon}`, `entu_${row.persoon}`])
+    console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
+  }
+  connection.end()
+  return persons
+}
+
+run()
+.catch(console.log)
+.then((msg) => {
+  console.log('done', msg)
+  // process.exit(0)
+})
+
+const entu_post = async (row) => {
+  // const entu_id = `entu_${row.persoon}`
+  const entity = row2entity(row)
+  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
+
+
+
+}
+
+
