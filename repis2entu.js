@@ -7,7 +7,6 @@ const fetch      = require('node-fetch')
 const mysql     = require('mysql2/promise')
 
 
-const SOURCE         = process.env.SOURCE         || 'test.csv'
 const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
