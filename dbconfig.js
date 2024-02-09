@@ -17,7 +17,7 @@ const mysqlConfig = {
     database: process.env.M_DB_NAME || 'pub'
 }
 
-console.log({tunnelConfig, mysqlConfig})
+// console.log({tunnelConfig, mysqlConfig})
 
 var db = new Promise(function(resolve, reject){
     ssh.on('ready', function() {
@@ -53,6 +53,7 @@ function NEW_SQLQUERY(command) {
                         reject()
                         return
                     }
+                    console.log(`result a`, result)
                     resolve(JSON.parse(JSON.stringify(result)))
                 })
             })
