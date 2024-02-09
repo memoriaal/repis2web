@@ -14,8 +14,7 @@ const mysqlConfig = {
     host: 'dev.memoriaal.ee',
     user: process.env.M_MYSQL_U,
     password: process.env.M_MYSQL_P,
-    database: process.env.M_DB_NAME || 'pub',
-    stream: stream
+    database: process.env.M_DB_NAME || 'pub'
 }
 
 console.log({tunnelConfig, mysqlConfig})
@@ -30,7 +29,7 @@ var db = new Promise(function(resolve, reject){
         function (err, stream) {
             if (err) throw err
               // use `sql` connection as usual
-            connection = mysql.createConnection(mysqlConfig)
+            connection = mysql.createConnection({...mysqlConfig, stream: stream})
             connection.connect(function(err){
                 if (err) {
                     connection.end()
