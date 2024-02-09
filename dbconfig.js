@@ -19,7 +19,7 @@ const mysqlConfig = {
 
 console.log({ ...mysqlConfig, stream:'foo' })
 
-var db = new Promise(function(resolve, reject){
+var db = new Promise(function(resolve, reject) {
     ssh.on('ready', function() {
       ssh.forwardOut(
         '127.0.0.1',
@@ -30,8 +30,9 @@ var db = new Promise(function(resolve, reject){
             if (err) throw err
               // use `sql` connection as usual
             connection = mysql.createConnection({ ...mysqlConfig, stream })
-            connection.connect(function(err){
+            connection.connect(function(err) {
                 if (err) {
+                    console.log(err)
                     connection.end()
                     reject(err)
                 } else {
