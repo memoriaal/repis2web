@@ -25,7 +25,8 @@ const mysqlConfig = {
 async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
   let q = `
-  select nk.* from pub.nimekirjad nk
+  select nk.*, e.*
+  from pub.nimekirjad nk
   left join pub.entu e on e.persoon = nk.persoon
   where e.sync_ts is null
   limit 10;
