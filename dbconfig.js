@@ -22,26 +22,28 @@ const mysqlConfig = {
 var db = new Promise(function(resolve, reject) {
     console.log('connecting')
     ssh.on('ready', function() {
-      ssh.forwardOut(
-        '127.0.0.1',
-        3306,
-        '127.0.0.1',
-        3306,
-        function (err, stream) {
-            console.log('stream', stream, err)
-            if (err) throw err
-              // use `sql` connection as usual
-            connection = mysql.createConnection({ ...mysqlConfig, stream })
-            connection.connect(function(err) {
-                if (err) {
-                    console.log(err)
-                    connection.end()
-                    reject(err)
-                } else {
-                    resolve(connection)
-                }
-            });
-        });
+        console.log('ssh ready')
+        ssh.forwardOut(
+            '127.0.0.1',
+            3306,
+            '127.0.0.1',
+            3306,
+            function (err, stream) {
+                console.log('stream', stream, err)
+                if (err) throw err
+                // use `sql` connection as usual
+                connection = mysql.createConnection({ ...mysqlConfig, stream })
+                connection.connect(function(err) {
+                    if (err) {
+                        console.log(err)
+                        connection.end()
+                        reject(err)
+                    } else {
+                        resolve(connection)
+                    }
+                })
+            }
+        )
     }).connect(tunnelConfig)
 })
 
