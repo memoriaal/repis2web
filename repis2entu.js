@@ -22,25 +22,26 @@ const mysqlConfig = {
   database: process.env.M_DB_NAME || 'pub'
 }
 
-async function run() {
-  const connection = await mysql.createConnection(mysqlConfig)
-  let q = `
+const select_q = `
   select e.entu_id, e.sync_ts, nk.*
   from pub.nimekirjad nk
   left join pub.entu e on e.persoon = nk.persoon
   where e.sync_ts is null
   order by nk.updated
   limit 10;
-  `
-  const [rows, fields] = await connection.execute(q)
+`
+const update_q = `
+  insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
+  on duplicate key update entu_id = ?, sync_ts = current_timestamp();
+`
+
+async function run() {
+  const connection = await mysql.createConnection(mysqlConfig)
+  const [rows, fields] = await connection.execute(select_q)
   console.log({rows, fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
-    let q = `
-      insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
-      on duplicate key update entu_id = ?, sync_ts = current_timestamp();
-    `
-    const [rows, fields] = await connection.execute(q, [row.persoon, '123', '123'])
+    const [rows, fields] = await connection.execute(update_q, [row.persoon, '123', '123'])
     console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
   }
   connection.end()
