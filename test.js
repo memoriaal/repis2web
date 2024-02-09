@@ -24,7 +24,7 @@ const entu = {}
 
 
 // prepare data for Entu
-const { execSync } = require('child_process')
+// const { execSync } = require('child_process')
 
 // Read .env file
 execSync('source ~/.env', (err, stdout, stderr) => {
