@@ -54,7 +54,9 @@ execSync('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy')
 
 console.log('Fetch date from mysql')
 // fetch new timestamp from database
-execSync(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`)
+const command = `mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`
+console.log('command    ', command)
+execSync(command)
 
 
 
