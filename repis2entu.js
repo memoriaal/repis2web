@@ -22,8 +22,7 @@ const mysqlConfig = {
   database: process.env.M_DB_NAME || 'pub',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  enableKeepAlive: true
+  queueLimit: 0
 }
 const pool = mysql.createPool(mysqlConfig)
 
