@@ -25,16 +25,21 @@ const mysqlConfig = {
 async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
   let q = `
-  select  e.entu_id, e.sync_ts, nk.*
+  select e.entu_id, e.sync_ts, nk.*
   from pub.nimekirjad nk
   left join pub.entu e on e.persoon = nk.persoon
   where e.sync_ts is null
+  order by nk.updated
   limit 10;
   `
   const [rows, fields] = await connection.execute(q)
   console.log({rows, fields: fields.map(f => f.name)})
+  const persons = rows.map(r => r.persoon)
+  for (let row of rows) {
+    console.log(row.persoon, row.eesnimi, row.perenimi, row.updated)
+  }
   connection.end()
-  return rows.map(r => r.persoon)
+  return persons
 }
 
 run()
