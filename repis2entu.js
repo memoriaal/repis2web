@@ -16,12 +16,16 @@ process.chdir(__dirname)
 
 const bulk_size = 200000
 const mysqlConfig = {
-  multipleStatements: true,
   host: '127.0.0.1',
   user: process.env.M_MYSQL_U,
   password: process.env.M_MYSQL_P,
-  database: process.env.M_DB_NAME || 'pub'
+  database: process.env.M_DB_NAME || 'pub',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  enableKeepAlive: true
 }
+const pool = mysql.createPool(mysqlConfig)
 
 const select_q = `
   select e.entu_id, e.sync_ts, nk.*
@@ -167,8 +171,9 @@ const run = async () => {
   
   console.log({entu})
 
-  const connection = await mysql.createConnection(mysqlConfig)
-  const [rows, fields] = await connection.execute(select_q, [bulk_size])
+
+  // const connection = await mysql.createConnection(mysqlConfig)
+  const [rows, fields] = await pool.execute(select_q, [bulk_size])
   console.log({fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   let counter = 0
@@ -178,11 +183,11 @@ const run = async () => {
     if (!entu_id) {
       continue 
     }
-    await connection.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
-    const [updated] = await connection.execute(select_updated, [row.persoon])
+    await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
+    const [updated] = await pool.execute(select_updated, [row.persoon])
     console.log(counter, row.eesnimi, row.perenimi, row.updated, updated)
   }
-  connection.end()
+  // connection.end()
   return persons
 }
 
