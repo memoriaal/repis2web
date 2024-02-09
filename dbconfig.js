@@ -47,10 +47,11 @@ const tunnel = {
                     dbConfig.port,
                     function (err, stream) {
                         if (err) {
-                            tunnel.close()
                             var msg = err.reason == 'CONNECT_FAILED'
-                                ? 'Connection failed.'
-                                : err
+                            ? 'Connection failed.'
+                            : err
+                            console.error(msg)
+                            tunnel.close()
                             return reject(msg)
                         }
 
@@ -94,7 +95,7 @@ tunnel.connect(tunnelConfig, mysqlConfig)
         client.query('SELECT * FROM `nimekiri` LIMIT 10', function (err, results, fields) {
             if (err) throw err
             console.log(results)
-            // mysqlssh.close()
+            tunnel.close()
         })
     })
     .catch(err => {
