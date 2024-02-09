@@ -4,7 +4,7 @@ const fs = require('fs')
 tunnelConfig = {
     host: process.env.DB_SSH_HOST,
     user: process.env.DB_SSH_USER,
-    privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_ecdsa')
+    privateKey: fs.readFileSync(process.env.HOME + '/.ssh//.ssh/id_ed25519')
 }
 mysqlConfig = {
     host: 'dev.memoriaal.ee',
