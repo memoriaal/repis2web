@@ -11,8 +11,6 @@ const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
-const stream = fs.createReadStream(SOURCE)
-
 // set working dir to script dir
 process.chdir(__dirname)
 
