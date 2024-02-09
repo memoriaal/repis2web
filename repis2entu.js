@@ -15,12 +15,14 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 process.chdir(__dirname)
 
 const mysqlConfig = {
-  multipleStatements: true,
+  // multipleStatements: true,
   host: 'dev.memoriaal.ee',
   user: process.env.M_MYSQL_U,
   password: process.env.M_MYSQL_P,
   database: process.env.M_DB_NAME || 'pub'
 }
+
+console
 
 async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
