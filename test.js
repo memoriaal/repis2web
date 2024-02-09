@@ -24,16 +24,16 @@ const entu = {}
 
 
 // prepare data for Entu
-// const { execSync } = require('child_process')
+const { execSync } = require('child_process')
 
 // Read .env file
-execSync('source ~/.env', (err, stdout, stderr) => {
-    if (err) {
-        return
-    }
-    console.log(`stdout: ${stdout}`)
-    console.log(`stderr: ${stderr}`)
-});
+// execSync('source ~/.env', (err, stdout, stderr) => {
+//     if (err) {
+//         return
+//     }
+//     console.log(`stdout: ${stdout}`)
+//     console.log(`stderr: ${stderr}`)
+// })
 
 
 console.log('Create ssh tunnel to mysql proxy')
