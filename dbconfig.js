@@ -17,7 +17,7 @@ const mysqlConfig = {
     database: process.env.M_DB_NAME || 'pub'
 }
 
-console.log({ ...mysqlConfig, stream:'foo' })
+// console.log({ ...mysqlConfig, stream:'foo' })
 
 var db = new Promise(function(resolve, reject) {
     ssh.on('ready', function() {
@@ -27,6 +27,7 @@ var db = new Promise(function(resolve, reject) {
         '127.0.0.1',
         3306,
         function (err, stream) {
+            console.log('stream', stream, err)
             if (err) throw err
               // use `sql` connection as usual
             connection = mysql.createConnection({ ...mysqlConfig, stream })
