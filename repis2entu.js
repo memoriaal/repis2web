@@ -14,6 +14,7 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 // set working dir to script dir
 process.chdir(__dirname)
 
+const bulk_size = 200000
 const mysqlConfig = {
   multipleStatements: true,
   host: '127.0.0.1',
@@ -28,7 +29,7 @@ const select_q = `
   left join pub.entu e on e.persoon = nk.persoon
   where e.sync_ts is null
   order by nk.updated
-  limit 10;
+  limit ?;
 `
 const update_q = `
   insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
@@ -167,7 +168,7 @@ const run = async () => {
   console.log({entu})
 
   const connection = await mysql.createConnection(mysqlConfig)
-  const [rows, fields] = await connection.execute(select_q)
+  const [rows, fields] = await connection.execute(select_q, [bulk_size])
   console.log({fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
