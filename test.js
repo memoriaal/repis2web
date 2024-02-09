@@ -57,6 +57,7 @@ console.log('Fetch date from mysql')
 const command = `mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`
 console.log('command    ', command)
 execSync(command)
+console.log('executed command    ', command)
 
 
 
