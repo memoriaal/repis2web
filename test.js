@@ -5,10 +5,12 @@ const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
 const fetch      = require('node-fetch')
 
+// const SOURCE         = process.env.SOURCE         || 'test.csv'
 const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
 const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
 const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
+// const stream = fs.createReadStream(SOURCE)
 
 // set working dir to script dir
 process.chdir(__dirname)
@@ -75,7 +77,7 @@ async function run() {
       console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
     })
 }
-run().catch(console.log)
+// run().catch(console.log)
 
 const erroredDocuments = []
 async function bulk_upload(bulk) {
