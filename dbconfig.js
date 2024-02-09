@@ -17,7 +17,7 @@ console.log({tunnelConfig, mysqlConfig})
 
 mysqlssh.connect(tunnelConfig, mysqlConfig)
     .then(client => {
-        client.query('SELECT * FROM `pub` LIMIT 10', function (err, results, fields) {
+        client.query('SELECT * FROM `nimekiri` LIMIT 10', function (err, results, fields) {
             if (err) throw err
             console.log(results)
             mysqlssh.close()
