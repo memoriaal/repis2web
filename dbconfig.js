@@ -4,7 +4,7 @@ const ssh = new Client()
 const mysql     = require('mysql2')
 
 const tunnelConfig = {
-    host: process.env.DB_SSH_HOST,
+    // host: process.env.DB_SSH_HOST,
     port: 22,
     username: process.env.DB_SSH_USER,
     // privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_ecdsa')
