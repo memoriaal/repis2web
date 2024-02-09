@@ -17,7 +17,7 @@ const mysqlConfig = {
     database: process.env.M_DB_NAME || 'pub'
 }
 
-// console.log({tunnelConfig, mysqlConfig})
+console.log({ ...mysqlConfig, stream:'foo' })
 
 var db = new Promise(function(resolve, reject){
     ssh.on('ready', function() {
@@ -29,7 +29,7 @@ var db = new Promise(function(resolve, reject){
         function (err, stream) {
             if (err) throw err
               // use `sql` connection as usual
-            connection = mysql.createConnection({...mysqlConfig, stream: stream})
+            connection = mysql.createConnection({ ...mysqlConfig, stream })
             connection.connect(function(err){
                 if (err) {
                     connection.end()
