@@ -43,7 +43,8 @@ if (!fs.existsSync(tsFile)) {
 }
 const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
 console.log('lastEntuTimestamp', lastEntuTimestamp)
-const currentTimestamp = new Date().toISOString()
+// save current localt timestamp
+const currentTimestamp = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
 
 // write lastEntuTimestamp to file
