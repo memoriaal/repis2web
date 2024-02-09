@@ -36,7 +36,7 @@ const update_q = `
 `
 
 
-run = async () => {
+const run = async () => {
   const entu = {
     token: await get_token(),
     folderE: await get_folderE(),
