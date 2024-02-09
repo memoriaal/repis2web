@@ -23,6 +23,16 @@ const BULK_SIZE      = 250000
 const entu = {}
 
 
+// lastEntuTimestamp from file
+const tsFile = path.join(__dirname, 'lastEntuTimestamp.ts')
+// create file if not exists
+if (!fs.existsSync(tsFile)) {
+  fs.writeFileSync(tsFile, '', 'utf8')
+}
+const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
+console.log('lastEntuTimestamp', lastEntuTimestamp)
+
+
 // prepare data for Entu
 const { execSync } = require('child_process')
 
@@ -39,40 +49,26 @@ const { execSync } = require('child_process')
 console.log('Create ssh tunnel to mysql proxy')
 // ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 // ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
-execSync('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr) => {
-  if (err) {
-    return
-  }
+execSync('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy')
 
-  // the *entire* stdout and stderr (buffered)
-  console.log(`stdout: ${stdout}`)
-  console.log(`stderr: ${stderr}`)
-})
 
 console.log('Fetch date from mysql')
 // fetch new timestamp from database
 execSync(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`, (err, stdout, stderr) => {
-  if (err) {
-    return
-  }
-  console.log(`stdout: ${stdout}`)
-  console.log(`stderr: ${stderr}`)
+
+    if (err) {
+        console.log(err)
+        return
+    }
+    console.log(`stdout: ${stdout}`)
+    console.log(`stderr: ${stderr}`)
+    const timestamp = stdout.trim()
+    console.log('timestamp', timestamp)
+    // write timestamp to file
+    fs.writeFileSync(tsFile, timestamp, 'utf8')
 })
-const currentTimestamp = new Date().toISOString().slice(0, 19).replace('T', ' ')
 
 
-// lastEntuTimestamp from file
-const tsFile = path.join(__dirname, 'lastEntuTimestamp.ts')
-// create file if not exists
-if (!fs.existsSync(tsFile)) {
-  fs.writeFileSync(tsFile, '', 'utf8')
-}
-const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
-console.log('lastEntuTimestamp', lastEntuTimestamp)
-
-
-// write lastEntuTimestamp to file
-fs.writeFileSync(tsFile, currentTimestamp, 'utf8')
 
 var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
 
