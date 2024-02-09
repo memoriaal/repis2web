@@ -4,7 +4,7 @@ var path         = require('path')
 const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
 const fetch      = require('node-fetch')
-import mysql from 'mysql2/promise'
+const mysql     = require('mysql2/promise')
 
 
 const SOURCE         = process.env.SOURCE         || 'test.csv'
