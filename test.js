@@ -26,6 +26,16 @@ const entu = {}
 // prepare data for Entu
 const { execSync } = require('child_process')
 
+// Read .env file
+execSync('source .env', (err, stdout, stderr) => {
+    if (err) {
+        return
+    }
+    console.log(`stdout: ${stdout}`)
+    console.log(`stderr: ${stderr}`)
+});
+
+
 console.log('Create ssh tunnel to mysql proxy')
 // ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 // ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
