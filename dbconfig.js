@@ -20,7 +20,7 @@ mysqlssh.connect(tunnelConfig, mysqlConfig)
         client.query('SELECT * FROM `pub` LIMIT 10', function (err, results, fields) {
             if (err) throw err
             console.log(results)
-            client.end()
+            mysqlssh.close()
         })
     })
     .catch(err => {
