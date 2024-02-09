@@ -63,7 +63,9 @@ function NEW_SQLQUERY(command) {
 }
 
 NEW_SQLQUERY('SELECT * FROM `nimekiri` LIMIT 10')
-.then(console.log)
+.then((result) => {
+    console.log(`result`, result)
+})
 
 ssh.end()
 
