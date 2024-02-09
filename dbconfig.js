@@ -20,6 +20,7 @@ const mysqlConfig = {
 // console.log({ ...mysqlConfig, stream:'foo' })
 
 var db = new Promise(function(resolve, reject) {
+    console.log('connecting')
     ssh.on('ready', function() {
       ssh.forwardOut(
         '127.0.0.1',
