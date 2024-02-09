@@ -37,6 +37,9 @@ exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr)
 
 // lastEntuTimestamp from file
 const tsFile = path.join(__dirname, 'lastEntuTimestamp.ts')
+// create file if not exists
+if (!fs.existsSync(tsFile)) {
+  fs.writeFileSync(tsFile, '', 'utf8')
 const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
 console.log('lastEntuTimestamp', lastEntuTimestamp)
 const currentTimestamp = new Date().toISOString()
