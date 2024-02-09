@@ -41,7 +41,7 @@ async function run() {
       on duplicate key update entu_id = ?, sync_ts = current_timestamp();
     `
     const [rows, fields] = await connection.execute(q, [row.persoon, '123', '123'])
-    console.log(row.persoon, row.eesnimi, row.perenimi, row.updated)
+    console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
   }
   connection.end()
   return persons
