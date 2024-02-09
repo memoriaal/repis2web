@@ -12,7 +12,7 @@ const tunnelConfig = {
 }
 const mysqlConfig = {
     multipleStatements: true,
-    host: 'dev.memoriaal.ee',
+    host: '127.0.0.1',
     user: process.env.M_MYSQL_U,
     password: process.env.M_MYSQL_P,
     database: process.env.M_DB_NAME || 'pub'
@@ -27,7 +27,7 @@ var db = new Promise(function(resolve, reject) {
         ssh.forwardOut(
             '127.0.0.1',
             3306,
-            '127.0.0.1',
+            'dev.memoriaal.ee',
             3306,
             function (err, stream) {
                 console.log('stream', stream, err)
