@@ -45,6 +45,9 @@ var db = new Promise(function(resolve, reject) {
             }
         )
     }).connect(tunnelConfig)
+    ssh.on('error', function(err) {
+        console.log('ssh error', err)
+    })
 })
 
 function NEW_SQLQUERY(command) {
