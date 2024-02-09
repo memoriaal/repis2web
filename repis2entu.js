@@ -16,7 +16,7 @@ process.chdir(__dirname)
 
 const mysqlConfig = {
   // multipleStatements: true,
-  host: 'dev.memoriaal.ee',
+  host: '127.0.0.1',
   user: process.env.M_MYSQL_U,
   password: process.env.M_MYSQL_P,
   database: process.env.M_DB_NAME || 'pub'
