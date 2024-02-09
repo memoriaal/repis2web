@@ -171,14 +171,16 @@ const run = async () => {
   const [rows, fields] = await connection.execute(select_q, [bulk_size])
   console.log({fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
+  let counter = 0
   for (let row of rows) {
+    counter++
     const entu_id = await entu_post(row)
     if (!entu_id) {
       continue 
     }
     await connection.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
     const [updated] = await connection.execute(select_updated, [row.persoon])
-    console.log(entu_id, row.persoon, row.eesnimi, row.perenimi, row.updated, updated)
+    console.log(counter, row.eesnimi, row.perenimi, row.updated, updated)
   }
   connection.end()
   return persons
