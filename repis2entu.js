@@ -168,7 +168,7 @@ const run = async () => {
 
   const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await connection.execute(select_q)
-  console.log({rows, fields: fields.map(f => f.name)})
+  console.log({fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
     const entu_id = await entu_post(row)
@@ -176,7 +176,7 @@ const run = async () => {
       continue 
     }
     await connection.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
-    const [updated] = await connection.execute(select_updated, [r.persoon])
+    const [updated] = await connection.execute(select_updated, [row.persoon])
     console.log(entu_id, row.persoon, row.eesnimi, row.perenimi, row.updated, updated)
   }
   connection.end()
