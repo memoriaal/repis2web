@@ -1,5 +1,6 @@
 const fs = require('fs')
 const { Client } = require('ssh2')
+const ssh = new Client()
 const mysql     = require('mysql2')
 
 const tunnelConfig = {
@@ -9,30 +10,63 @@ const tunnelConfig = {
     privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_rsa')
 }
 const mysqlConfig = {
+    multipleStatements: true,
     host: 'dev.memoriaal.ee',
     user: process.env.M_MYSQL_U,
     password: process.env.M_MYSQL_P,
-    database: process.env.M_DB_NAME || 'pub'
+    database: process.env.M_DB_NAME || 'pub',
+    stream: stream
 }
 
 console.log({tunnelConfig, mysqlConfig})
 
-const conn = new Client();
-conn.on('ready', () => {
-    console.log('Client :: ready');
-    conn.shell((err, stream) => {
-      if (err) throw err;
-      stream.on('close', () => {
-        console.log('Stream :: close');
-        conn.end();
-      }).on('data', (data) => {
-        console.log('OUTPUT: ' + data);
-      });
-      stream.end('ls -l\nexit\n');
-    });
-  }).connect(tunnelConfig)
+var db = new Promise(function(resolve, reject){
+    ssh.on('ready', function() {
+      ssh.forwardOut(
+        '127.0.0.1',
+        3306,
+        '127.0.0.1',
+        3306,
+        function (err, stream) {
+            if (err) throw err
+              // use `sql` connection as usual
+            connection = mysql.createConnection(mysqlConfig)
+            connection.connect(function(err){
+                if (err) {
+                    connection.end()
+                    reject(err)
+                } else {
+                    resolve(connection)
+                }
+            });
+        });
+    }).connect(tunnelConfig)
+})
 
+function NEW_SQLQUERY(command) {
+    try{
+        console.log(command)
+        return new Promise(function(resolve, reject) {
+            db.then(function(connection) {
+                connection.query(command, async function (err, result, fields) {
+                    if (err) {
+                        console.log(err)
+                        reject()
+                        return
+                    }
+                    resolve(JSON.parse(JSON.stringify(result)))
+                })
+            })
+        })
+    } catch(e) {
+        console.log(e)
+    }
+}
 
+NEW_SQLQUERY('SELECT * FROM `nimekiri` LIMIT 10')
+.then(console.log)
+
+ssh.end()
 
 // tunnel.connect(tunnelConfig, mysqlConfig)
 //     .then(client => {
