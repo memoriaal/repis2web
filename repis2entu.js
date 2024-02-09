@@ -37,7 +37,7 @@ const update_q = `
 const select_updated = `
   select e.*
   from pub.entu e
-  where e = ?;
+  where e.persoon = ?;
 `
 
 
@@ -176,7 +176,7 @@ const run = async () => {
       continue 
     }
     await connection.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
-    const [updated] = await connection.execute(select_updated, [entu_id])
+    const [updated] = await connection.execute(select_updated, [r.persoon])
     console.log(entu_id, row.persoon, row.eesnimi, row.perenimi, row.updated, updated)
   }
   connection.end()
