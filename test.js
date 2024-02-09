@@ -27,7 +27,7 @@ const entu = {}
 const { execSync } = require('child_process')
 
 // Read .env file
-execSync('source .env', (err, stdout, stderr) => {
+execSync('source ~/.env', (err, stdout, stderr) => {
     if (err) {
         return
     }
