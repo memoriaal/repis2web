@@ -15,18 +15,16 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 process.chdir(__dirname)
 
 const mysqlConfig = {
-  // multipleStatements: true,
+  multipleStatements: true,
   host: '127.0.0.1',
   user: process.env.M_MYSQL_U,
   password: process.env.M_MYSQL_P,
   database: process.env.M_DB_NAME || 'pub'
 }
 
-console.log('mysqlConfig', mysqlConfig)
-
 async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
-  const [rows, fields] = await connection.execute('SELECT current_timestamp();')
+  const [rows, fields] = await connection.execute('SELECT * from nimekirjad limit 10;')
   console.log({rows, fields})
   return rows[0]['current_timestamp()']
 }
