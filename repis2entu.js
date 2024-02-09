@@ -24,15 +24,14 @@ const mysqlConfig = {
   password: process.env.M_MYSQL_P,
   database: process.env.M_DB_NAME || 'pub'
 }
-const connection = await mysql.createConnection(mysqlConfig)
 
-try {
+async function run() {
+  const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await connection.execute('SELECT current_timestamp();')
   console.log({rows, fields})
-} catch (e) {
-  console.error(e)
 }
 
+run().catch(console.log)
 
 
 // const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
