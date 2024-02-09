@@ -41,7 +41,7 @@ async function run() {
   console.log({rows, fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
-    const [rows, fields] = await connection.execute(update_q, [row.persoon, '123', '123'])
+    const [rows, fields] = await connection.execute(update_q, [row.persoon, `entu_${row.persoon}`, `entu_${row.persoon}`])
     console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
   }
   connection.end()
