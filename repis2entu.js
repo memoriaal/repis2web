@@ -26,8 +26,8 @@ async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await connection.execute('SELECT * from nimekirjad limit 10;')
   console.log({rows, fields: fields.map(f => f.name)})
-  return rows[0]['current_timestamp()']
   connection.end()
+  return rows.map(r => r.persoon)
 }
 
 run()
