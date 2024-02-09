@@ -34,6 +34,11 @@ const update_q = `
   insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
   on duplicate key update entu_id = ?, sync_ts = current_timestamp();
 `
+const select_updated = `
+  select e.*
+  from pub.entu e
+  where e = ?;
+`
 
 
 const get_token = async () => {
@@ -108,8 +113,52 @@ const get_victimE = async () => {
   }
 }
 
-const entu = {}
+const row2entity = (row) => {
+  const entity = []
 
+  entity.push({ "type": "_type", "reference": entu.victimE })
+  
+  if (!row.persoon) { return false }
+  entity.push({ "type": "persoon", "string": row.persoon })
+  
+  if (row.redirect) {
+    entity.push({ "type": "redirect", "string": row.redirect })
+    return entity
+  }
+
+  if (!row.kirje) { return false }
+  entity.push({ "type": "kirje", "string": row.kirje })
+
+  if (!row.eesnimi && !row.perenimi) { return false }
+  row.eesnimi && entity.push({ "type": "forename", "string": row.eesnimi })
+  row.perenimi && entity.push({ "type": "surname", "string": row.perenimi })
+
+  row.evokirje && entity.push({ "type": "evokirje", "string": row.evokirje })
+  row.father && entity.push({ "type": "father", "string": row.isanimi })
+  row.mother && entity.push({ "type": "mother", "string": row.emanimi })
+  row.birth && entity.push({ "type": "birth", "string": row.sünd })
+  row.death && entity.push({ "type": "death", "string": row.surm })
+  row.birthplace && entity.push({ "type": "birthplace", "string": row.sünnikoht })
+  row.deathplace && entity.push({ "type": "deathplace", "string": row.surmakoht })
+  
+  row.kirjed && entity.push({ "type": "kirjed", "string": row.kirjed })
+  row.pereseosed && (row.pereseosed !== '[]') && entity.push({ "type": "pereseosed", "string": row.pereseosed })
+  row.tahvlikirje && (row.tahvlikirje !== '{}') && entity.push({ "type": "tahvlikirje", "string": row.tahvlikirje })
+  row.episoodid && (row.episoodid !== '[]') && entity.push({ "type": "episoodid", "string": row.episoodid })
+  
+  row.isperson === '1' && entity.push({ "type": "isperson", "boolean": true })
+  row.kivi === '1' && entity.push({ "type": "kivi", "boolean": true })
+  row.emem === '1' && entity.push({ "type": "emem", "boolean": true })
+  row.evo === '1' && entity.push({ "type": "evo", "boolean": true })
+  row.wwii === '1' && entity.push({ "type": "wwii", "boolean": true })
+  row.mv === '1' && entity.push({ "type": "mv", "boolean": true })
+  
+  entity.push({ "type": "_parent", "reference": entu.folderE })
+
+  return entity
+}
+
+const entu = {}
 const run = async () => {
   entu.token = await get_token()
   entu.folderE = await get_folderE()
@@ -123,8 +172,12 @@ const run = async () => {
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
     const entu_id = await entu_post(row)
-    const [rows, fields] = await connection.execute(update_q, [row.persoon, `entu_${row.persoon}`, `entu_${row.persoon}`])
-    console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
+    if (!entu_id) {
+      continue 
+    }
+    await connection.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
+    const [updated] = await connection.execute(select_updated, [entu_id])
+    console.log(entu_id, row.persoon, row.eesnimi, row.perenimi, row.updated, updated)
   }
   connection.end()
   return persons
@@ -140,10 +193,22 @@ run()
 const entu_post = async (row) => {
   // const entu_id = `entu_${row.persoon}`
   const entity = row2entity(row)
-  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
-
-
-
+  const url = `https://${ENTU_HOST}/entity`
+  const entu_options = {
+    method: 'POST',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${entu.token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(entity)
+  }
+  const response = await fetch(url, entu_options)
+  const json = await response.json()
+  if (json._id) {
+    return json._id
+  } else {
+    console.error('entu_post: Invalid json data', {json, entity})
+    return null
+  }
 }
-
-
