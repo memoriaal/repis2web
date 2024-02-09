@@ -24,12 +24,12 @@ const entu = {}
 
 
 // prepare data for Entu
-const { exec } = require('child_process')
+const { execSync } = require('child_process')
 
 console.log('Create ssh tunnel to mysql proxy')
 // ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 // ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
-exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr) => {
+execSync('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr) => {
   if (err) {
     return
   }
@@ -41,7 +41,7 @@ exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr)
 
 console.log('Fetch date from mysql')
 // fetch new timestamp from database
-exec(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`, (err, stdout, stderr) => {
+execSync(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`, (err, stdout, stderr) => {
   if (err) {
     return
   }
