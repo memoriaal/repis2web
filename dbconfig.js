@@ -4,7 +4,7 @@ const ssh = new Client()
 const mysql     = require('mysql2')
 
 const tunnelConfig = {
-    // host: process.env.DB_SSH_HOST,
+    host: process.env.DB_SSH_HOST,
     port: 22,
     username: process.env.DB_SSH_USER,
     // privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_ecdsa')
@@ -32,6 +32,27 @@ var db = new Promise(function(resolve, reject) {
             function (err, stream) {
                 console.log('stream', stream, err)
                 if (err) throw err
+                stream.on('close', () => {
+                    console.log('stream close')
+                }).on('data', (data) => {
+                    console.log('stream data', data.toString())
+                }).on('end', () => {    
+                    console.log('stream end')
+                }).on('error', (err) => {
+                    console.log('stream error', err)
+                }).on('finish', () => {
+                    console.log('stream finish')
+                }).on('readable', () => {
+                    console.log('stream readable')
+                }).on('drain', () => {
+                    console.log('stream drain')
+                }).on('pipe', () => {
+                    console.log('stream pipe')
+                }).on('unpipe', () => {
+                    console.log('stream unpipe')
+                }).on('error', (err) => {
+                    console.log('stream error', err)
+                })
                 // use `sql` connection as usual
                 connection = mysql.createConnection({ ...mysqlConfig, stream })
                 connection.connect(function(err) {
