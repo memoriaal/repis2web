@@ -45,10 +45,20 @@ var db = new Promise(function(resolve, reject) {
                 })
             }
         )
-    }).connect(tunnelConfig)
+    })
     ssh.on('error', function(err) {
         console.log('ssh error', err)
     })
+    ssh.on('end', function() {
+        console.log('ssh end')
+    })
+    ssh.on('close', function() {
+        console.log('ssh close')
+    })
+    ssh.on('exit', function() {
+        console.log('ssh exit')
+    })
+    ssh.connect(tunnelConfig)
 })
 
 function NEW_SQLQUERY(command) {
