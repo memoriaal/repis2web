@@ -74,7 +74,7 @@ const entu_post = async (row) => {
 
 
 
-async function get_token() {
+get_token = async () => {
   const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
   const options = {
     method: 'GET',
@@ -98,7 +98,7 @@ async function get_token() {
   }
 }
 
-async function get_folderE() {
+get_folderE = async () => {
   const url = `https://${ENTU_HOST}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id`
   const options = {
     method: 'GET',
@@ -122,7 +122,7 @@ async function get_folderE() {
   }
 }
 
-async function get_victimE() {
+get_victimE = async () => {
   const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=victim&props=_id`
   const options = {
     method: 'GET',
