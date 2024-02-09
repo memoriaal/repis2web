@@ -168,9 +168,6 @@ const run = async () => {
   entu.folderE = await get_folderE()
   entu.victimE = await get_victimE()
   
-  console.log({entu})
-
-
   // const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await pool.execute(select_q, [bulk_size])
   console.log({fields: fields.map(f => f.name)})
