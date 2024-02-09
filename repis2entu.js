@@ -28,10 +28,11 @@ async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await connection.execute('SELECT current_timestamp();')
   console.log({rows, fields})
+  return rows[0]['current_timestamp()']
 }
 
 run()
 .catch(console.log)
-.then(() => process.exit(0))
-
-console.log('done')
+.then((msg) => {
+  console.log('done', msg)
+})
