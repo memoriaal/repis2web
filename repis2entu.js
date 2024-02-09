@@ -22,7 +22,7 @@ const mysqlConfig = {
   database: process.env.M_DB_NAME || 'pub'
 }
 
-console
+console.log('mysqlConfig', mysqlConfig)
 
 async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
