@@ -20,7 +20,7 @@ mysqlssh.connect(tunnelConfig, mysqlConfig)
         client.query('SELECT * FROM `nimekiri` LIMIT 10', function (err, results, fields) {
             if (err) throw err
             console.log(results)
-            mysqlssh.close()
+            // mysqlssh.close()
         })
     })
     .catch(err => {
