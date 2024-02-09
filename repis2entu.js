@@ -1,6 +1,6 @@
 'use strict'
 
-var path         = require('path')
+const path         = require('path')
 const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
 const fetch      = require('node-fetch')
@@ -35,12 +35,20 @@ const update_q = `
   on duplicate key update entu_id = ?, sync_ts = current_timestamp();
 `
 
-async function run() {
+const entu = {
+  token: await get_token(),
+  folderE: await get_folderE(),
+  victimE: await get_victimE()
+}
+console.log({entu})
+
+run = async () => {
   const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await connection.execute(select_q)
   console.log({rows, fields: fields.map(f => f.name)})
   const persons = rows.map(r => r.persoon)
   for (let row of rows) {
+    const entu_id = await entu_post(row)
     const [rows, fields] = await connection.execute(update_q, [row.persoon, `entu_${row.persoon}`, `entu_${row.persoon}`])
     console.log(rows, row.persoon, row.eesnimi, row.perenimi, row.updated)
   }
@@ -54,3 +62,86 @@ run()
   console.log('done', msg)
   // process.exit(0)
 })
+
+const entu_post = async (row) => {
+  // const entu_id = `entu_${row.persoon}`
+  const entity = row2entity(row)
+  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
+
+
+
+}
+
+
+
+async function get_token() {
+  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${ENTU_WRITE_KEY}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  if (Array.isArray(json) && json.length > 0) {
+    if (json[0].token) {
+      return json[0].token
+    } else {
+      console.error('no token in json data')
+      return null
+    }
+  } else {
+    console.error('get_token: Invalid json data')
+    return null
+  }
+}
+
+async function get_folderE() {
+  const url = `https://${ENTU_HOST}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id`
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${entu.token}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
+    if (json.entities[0]._id) {
+      return json.entities[0]._id
+    } else {
+      console.error('no _id in json data')
+      return null
+    }
+  } else {
+    console.error('get_folderE: Invalid json data', {json, entities: json.entities, length: json.entities.length})
+    return null
+  }
+}
+
+async function get_victimE() {
+  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=victim&props=_id`
+  const options = {
+    method: 'GET',
+    headers: {
+      'Accept-Encoding': 'deflate',
+      'Authorization': `Bearer ${entu.token}`
+    }
+  }
+  const response = await fetch(url, options)
+  const json = await response.json()
+  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
+    if (json.entities[0]._id) {
+      return json.entities[0]._id
+    } else {
+      console.error('no _id in json data')
+      return null
+    }
+  } else {
+    console.error('get_victimE: Invalid json data', {json, entities: json.entities, length: json.entities.length})
+    return null
+  }
+}
