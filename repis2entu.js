@@ -108,12 +108,13 @@ const get_victimE = async () => {
   }
 }
 
+const entu = {}
+
 const run = async () => {
-  const entu = {
-    token: await get_token(),
-    folderE: await get_folderE(),
-    victimE: await get_victimE()
-  }
+  entu.token = await get_token()
+  entu.folderE = await get_folderE()
+  entu.victimE = await get_victimE()
+  
   console.log({entu})
 
   const connection = await mysql.createConnection(mysqlConfig)
