@@ -26,6 +26,7 @@ const entu = {}
 // prepare data for Entu
 const { exec } = require('child_process')
 
+console.log('Create ssh tunnel to mysql proxy')
 // ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 // ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
 exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr) => {
@@ -38,21 +39,8 @@ exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr)
   console.log(`stderr: ${stderr}`)
 })
 
-// lastEntuTimestamp from file
-const tsFile = path.join(__dirname, 'lastEntuTimestamp.ts')
-// create file if not exists
-if (!fs.existsSync(tsFile)) {
-  fs.writeFileSync(tsFile, '', 'utf8')
-}
-const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
-console.log('lastEntuTimestamp', lastEntuTimestamp)
-// save new timestamp from datebase
-// new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-// CALL pub.repub(${bulk_size});
-// select max(updated) as ts from pub.nimekirjad;
-// EOFMYSQL
-// `
-
+console.log('Fetch date from mysql')
+// fetch new timestamp from database
 exec(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT current_timestamp();\nEOFMYSQL`, (err, stdout, stderr) => {
   if (err) {
     return
@@ -61,6 +49,16 @@ exec(`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL\nSELECT 
   console.log(`stderr: ${stderr}`)
 })
 const currentTimestamp = new Date().toISOString().slice(0, 19).replace('T', ' ')
+
+
+// lastEntuTimestamp from file
+const tsFile = path.join(__dirname, 'lastEntuTimestamp.ts')
+// create file if not exists
+if (!fs.existsSync(tsFile)) {
+  fs.writeFileSync(tsFile, '', 'utf8')
+}
+const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
+console.log('lastEntuTimestamp', lastEntuTimestamp)
 
 
 // write lastEntuTimestamp to file
