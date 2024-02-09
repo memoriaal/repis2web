@@ -27,10 +27,12 @@ async function run() {
   const [rows, fields] = await connection.execute('SELECT * from nimekirjad limit 10;')
   console.log({rows, fields: fields.map(f => f.name)})
   return rows[0]['current_timestamp()']
+  connection.end()
 }
 
 run()
 .catch(console.log)
 .then((msg) => {
   console.log('done', msg)
+  // process.exit(0)
 })
