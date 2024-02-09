@@ -24,7 +24,13 @@ const mysqlConfig = {
 
 async function run() {
   const connection = await mysql.createConnection(mysqlConfig)
-  const [rows, fields] = await connection.execute('SELECT * from nimekirjad limit 10;')
+  let q = `
+  select * from pub.nimekirjad nk
+  left join pub.entu e on e.persoon = nk.persoon
+  where e.sync_ts is null
+  limit 10;
+  `
+  const [rows, fields] = await connection.execute(q)
   console.log({rows, fields: fields.map(f => f.name)})
   connection.end()
   return rows.map(r => r.persoon)
