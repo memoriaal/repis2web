@@ -19,31 +19,29 @@ console.log({tunnelConfig, mysqlConfig})
 
 const conn = new Client();
 conn.on('ready', () => {
-  console.log('Client :: ready');
-  conn.exec('uptime', (err, stream) => {
-    if (err) throw err;
-    stream.on('close', (code, signal) => {
-      console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-      conn.end();
-    }).on('data', (data) => {
-      console.log('STDOUT: ' + data);
-    }).stderr.on('data', (data) => {
-      console.log('STDERR: ' + data);
+    console.log('Client :: ready');
+    conn.shell((err, stream) => {
+      if (err) throw err;
+      stream.on('close', () => {
+        console.log('Stream :: close');
+        conn.end();
+      }).on('data', (data) => {
+        console.log('OUTPUT: ' + data);
+      });
+      stream.end('ls -l\nexit\n');
     });
-  });
-}).connect(tunnelConfig)
-
-process.exit(0)
+  }).connect(tunnelConfig)
 
 
-tunnel.connect(tunnelConfig, mysqlConfig)
-    .then(client => {
-        client.query('SELECT * FROM `nimekiri` LIMIT 10', function (err, results, fields) {
-            if (err) throw err
-            console.log(results)
-            tunnel.close()
-        })
-    })
-    .catch(err => {
-        console.log(err)
-    })
+
+// tunnel.connect(tunnelConfig, mysqlConfig)
+//     .then(client => {
+//         client.query('SELECT * FROM `nimekiri` LIMIT 10', function (err, results, fields) {
+//             if (err) throw err
+//             console.log(results)
+//             tunnel.close()
+//         })
+//     })
+//     .catch(err => {
+//         console.log(err)
+//     })
