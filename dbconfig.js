@@ -13,6 +13,8 @@ mysqlConfig = {
     database: process.env.M_DB_NAME || 'pub'
 }
 
+console.log({tunnelConfig, mysqlConfig})
+
 mysqlssh.connect(tunnelConfig, mysqlConfig)
     .then(client => {
         client.query('SELECT * FROM `pub` LIMIT 10', function (err, results, fields) {
