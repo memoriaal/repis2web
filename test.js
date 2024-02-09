@@ -14,17 +14,19 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
 // set working dir to script dir
 process.chdir(__dirname)
-const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
+const LOG_PATH       = process.env.LOG_PATH       || path.join(__dirname,'logs')
 
 const BULK_SIZE      = 250000
 const entu = {}
 
+
+// prepare data for Entu
+const { exec } = require('child_process')
+
 // ssh tunnel to mysql proxy (control file in ~/.ssh/config)
 // ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
-const { exec } = require('child_process');
 exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr) => {
   if (err) {
-    // node couldn't execute the command
     return
   }
 
@@ -33,6 +35,15 @@ exec('ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy', (err, stdout, stderr)
   console.log(`stderr: ${stderr}`)
 })
 
+// lastEntuTimestamp from file
+const tsFile = path.join(__dirname, 'lastEntuTimestamp.ts')
+const lastEntuTimestamp = fs.readFileSync(tsFile, 'utf8')
+console.log('lastEntuTimestamp', lastEntuTimestamp)
+const currentTimestamp = new Date().toISOString()
+
+
+// write lastEntuTimestamp to file
+fs.writeFileSync(tsFile, currentTimestamp, 'utf8')
 
 var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
 
