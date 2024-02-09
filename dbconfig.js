@@ -1,16 +1,26 @@
-// dbConfig.js
-// define connection config for the database
-const dbServer = {
-    host: process.env.M_DB_HOST || 'localhost',
-    port: process.env.M_DB_PORT || 3306,
+const mysqlssh = require('mysql-ssh')
+const fs = require('fs')
+ 
+tunnelConfig = {
+    host: process.env.DB_SSH_HOST,
+    user: process.env.DB_SSH_USER,
+    privateKey: fs.readFileSync(process.env.HOME + '/.ssh/id_ecdsa')
+}
+mysqlConfig = {
+    host: 'dev.memoriaal.ee',
     user: process.env.M_MYSQL_U,
     password: process.env.M_MYSQL_P,
     database: process.env.M_DB_NAME || 'pub'
 }
-// define connection config for the ssh tunnel
-const tunnelConfig = {
-    host: process.env.DB_SSH_HOST,
-    port: 22,
-    username: process.env.DB_SSH_USER,
-    privateKey: require('fs').readFileSync('~/.ssh/id_ecdsa')
-}
+
+mysqlssh.connect(tunnelConfig, mysqlConfig)
+    .then(client => {
+        client.query('SELECT * FROM `pub` LIMIT 10', function (err, results, fields) {
+            if (err) throw err
+            console.log(results)
+            client.end()
+        })
+    })
+    .catch(err => {
+        console.log(err)
+    })
