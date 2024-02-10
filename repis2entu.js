@@ -181,10 +181,12 @@ const run = async () => {
   let counter = 0
   for (let row of rows) {
     counter++
-    const entu_id = await entu_post(row)
-    if (!entu_id) {
-      console.log(counter, row.persoon, 'not posted to entu')
-      continue 
+    let entu_id = false
+    while (!entu_id) {
+      entu_id = await entu_post(row)
+      if (!entu_id) {
+        console.log(counter, row.persoon, 'not posted to entu')
+      }
     }
     await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
     const [updated] = await pool.execute(select_updated, [row.persoon])
