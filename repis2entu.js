@@ -130,7 +130,13 @@ const row2entity = (row) => {
     return entity
   }
 
-  if (!row.kirje) { return false }
+  if (!row.kirje) {
+    return false 
+  }
+  if (!/[a-zõüöäA-ZÕÜÖÄ]/.test(row.kirje)) {
+    return false
+  }
+
   entity.push({ "type": "kirje", "string": row.kirje })
 
   if (!row.eesnimi && !row.perenimi) { return false }
