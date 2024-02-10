@@ -183,6 +183,7 @@ const run = async () => {
     counter++
     const entu_id = await entu_post(row)
     if (!entu_id) {
+      console.log(counter, row.persoon, 'not posted to entu')
       continue 
     }
     await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
@@ -223,7 +224,7 @@ const entu_post = async (row) => {
   if (json._id) {
     return json._id
   } else {
-    console.error(`entu_post: Invalid json data. Persoon ${row.persoon} | Kirje: "${row.kirje}"`)
+    // console.error(`entu_post: Invalid json data. Persoon ${row.persoon} | Kirje: "${row.kirje}"`)
     return false
     process.exit(1)
   }
