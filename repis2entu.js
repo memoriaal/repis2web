@@ -230,14 +230,13 @@ const entu_post = async (row) => {
     body: JSON.stringify(entity)
   }
   const response = await fetch(url, entu_options)
-  response.ok || console.error('entu_post: Invalid response', {response, entity})
+  response.ok || console.error(`entu_post response error: ${response.status} ${response.statusText} | Persoon: ${row.persoon}`)
   const json = await response.json()
   if (json._id) {
     return json._id
   } else {
-    console.error(`entu_post: Invalid json data. Persoon ${row.persoon} | response: ${response} | json: ${json} | entity: ${entity}`)
+    console.error(`entu_post Invalid json data: ${response.status} ${response.statusText} | Persoon: ${row.persoon}`)
     return false
-    process.exit(1)
   }
 }
 
