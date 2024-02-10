@@ -4,7 +4,8 @@ cd /home/michelek/Documents/scripts/repis2web
 mypidfile=/home/michelek/Documents/scripts/repis2web/repis2entu.sh.pid
 
 if [ -e $mypidfile ]; then
-    echo -n ". "
+    echo "-- minut --"
+    # echo -n ". "
     exit 0
 fi
 
