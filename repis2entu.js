@@ -129,17 +129,22 @@ const row2entity = (row) => {
     entity.push({ "type": "redirect", "string": row.redirect })
     return entity
   }
-
+  
   if (!row.kirje) {
+    console.log(`Missing kirje for persoon ${row.persoon}`)
     return false 
   }
   if (!/[a-zõüöäA-ZÕÜÖÄ]/.test(row.kirje)) {
+    console.log(`Invalid kirje for persoon ${row.persoon}: ${row.kirje}`)
     return false
   }
 
   entity.push({ "type": "kirje", "string": row.kirje })
 
-  if (!row.eesnimi && !row.perenimi) { return false }
+  if (!row.eesnimi && !row.perenimi) { 
+    console.log(`Missing forename and surname for persoon ${row.persoon}`)
+    return false 
+  }
   row.eesnimi && entity.push({ "type": "forename", "string": row.eesnimi })
   row.perenimi && entity.push({ "type": "surname", "string": row.perenimi })
 
