@@ -235,7 +235,7 @@ const entu_post = async (row) => {
   if (json._id) {
     return json._id
   } else {
-    // console.error(`entu_post: Invalid json data. Persoon ${row.persoon} | Kirje: "${row.kirje}"`)
+    console.error(`entu_post: Invalid json data. Persoon ${row.persoon} | response: ${response} | json: ${json} | entity: ${entity}`)
     return false
     process.exit(1)
   }
