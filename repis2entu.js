@@ -187,7 +187,7 @@ const run = async () => {
       if (!entu_id) {
         console.log(counter, row.persoon, 'not posted to entu')
         // wait a second and try again
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await wait_a_sec()
       }
     }
     await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
@@ -232,4 +232,8 @@ const entu_post = async (row) => {
     return false
     process.exit(1)
   }
+}
+
+const wait_a_sec = async () => {
+  return new Promise(resolve => setTimeout(resolve, 1000))
 }
