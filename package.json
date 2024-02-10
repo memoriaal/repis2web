@@ -6,6 +6,8 @@
     "elasticsearch": "^16.7.3",
     "entulib": "^2.0.8",
     "google-spreadsheet": "^3.3.0",
-    "googleapis": "^110.0.0"
+    "googleapis": "^110.0.0",
+    "mysql-ssh": "^1.0.6",
+    "ssh2": "^1.15.0"
   }
 }
