@@ -206,7 +206,7 @@ const entu_post = async (row) => {
   // const entu_id = `entu_${row.persoon}`
   const entity = row2entity(row)
   if (!entity) {
-    console.error('entu_post: Invalid entity', {row})
+    // console.error('entu_post: Invalid entity', {row})
     return false
   }
   const url = `https://${ENTU_HOST}/entity`
