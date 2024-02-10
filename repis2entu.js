@@ -187,7 +187,8 @@ const run = async () => {
     }
     await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
     const [updated] = await pool.execute(select_updated, [row.persoon])
-    console.log(counter, row.eesnimi, row.perenimi, row.updated, updated.persoon, updated.entu_id, updated.sync_ts)
+    console.log(counter, row.eesnimi, row.perenimi, row.updated)
+    // console.log(counter, row.eesnimi, row.perenimi, row.updated, updated.persoon, updated.entu_id, updated.sync_ts)
   }
   // connection.end()
   return persons
