@@ -1,245 +1,225 @@
 'use strict'
 
-const path         = require('path')
+var path         = require('path')
 const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
-const fetch      = require('node-fetch')
-const mysql     = require('mysql2/promise')
+const { Client } = require('@elastic/elasticsearch')
 
+const MODE           = process.env.MODE           || 'recreate'
+const ES_CREDENTIALS = process.env.ES_CREDENTIALS || ''
+const ES_HOST        = process.env.ES_HOST        || ''
+const INDEX          = process.env.ES_INDEX       || 'test_index'
+const SOURCE         = process.env.SOURCE         || 'test.csv'
+const BULK_SIZE      = 2500
+const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
 
-const ENTU_HOST      = process.env.ENTU_HOST      || 'api.entu.app'
-const ENTU_AUTH_PATH = process.env.ENTU_AUTH_PATH || '/auth?account=emi'
-const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
+const stream = fs.createReadStream(SOURCE)
+const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
-// set working dir to script dir
-process.chdir(__dirname)
-
-const bulk_size = 200000
-const mysqlConfig = {
-  host: '127.0.0.1',
-  user: process.env.M_MYSQL_U,
-  password: process.env.M_MYSQL_P,
-  database: process.env.M_DB_NAME || 'pub',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-}
-const pool = mysql.createPool(mysqlConfig)
-
-const select_q = `
-  select e.entu_id, e.sync_ts, nk.*
-  from pub.nimekirjad nk
-  left join pub.entu e on e.persoon = nk.persoon
-  where e.sync_ts is null
-  order by nk.updated
-  limit ?;
-`
-const update_q = `
-  insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
-  on duplicate key update entu_id = ?, sync_ts = current_timestamp();
-`
-const select_updated = `
-  select e.*
-  from pub.entu e
-  where e.persoon = ?;
-`
-
-
-const get_token = async () => {
-  const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
-  const options = {
-    method: 'GET',
-    headers: {
-      'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${ENTU_WRITE_KEY}`
-    }
-  }
-  const response = await fetch(url, options)
-  const json = await response.json()
-  if (Array.isArray(json) && json.length > 0) {
-    if (json[0].token) {
-      return json[0].token
-    } else {
-      console.error('no token in json data')
-      return null
-    }
-  } else {
-    console.error('get_token: Invalid json data')
-    return null
-  }
-}
-
-const get_folderE = async () => {
-  const url = `https://${ENTU_HOST}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&props=_id`
-  const options = {
-    method: 'GET',
-    headers: {
-      'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${entu.token}`
-    }
-  }
-  const response = await fetch(url, options)
-  const json = await response.json()
-  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
-    if (json.entities[0]._id) {
-      return json.entities[0]._id
-    } else {
-      console.error('no _id in json data')
-      return null
-    }
-  } else {
-    console.error('get_folderE: Invalid json data', {json, entities: json.entities, length: json.entities.length})
-    return null
-  }
-}
-
-const get_victimE = async () => {
-  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=victim&props=_id`
-  const options = {
-    method: 'GET',
-    headers: {
-      'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${entu.token}`
-    }
-  }
-  const response = await fetch(url, options)
-  const json = await response.json()
-  if (json.entities && Array.isArray(json.entities) && json.entities.length > 0) {
-    if (json.entities[0]._id) {
-      return json.entities[0]._id
-    } else {
-      console.error('no _id in json data')
-      return null
-    }
-  } else {
-    console.error('get_victimE: Invalid json data', {json, entities: json.entities, length: json.entities.length})
-    return null
-  }
-}
-
-const row2entity = (row) => {
-  const entity = []
-
-  entity.push({ "type": "_type", "reference": entu.victimE })
-  
-  if (!row.persoon) { return false }
-  entity.push({ "type": "persoon", "string": row.persoon })
-  
-  if (row.redirect) {
-    entity.push({ "type": "redirect", "string": row.redirect })
-    return entity
-  }
-  
-  if (!row.kirje) {
-    console.log(`Missing kirje for persoon ${row.persoon}`)
-    return false 
-  }
-  if (!/[a-zõüöäA-ZÕÜÖÄ]/.test(row.kirje)) {
-    console.log(`Invalid kirje for persoon ${row.persoon}: ${row.kirje}`)
-    return false
-  }
-
-  entity.push({ "type": "kirje", "string": row.kirje })
-
-  if (!row.eesnimi && !row.perenimi) { 
-    console.log(`Missing forename and surname for persoon ${row.persoon}`)
-    return false 
-  }
-  row.eesnimi && entity.push({ "type": "forename", "string": row.eesnimi })
-  row.perenimi && entity.push({ "type": "surname", "string": row.perenimi })
-
-  row.evokirje && entity.push({ "type": "evokirje", "string": row.evokirje })
-  row.father && entity.push({ "type": "father", "string": row.isanimi })
-  row.mother && entity.push({ "type": "mother", "string": row.emanimi })
-  row.birth && entity.push({ "type": "birth", "string": row.sünd })
-  row.death && entity.push({ "type": "death", "string": row.surm })
-  row.birthplace && entity.push({ "type": "birthplace", "string": row.sünnikoht })
-  row.deathplace && entity.push({ "type": "deathplace", "string": row.surmakoht })
-  
-  row.kirjed && entity.push({ "type": "kirjed", "string": row.kirjed })
-  row.pereseosed && (row.pereseosed !== '[]') && entity.push({ "type": "pereseosed", "string": row.pereseosed })
-  row.tahvlikirje && (row.tahvlikirje !== '{}') && entity.push({ "type": "tahvlikirje", "string": row.tahvlikirje })
-  row.episoodid && (row.episoodid !== '[]') && entity.push({ "type": "episoodid", "string": row.episoodid })
-  
-  row.isperson === '1' && entity.push({ "type": "isperson", "boolean": true })
-  row.kivi === '1' && entity.push({ "type": "kivi", "boolean": true })
-  row.emem === '1' && entity.push({ "type": "emem", "boolean": true })
-  row.evo === '1' && entity.push({ "type": "evo", "boolean": true })
-  row.wwii === '1' && entity.push({ "type": "wwii", "boolean": true })
-  row.mv === '1' && entity.push({ "type": "mv", "boolean": true })
-  
-  entity.push({ "type": "_parent", "reference": entu.folderE })
-
-  return entity
-}
-
-const entu = {}
-const run = async () => {
-  entu.token = await get_token()
-  entu.folderE = await get_folderE()
-  entu.victimE = await get_victimE()
-  
-  // const connection = await mysql.createConnection(mysqlConfig)
-  const [rows, fields] = await pool.execute(select_q, [bulk_size])
-  console.log({fields: fields.map(f => f.name)})
-  const persons = rows.map(r => r.persoon)
-  let counter = 0
-  for (let row of rows) {
-    counter++
-    let entu_id = false
-    // while (!entu_id) {
-      entu_id = await entu_post(row)
-      if (!entu_id) {
-        console.log(counter, row.persoon, 'not posted to entu')
-        // wait a second and try again
-        await wait_a_sec()
-        continue
-      }
-    // }
-    await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
-    const [updated] = await pool.execute(select_updated, [row.persoon])
-    console.log(counter, row.persoon, row.updated, updated[0].entu_id, updated[0].sync_ts, row.eesnimi, row.perenimi)
-    // console.log(counter, row.eesnimi, row.perenimi, row.updated, updated.persoon, updated.entu_id, updated.sync_ts)
-  }
-  // connection.end()
-  return persons
-}
-
-run()
-.catch(console.log)
-.then((msg) => {
-  console.log('done', msg)
-  // process.exit(0)
+console.log({
+  'ES_CREDENTIALS': ES_CREDENTIALS,
+  'ES_HOST': ES_HOST,
+  'INDEX': INDEX,
+  'SOURCE': SOURCE,
+  'BULK_SIZE': BULK_SIZE,
+  'LOG_PATH': LOG_PATH
 })
+require('array.prototype.flatmap').shim()
 
-const entu_post = async (row) => {
-  // const entu_id = `entu_${row.persoon}`
-  const entity = row2entity(row)
-  if (!entity) {
-    // console.error('entu_post: Invalid entity', {row})
-    return false
+var cnt = { all: 0, wwii: 0, emem: 0, kivi: 0, mv: 0, isperson: 0 }
+
+process.on('warning', e => console.warn(e.stack))
+
+async function run() {
+  if (MODE === 'recreate') {
+    console.log('delete index ' + INDEX)
+    try {
+      await client.indices.delete({ index: INDEX })
+      console.log('= deleted index ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
+
+    console.log('= create index ' + INDEX)
+    try {
+      await client.indices.create(
+        {
+          index: INDEX,
+          body: {
+            mappings: {
+              properties: {
+                eesnimi: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                perenimi: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                kirje: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                sünd: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                surm: {
+                  type: 'text',
+                  fields: {
+                    raw: { type: 'keyword' }
+                  }
+                },
+                episoodid: {
+                  type: 'nested',  // Define "episoodid" as a nested field
+                  properties: {
+                    nimetus: { type: 'text' },
+                    asukoht: { type: 'text' },
+                    aeg: { type: 'text' },
+                  }
+                }
+              }
+            }
+          }
+        },
+        { ignore: [400] }
+      )
+      console.log('= created index ' + INDEX)
+    } catch (e) {
+      console.log(e)
+    }
   }
-  const url = `https://${ENTU_HOST}/entity`
-  const entu_options = {
-    method: 'POST',
-    headers: {
-      'Accept-Encoding': 'deflate',
-      'Authorization': `Bearer ${entu.token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(entity)
+
+  let bulk = []
+  const csv_stream = csv.parseStream(stream)
+  csv_stream
+    .on('error', error => console.error(error))
+    .on('data', async row => {
+      csv_stream.pause()
+      let isik = row2isik(row)
+      cnt['all']++
+      cnt['isperson'] += isik['isperson']
+      cnt['wwii'] += isik['wwii']
+      cnt['mv'] += isik['mv']
+      cnt['emem'] += isik['emem']
+      cnt['kivi'] += isik['kivi']
+
+      bulk.push(isik)
+      if (bulk.length === BULK_SIZE) {
+        console.log('read', JSON.stringify(cnt, null, 0))
+        // while(bulk.length > 0) {
+        await bulk_upload(bulk)
+        if (bulk.length) {
+          console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id))
+        }
+        // }
+      }
+      csv_stream.resume()
+    })
+    .on('end', async rowCount => {
+      console.log('Enter last bulk with', bulk.length, 'left')
+      while (bulk.length > 0) {
+        await bulk_upload(bulk)
+        console.log(bulk.length, 'left in bulk.', bulk.map(i => i.id));
+      }
+      console.log('errored', erroredDocuments)
+      console.log(`Uploaded ${rowCount - erroredDocuments.length} of ${rowCount} documents`)
+    })
+}
+run().catch(console.log)
+
+const erroredDocuments = []
+async function bulk_upload(bulk) {
+  // const operations = bulk.flatMap(doc => [{ index: { _index: INDEX, '_id': doc.id } }, doc])
+  let operations = []
+  bulk.forEach(doc => {
+    if (doc.kirje === '') {
+      operations.push({ delete: { _index: INDEX, '_id': doc.id } })
+    } else {
+      operations.push({ delete: { _index: INDEX, '_id': doc.id } }
+        , { index: { _index: INDEX, '_id': doc.id } }
+        , doc)
+    }
+  })
+
+
+  const bulkResponse = await client.bulk({ refresh: true, operations })
+    .catch(e => {
+      console.log(Object.keys(e.meta), e.meta.body, '===X===')
+    })
+
+  const nowMinute = (new Date()).setSeconds(0, 0)
+  // fs.writeFileSync( path.join(LOG_PATH, `${nowMinute}.json.out`)
+  //                 , JSON.stringify({bulk, operations, bulkResponse}, null, 2))
+
+  if (bulkResponse && bulkResponse.items) {
+    bulkResponse.items.forEach((item) => {
+      const action = item.index || item.delete
+
+      function findIxBy_id(item) {
+        return item.id === this
+      }
+      let bix = bulk.findIndex(findIxBy_id, action._id)
+      // console.log({bulk, bix, item, action})
+      if (bix > -1) {
+        bulk.splice(bix, 1) // keep first bix elements, remove one
+      }
+    })
   }
-  const response = await fetch(url, entu_options)
-  response.ok || console.error(`entu_post response error: ${response.status} ${response.statusText} | Persoon: ${row.persoon}`)
-  const json = await response.json()
-  if (json._id) {
-    return json._id
-  } else {
-    console.error(`entu_post Invalid json data: ${response.status} ${response.statusText} | Persoon: ${row.persoon}`)
-    return false
+  if (bulkResponse && bulkResponse.errors) {
+    // The items array has the same order of the dataset we just indexed.
+    // The presence of the `error` key indicates that the operation
+    // that we did for the document has failed.
+    bulkResponse.items.forEach((action, item) => {
+      console.log('e:', item)
+      const operation = Object.keys(action)[0]
+      if (action[operation].error) {
+        erroredDocuments.push(
+          // If the status is 429 it means that you can retry the document,
+          // otherwise it's very likely a mapping error, and you should
+          // fix the document before to try it again.
+          action[operation].status + ': ' +
+          action[operation].error.reason,
+          // operation: body[i * 2],
+          // document: body[i * 2 + 1]
+        )
+      }
+    })
   }
 }
 
-const wait_a_sec = async () => {
-  return new Promise(resolve => setTimeout(resolve, 1000))
+function row2isik(row) {
+  let isik = {}
+  isik['id'] = row[0]
+  isik['kirje'] = row[1]
+  isik['evokirje'] = row[2]
+  isik['perenimi'] = row[3]
+  isik['eesnimi'] = row[4]
+  isik['isanimi'] = row[5]
+  isik['emanimi'] = row[6]
+  if (row[7]) isik['sünd'] = row[7]
+  if (row[8]) isik['surm'] = row[8]
+  if (row[9]) isik['sünnikoht'] = row[9]
+  if (row[10]) isik['surmakoht'] = row[10]
+  try { isik['kirjed'] = JSON.parse(row[11]) } catch (e) { console.log(e, row[11]) }
+  try { isik['pereseosed'] = JSON.parse(row[12]) } catch (e) { console.log(e, row[12]) }
+  try { isik['tahvlikirje'] = JSON.parse(row[13]) } catch (e) { console.log(e, row[13]) }
+  try { isik['episoodid'] = JSON.parse(row[14]) } catch (e) { console.log(e, row[14]) }
+  isik['isperson'] = row[15] === '1' ? 1 : 0
+  isik['kivi'] = row[16] === '1' ? 1 : 0
+  isik['emem'] = row[17] === '1' ? 1 : 0
+  isik['evo'] = row[18] === '1' ? 1 : 0
+  isik['wwii'] = row[19] === '1' ? 1 : 0
+  isik['mv'] = row[20] === '1' ? 1 : 0
+  isik['redirect'] = row[21]
+  isik['updated_at'] = new Date().toLocaleString()
+  return isik
 }
