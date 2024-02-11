@@ -3,7 +3,6 @@
 var path         = require('path')
 const fs         = require('fs')
 const csv        = require('@fast-csv/parse')
-const { Client } = require('@elastic/elasticsearch')
 
 const MODE           = process.env.MODE           || 'recreate'
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS || ''
@@ -13,8 +12,17 @@ const SOURCE         = process.env.SOURCE         || 'test.csv'
 const BULK_SIZE      = 2500
 const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'.')
 
+const { Client: Client8 } = require('es8')
+const apiKey = { id: process.env.ES8_API_ID, api_key: process.env.ES8_API_KEY }
+console.log( {apiKey} )
+const client = new Client8({
+  node: 'https://repis8.es.eu-central-1.aws.cloud.es.io',
+  auth: { apiKey }
+})
+
 const stream = fs.createReadStream(SOURCE)
-const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
+// const { Client } = require('@elastic/elasticsearch')
+// const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
 console.log({
   'ES_CREDENTIALS': ES_CREDENTIALS,
