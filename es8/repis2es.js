@@ -6,7 +6,7 @@ const csv        = require('@fast-csv/parse')
 
 const MODE           = process.env.MODE           || 'recreate'
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS || ''
-const ES_HOST        = process.env.ES_HOST        || ''
+const ES_HOST        = process.env.ES_8HOST        || ''
 const INDEX          = process.env.ES_INDEX       || 'test_index'
 const SOURCE         = process.env.SOURCE         || 'test.csv'
 const BULK_SIZE      = 2500
@@ -25,7 +25,7 @@ const stream = fs.createReadStream(SOURCE)
 // const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
 
 console.log({
-  'ES_CREDENTIALS': ES_CREDENTIALS,
+  // 'ES_CREDENTIALS': ES_CREDENTIALS,
   'ES_HOST': ES_HOST,
   'INDEX': INDEX,
   'SOURCE': SOURCE,
