@@ -6,7 +6,7 @@ const csv        = require('@fast-csv/parse')
 
 const MODE           = process.env.MODE           || 'recreate'
 const ES_CREDENTIALS = process.env.ES_CREDENTIALS || ''
-const ES_HOST        = process.env.ES_8HOST        || ''
+const ES_HOST        = process.env.ES8_HOST        || ''
 const INDEX          = process.env.ES_INDEX       || 'test_index'
 const SOURCE         = process.env.SOURCE         || 'test.csv'
 const BULK_SIZE      = 2500
@@ -16,7 +16,7 @@ const { Client: Client8 } = require('es8')
 const apiKey = { id: process.env.ES8_API_ID, api_key: process.env.ES8_API_KEY }
 console.log( {apiKey} )
 const client = new Client8({
-  node: 'https://repis8.es.eu-central-1.aws.cloud.es.io',
+  node: ES_HOST,
   auth: { apiKey }
 })
 
