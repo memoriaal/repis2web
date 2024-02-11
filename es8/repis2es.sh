@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd /home/michelek/Documents/scripts/repis2web
-mypidfile=/home/michelek/Documents/scripts/repis2web/es8/repis2entu.sh.pid
+cd "$(dirname "$0")"
+mypidfile=repis2entu.sh.pid
 
 if [ -e $mypidfile ]; then
     echo -n ". "
