@@ -11,7 +11,7 @@ const ES_HOST        = process.env.ES_HOST        || ''
 const INDEX          = process.env.ES_INDEX       || 'test_index'
 const SOURCE         = process.env.SOURCE         || 'test.csv'
 const BULK_SIZE      = 2500
-const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'..')
+const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'.')
 
 const stream = fs.createReadStream(SOURCE)
 const client = new Client({ node: 'https://' + ES_CREDENTIALS + '@' + ES_HOST })
