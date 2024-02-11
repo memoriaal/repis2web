@@ -1,7 +1,6 @@
 
 @hostname=api.entu.app
-@key=
-@key=6Im1paGtlbC5wdXRyaW5zaEBnbWFp
+@key=reader
 
 ###
 # auth
@@ -9,7 +8,7 @@ GET {{hostname}}/auth?account=emi HTTP/1.1
 Accept-Encoding: deflate
 Authorization: Bearer {{key}}
 
-@token=
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDc2NjU5NDMsImV4cCI6MTcwNzgzODc0MywiYXVkIjoiMjE3LjE1OS4yMTMuMjEwIiwiaXNzIjoiZW1pIiwic3ViIjoiNjVjMzRhZmRiNTM0ZTJlMWQwMmVjYTM2In0.pcTk90N7hvIv5Koiy5NJH7JW9a9ixncmlCOTgRv1ymY
 
 ###
 # account
@@ -23,7 +22,7 @@ GET {{hostname}}/entity?_type.string=folder&name.string=Publitseeritud+kirjed&pr
 Accept-Encoding: deflate
 Authorization: Bearer {{token}}
 
-@folder=65c34b4fa732c040f16a8e44
+@folder=65c34afdb534e2e1d02eca36
 
 ###
 # entity GET victim definition
@@ -31,11 +30,11 @@ GET {{hostname}}/entity?_type.string=entity&name.string=victim&props=_id HTTP/1.
 Accept-Encoding: deflate
 Authorization: Bearer {{token}}
 
-@victim=65c36a87a732c040f16a8e97
+@victim=65c34afdb534e2e1d02eca36
 
 ###
 # entity GET
-GET {{hostname}}/entity?_type.string=victim&limit=200&skip=2 HTTP/1.1
+GET {{hostname}}/entity?_type.string=victim&limit=200&skip=0 HTTP/1.1
 Accept-Encoding: deflate
 Authorization: Bearer {{token}}
 
