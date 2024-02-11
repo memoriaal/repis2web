@@ -87,7 +87,7 @@ sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 # echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
 echo -n "$(date -u --iso-8601=seconds) Between ${last_ts} and ${new_ts}: "
-MODE=update SOURCE=${csv_filename} ES_INDEX=emi_persons E8_CREDENTIALS="${ES8_CREDENTIALS}" ES_HOST="${ES8_HOST}" node repis2es.js | grep Uploaded
+MODE=update SOURCE=${csv_filename} ES_INDEX=emi_persons E8_CREDENTIALS="${ES8_CREDENTIALS}" ES_HOST="${ES8_HOST}" node repis2es.js #  | grep Uploaded
 
 ####
 #### Wrap up
