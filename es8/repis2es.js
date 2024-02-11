@@ -153,7 +153,7 @@ async function bulk_upload(bulk) {
 
   const bulkResponse = await client.bulk({ refresh: true, operations })
     .catch(e => {
-      console.log(Object.keys(e.meta), e.meta.body, operations, '===X===')
+      console.log(Object.keys(e.meta), e.meta.body, '===X===')
     })
 
   const nowMinute = (new Date()).setSeconds(0, 0)
