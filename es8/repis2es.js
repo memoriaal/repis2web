@@ -14,7 +14,7 @@ const LOG_PATH       = process.env.LOG_PATH       || path.join(process.cwd(),'.'
 
 const { Client: Client8 } = require('es8')
 const apiKey = { id: process.env.ES8_API_ID, api_key: process.env.ES8_API_KEY }
-console.log( {apiKey} )
+console.log( {apiKey, ES_HOST, INDEX} )
 const client = new Client8({
   node: ES_HOST,
   auth: { apiKey }
