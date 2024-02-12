@@ -14,7 +14,7 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 // set working dir to script dir
 process.chdir(__dirname)
 
-const bulk_size = 20
+const bulk_size = 200000
 const mysqlConfig = {
   host: '127.0.0.1',
   user: process.env.M_MYSQL_U,
