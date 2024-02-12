@@ -94,7 +94,7 @@ const get_folderE = async () => {
 }
 
 const get_victimE = async () => {
-  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=repisperson&props=_id`
+  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=repisPerson&props=_id`
   const options = {
     method: 'GET',
     headers: {
