@@ -64,7 +64,7 @@ const run = async () => {
   
   // const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await pool.execute(select_q, [bulk_size])
-  console.log({fields: fields.map(f => f.name)})
+  console.log({fields: fields.map(f => f.name), rows: rows.length, query: select_q, bulk_size})
   let counter = 0
   for (let row of rows) {
     counter++
