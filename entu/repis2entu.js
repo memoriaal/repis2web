@@ -14,7 +14,7 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 // set working dir to script dir
 process.chdir(__dirname)
 
-const bulk_size = 200000
+const bulk_size = 2
 const mysqlConfig = {
   host: '127.0.0.1',
   user: process.env.M_MYSQL_U,
@@ -94,7 +94,7 @@ const get_folderE = async () => {
 }
 
 const get_victimE = async () => {
-  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=victim&props=_id`
+  const url = `https://${ENTU_HOST}/entity?_type.string=entity&name.string=repisPerson&props=_id`
   const options = {
     method: 'GET',
     headers: {
@@ -142,32 +142,36 @@ const row2entity = (row) => {
   entity.push({ "type": "kirje", "string": row.kirje })
 
   if (!row.eesnimi && !row.perenimi) { 
-    console.log(`Missing forename and surname for persoon ${row.persoon}`)
+    console.log(`Missing eesnimi and perenimi for persoon ${row.persoon}`)
     return false 
   }
-  row.eesnimi && entity.push({ "type": "forename", "string": row.eesnimi })
-  row.perenimi && entity.push({ "type": "surname", "string": row.perenimi })
+  row.eesnimi && entity.push({ "type": "eesnimi", "string": row.eesnimi })
+  row.perenimi && entity.push({ "type": "perenimi", "string": row.perenimi })
 
-  row.evokirje && entity.push({ "type": "evokirje", "string": row.evokirje })
-  row.father && entity.push({ "type": "father", "string": row.isanimi })
-  row.mother && entity.push({ "type": "mother", "string": row.emanimi })
-  row.birth && entity.push({ "type": "birth", "string": row.sünd })
-  row.death && entity.push({ "type": "death", "string": row.surm })
-  row.birthplace && entity.push({ "type": "birthplace", "string": row.sünnikoht })
-  row.deathplace && entity.push({ "type": "deathplace", "string": row.surmakoht })
+  row.emanimi && entity.push({ "type": "emanimi", "string": row.emanimi })
+  row.isanimi && entity.push({ "type": "isanimi", "string": row.isanimi })
+  /* Ü != Y */ row.sünd && entity.push({ "type": "synd", "string": row.sünd })
+  /* Ü != Y */ row.sünnikoht && entity.push({ "type": "synnikoht", "string": row.sünnikoht })
+  row.surm && entity.push({ "type": "surm", "string": row.surm })
+  row.surmakoht && entity.push({ "type": "surmakoht", "string": row.surmakoht })
   
   row.kirjed && entity.push({ "type": "kirjed", "string": row.kirjed })
   row.pereseosed && (row.pereseosed !== '[]') && entity.push({ "type": "pereseosed", "string": row.pereseosed })
-  row.tahvlikirje && (row.tahvlikirje !== '{}') && entity.push({ "type": "tahvlikirje", "string": row.tahvlikirje })
   row.episoodid && (row.episoodid !== '[]') && entity.push({ "type": "episoodid", "string": row.episoodid })
+
+  row.tahvlikirje && (row.tahvlikirje !== '{}') && entity.push({ "type": "tahvlikirje", "string": row.tahvlikirje })
+  row.evokirje && entity.push({ "type": "evokirje", "string": row.evokirje })
   
-  row.isperson === '1' && entity.push({ "type": "isperson", "boolean": true })
+  
+  row.isPerson === '1' && entity.push({ "type": "isPerson", "boolean": true })
   row.kivi === '1' && entity.push({ "type": "kivi", "boolean": true })
   row.emem === '1' && entity.push({ "type": "emem", "boolean": true })
   row.evo === '1' && entity.push({ "type": "evo", "boolean": true })
-  row.wwii === '1' && entity.push({ "type": "wwii", "boolean": true })
+  row.wwiiref === '1' && entity.push({ "type": "wwiiref", "boolean": true })
   row.mv === '1' && entity.push({ "type": "mv", "boolean": true })
   
+  row.updated && entity.push({ "type": "updated", "string": row.updated })
+
   entity.push({ "type": "_parent", "reference": entu.folderE })
 
   return entity
