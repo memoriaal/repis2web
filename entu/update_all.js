@@ -27,7 +27,7 @@ const mysqlConfig = {
 const pool = mysql.createPool(mysqlConfig)
 
 const select_q = `
-  select nk.*
+  select *
   from pub.entu
   where e.sync_ts is null
   limit ?;
