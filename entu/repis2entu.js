@@ -14,7 +14,7 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 // set working dir to script dir
 process.chdir(__dirname)
 
-const bulk_size = 200000
+const bulk_size = 2
 const mysqlConfig = {
   host: '127.0.0.1',
   user: process.env.M_MYSQL_U,
@@ -155,9 +155,37 @@ const row2entity = (row) => {
   row.surm && entity.push({ "type": "surm", "string": row.surm })
   row.surmakoht && entity.push({ "type": "surmakoht", "string": row.surmakoht })
   
-  row.kirjed && entity.push({ "type": "kirjed", "string": row.kirjed })
-  row.pereseosed && (row.pereseosed !== '[]') && entity.push({ "type": "pereseosed", "string": row.pereseosed })
-  row.episoodid && (row.episoodid !== '[]') && entity.push({ "type": "episoodid", "string": row.episoodid })
+  // multiproerties
+  if (row.kirjed && row.kirjed !== '[]') {
+    try {
+      const kirjed = JSON.parse(row.kirjed)
+      kirjed.forEach(k => {
+        entity.push({ "type": "kirjed", "string": JSON.stringify(k, null, 2) })
+      })
+    } catch (e) {
+      console.error('Invalid kirjed', row.kirjed)
+    }
+  }
+  if (row.pereseosed && row.pereseosed !== '[]') {
+    try {
+      const pereseosed = JSON.parse(row.pereseosed)
+      pereseosed.forEach(p => {
+        entity.push({ "type": "pereseosed", "string": JSON.stringify(p, null, 2) })
+      })
+    } catch (e) {
+      console.error('Invalid pereseosed', row.pereseosed)
+    }
+  }
+  if (row.episoodid && row.episoodid !== '[]') {
+    try {
+      const episoodid = JSON.parse(row.episoodid)
+      episoodid.forEach(e => {
+        entity.push({ "type": "episoodid", "string": JSON.stringify(e, null, 2) })
+      })
+    } catch (e) {
+      console.error('Invalid episoodid', row.episoodid)
+    }
+  }
 
   row.tahvlikirje && (row.tahvlikirje !== '{}') && entity.push({ "type": "tahvlikirje", "string": row.tahvlikirje })
   row.evokirje && entity.push({ "type": "evokirje", "string": row.evokirje })
