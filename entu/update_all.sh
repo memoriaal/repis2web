@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd /home/michelek/Documents/scripts/repis2web
-mypidfile=/home/michelek/Documents/scripts/repis2web/update_all.sh.pid
+cd /home/michelek/Documents/scripts/repis2web/entu
+mypidfile=/home/michelek/Documents/scripts/repis2web/entu/update_all.sh.pid
 
 if [ -e $mypidfile ]; then
     echo "-- minut --"
