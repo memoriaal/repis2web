@@ -182,6 +182,7 @@ const run = async () => {
   entu.token = await get_token()
   entu.folderE = await get_folderE()
   entu.victimE = await get_victimE()
+  console.log({entu})
   
   // const connection = await mysql.createConnection(mysqlConfig)
   const [rows, fields] = await pool.execute(select_q, [bulk_size])
