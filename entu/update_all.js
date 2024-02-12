@@ -29,19 +29,9 @@ const pool = mysql.createPool(mysqlConfig)
 const select_q = `
   select *
   from pub.entu
-  where e.sync_ts is null
+  where sync_ts is null
   limit ?;
 `
-const update_q = `
-  insert into pub.entu (persoon, entu_id, sync_ts) values (?, ?, current_timestamp())
-  on duplicate key update entu_id = ?, sync_ts = current_timestamp();
-`
-const select_updated = `
-  select e.*
-  from pub.entu e
-  where e.persoon = ?;
-`
-
 
 const get_token = async () => {
   const url = `https://${ENTU_HOST}${ENTU_AUTH_PATH}`
@@ -88,9 +78,7 @@ const run = async () => {
         continue
       }
     // }
-    await pool.execute(update_q, [row.persoon, `${entu_id}`, `${entu_id}`])
-    const [updated] = await pool.execute(select_updated, [row.persoon])
-    console.log(counter, row.persoon, row.updated, updated[0].entu_id, updated[0].sync_ts, row.eesnimi, row.perenimi)
+    console.log(`entu_id: ${entu_id} | Persoon: ${row.persoon}`)
     // console.log(counter, row.eesnimi, row.perenimi, row.updated, updated.persoon, updated.entu_id, updated.sync_ts)
   }
   // connection.end()
