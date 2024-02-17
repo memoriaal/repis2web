@@ -26,8 +26,10 @@ ssh -f -N -T -M -L 3306:127.0.0.1:3306 repis-proxy
 last_ts=`cat last_ts.out`
 # echo "last timestamp: ${last_ts}"
 
+BULK_SIZE=100
+
 new_ts=`mysql --port=3306 -u"${M_MYSQL_U}" -p"${M_MYSQL_P}" pub<<EOFMYSQL
-CALL pub.repub(42);
+CALL pub.repub(${BULK_SIZE});
 select max(updated) as ts from pub.nimekirjad;
 EOFMYSQL
 `
