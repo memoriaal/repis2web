@@ -83,6 +83,11 @@ sed -i 's/\\\"/\"\"/g' $csv_filename
 sed -i 's/\\\\\"\"/\\\"\"/g' $csv_filename
 
 # echo $(date -u --iso-8601=seconds) uploading $csv_filename to memoriaal.ee
+echo "SOuRCE ${csv_filename}"
+echo "ES_INDEX emem_persons"
+echo "ES_CREDENTIALS ${ES_CREDENTIALS}"
+echo "ES_HOST ${ES_HOST}"
+echo "MODE update"
 echo -n "$(date -u --iso-8601=seconds) Between ${last_ts} and ${new_ts}: "
 MODE=update SOURCE=${csv_filename} ES_INDEX=emi_persons ES_CREDENTIALS="${ES_CREDENTIALS}" ES_HOST="${ES_HOST}" node pub3elastic.js | grep Uploaded
 
