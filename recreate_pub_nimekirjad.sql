@@ -15,6 +15,7 @@ CREATE OR REPLACE TABLE pub.nimekirjad (
   emem BIT(1) NOT NULL DEFAULT b'0',
   evo BIT(1) NOT NULL DEFAULT b'0',
   wwiiref BIT(1) NOT NULL DEFAULT b'0',
+  ylikoolis_oppinud BIT(1) NOT NULL DEFAULT b'0',
   kirjed LONGTEXT NOT NULL DEFAULT '[]' COLLATE 'utf8_estonian_ci',
   pereseosed LONGTEXT NOT NULL DEFAULT '[]' COLLATE 'utf8_estonian_ci',
   tahvlikirje LONGTEXT NOT NULL DEFAULT '[]' COLLATE 'utf8_estonian_ci',
@@ -33,11 +34,11 @@ ENGINE=InnoDB
 INSERT ignore INTO pub.nimekirjad (persoon, kirje, perenimi, eesnimi, isanimi, emanimi
      , sünd, surm, sünnikoht, surmakoht
      , kirjed
-     , isPerson, emem, kivi, wwiiref, evo, mv)
+     , isPerson, emem, kivi, wwiiref, evo, mv, ylikoolis_oppinud)
 SELECT persoon, kirje, perenimi, eesnimi, isanimi, emanimi
      , sünd, surm, sünnikoht, surmakoht
      , repis.json_persoonikirjed(persoon)
-     , pub_isPerson, pub_emem, pub_kivi, pub_wwiiref, pub_evo, pub_mv
+     , pub_isPerson, pub_emem, pub_kivi, pub_wwiiref, pub_evo, pub_mv, ylikoolis_oppinud
   FROM repis.kirjed
  WHERE persoon = kirjekood
    AND persoon > 0

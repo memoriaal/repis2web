@@ -197,6 +197,7 @@ const row2entity = (row) => {
   row.evo === '1' && entity.push({ "type": "evo", "boolean": true })
   row.wwiiref === '1' && entity.push({ "type": "wwiiref", "boolean": true })
   row.mv === '1' && entity.push({ "type": "mv", "boolean": true })
+  row.ylikoolis_oppinud === '1' && entity.push({ "type": "ylikoolis_oppinud", "boolean": true })
   
   row.updated && entity.push({ "type": "updated", "string": row.updated })
 

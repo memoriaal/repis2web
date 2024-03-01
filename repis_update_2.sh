@@ -50,6 +50,7 @@ SELECT persoon, kirje, evokirje, perenimi, eesnimi, isanimi, emanimi
 , case when evo IS TRUE then 1 ELSE 0 end evo
 , case when wwiiref IS TRUE then 1 ELSE 0 end wwiiref
 , case when mv IS TRUE then 1 ELSE 0 end mv
+, case when ylikoolis_oppinud IS TRUE then 1 ELSE 0 end ylikoolis_oppinud
 from pub.nimekirjad
 WHERE updated BETWEEN DATE_ADD('${last_ts}', INTERVAL 1 second) AND '${new_ts}'
 INTO OUTFILE '${csv_filename}'
