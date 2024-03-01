@@ -8,6 +8,7 @@
     "google-spreadsheet": "^3.3.0",
     "googleapis": "^110.0.0",
     "mysql-ssh": "^1.0.6",
+    "mysql2": "^3.9.1",
     "ssh2": "^1.15.0"
   }
 }

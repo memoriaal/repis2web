@@ -12,7 +12,7 @@ const ENTU_WRITE_KEY = process.env.ENTU_WRITE_KEY
 
 const M_MYSQL_U      = process.env.M_MYSQL_U
 const M_MYSQL_P      = process.env.M_MYSQL_P
-
+const mysql          = require('mysql')
 // const stream = fs.createReadStream(SOURCE)
 
 // set working dir to script dir

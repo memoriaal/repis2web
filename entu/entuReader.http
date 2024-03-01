@@ -8,7 +8,7 @@ GET {{hostname}}/auth?account=emi HTTP/1.1
 Accept-Encoding: deflate
 Authorization: Bearer {{key}}
 
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDc2NjU5NDMsImV4cCI6MTcwNzgzODc0MywiYXVkIjoiMjE3LjE1OS4yMTMuMjEwIiwiaXNzIjoiZW1pIiwic3ViIjoiNjVjMzRhZmRiNTM0ZTJlMWQwMmVjYTM2In0.pcTk90N7hvIv5Koiy5NJH7JW9a9ixncmlCOTgRv1ymY
+@token=
 
 ###
 # account
@@ -34,7 +34,7 @@ Authorization: Bearer {{token}}
 
 ###
 # entity GET
-GET {{hostname}}/entity?_type.string=victim&limit=200&skip=0 HTTP/1.1
+GET {{hostname}}/entity?_type.string=victim&props=_id&sort=persoon.string&skip=9600 HTTP/1.1
 Accept-Encoding: deflate
 Authorization: Bearer {{token}}
 
