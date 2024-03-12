@@ -1,0 +1,134 @@
+@hostname = 94abc9318c712977e8c684628aa5ea0f.us-east-1.aws.found.io
+@port = 9243
+@index = emem_persons
+@host = {{hostname}}:{{port}}
+
+###
+# 10 esimest
+GET {{host}}/{{index}}/_search?size=10&from=0&pretty HTTP/1.1
+Authorization: Basic cmVhZGVyOnJlYWRlcg==
+Content-Type: application/json
+
+
+###
+# persoonikoodi järgi
+GET {{host}}/{{index}}/_doc/0000218291 HTTP/1.1
+Authorization: Basic cmVhZGVyOnJlYWRlcg==
+Content-Type: application/json
+
+
+###
+# "match" päring
+GET {{host}}/{{index}}/_search?size=10&from=0&pretty HTTP/1.1
+Authorization: Basic cmVhZGVyOnJlYWRlcg==
+Content-Type: application/json
+
+{
+  "query" : {
+    "match" : {
+      "id": "0000081350"
+    }
+  }
+}
+
+###
+# "should" päring
+GET {{host}}/{{index}}/_search?size=10&from=100&pretty HTTP/1.1
+Authorization: Basic cmVhZGVyOnJlYWRlcg==
+Content-Type: application/json
+
+{
+  "query" : {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "eesnimi": "Johannes"
+          }
+        },
+        {
+          "match": {
+            "perenimi": "Kask"
+          }
+        },
+        {
+          "term": {
+            "isanimi.keyword": ""
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+# tühjade persoonide päring
+# 
+# where redirect is empty
+# and does not exist kirjed.kirjekood
+GET {{host}}/{{index}}/_search?size=10&from=100&pretty HTTP/1.1
+Authorization: Basic cmVhZGVyOnJlYWRlcg==
+Content-Type: application/json
+
+{
+  "query" : {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "redirect.keyword": ""
+          }
+        },
+        {
+          "bool": {
+            "must_not": [
+              {
+                "exists": {
+                  "field": "kirjed.kirjekood"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+###
+# "multi_match" päring
+GET {{host}}/{{index}}/_search?size=10&from=0&pretty HTTP/1.1
+Authorization: Basic cmVhZGVyOnJlYWRlcg==
+Content-Type: application/json
+
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "0000081350",
+            "fields": [
+              "id"
+            ],
+            "operator": "and",
+            "type": "cross_fields"
+          }
+        }
+      ]
+    }
+  },
+  "sort": {
+    "eesnimi.raw": "asc",
+    "perenimi.raw": "asc"
+  }
+}
+
+### familysearch.org päring
+https://www.familysearch.org/service/search/hr/v2/personas?c.deathLikePlace1=on&count=10&f.deathLikePlace0=10&m.defaultFacets=on&m.facetNestCollectionInCategory=on&m.queryRequireDefault=on&offset=100&q.birthLikeDate.from=1870&q.birthLikeDate.to=1945&q.birthLikePlace=Estonia
+Accept: application/json, text/plain, */*
+Authorization: Bearer
+Referer: https://www.familysearch.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36
+
+
